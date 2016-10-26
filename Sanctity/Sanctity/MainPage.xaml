@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:Sanctity"
+             x:Class="Sanctity.MainPage">
+  <StackLayout HorizontalOptions="FillAndExpand">
+    <Image Opacity="1" x:Name="ImageBackground"
+      Aspect="AspectFit"/>
+    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+      <Button x:Name="ButtonStart" Clicked="OnStart" Text="Start"></Button>
+      <Picker x:Name="ServerURL" WidthRequest="130"></Picker>
+      <Picker x:Name="Players" WidthRequest="130"></Picker>
+    </StackLayout>
+    <Entry x:Name="EntrySend" Text=""></Entry>
+    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+      <Button x:Name="ButtonSend" Clicked="OnSend" Text="Send"></Button>
+      <Button x:Name="ButtonN" Clicked="OnMove" Text="N"></Button>
+      <Button x:Name="ButtonLook" Clicked="OnCommand" Text="Look"></Button>
+      <Button x:Name="ButtonHide" Clicked="OnCommand" Text="Hide"></Button>
+    </StackLayout>
+    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+      <Button x:Name="ButtonW" Clicked="OnMove" Text="W"></Button>
+      <Button x:Name="ButtonS" Clicked="OnMove" Text="S"></Button>
+      <Button x:Name="ButtonE" Clicked="OnMove" Text="E"></Button>
+      <Button x:Name="ButtonRevive" Clicked="OnCommand" Text="Revive"></Button>
+    </StackLayout>
+    <Label x:Name="LabelStats" HorizontalTextAlignment="Center" BackgroundColor="Red" TextColor="Black"></Label>
+    <ScrollView x:Name="ScrollViewOutput" BackgroundColor="Teal" VerticalOptions="Fill">
+        <Label x:Name="LabelOutput" LineBreakMode="WordWrap" Text="Welcome to Sanctity's Edge"></Label>
+    </ScrollView>
+  </StackLayout>
+</ContentPage>
