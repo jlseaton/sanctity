@@ -8,7 +8,7 @@ using Android.OS;
 
 namespace Sanctity.Droid
 {
-    [Activity(Label = "Sanctity", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = false, 
+    [Activity(Label = "Sanctity", Icon = "@drawable/icon", Theme = "@style/MainTheme", MainLauncher = true, 
         ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
