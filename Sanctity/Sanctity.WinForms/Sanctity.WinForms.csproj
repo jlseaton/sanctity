@@ -58,7 +58,7 @@
     <ApplicationIcon>App.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>55726389CA219A8DBD85DFBDCCD9862CAFDBF136</ManifestCertificateThumbprint>

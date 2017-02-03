@@ -3,3 +3,21 @@
 ################################################################################
 
 /.vs/Sanctity/v14/.suo
+/packages
+/Sanctity/Game.Core/bin/Debug
+/Sanctity/Game.Core/obj/Debug
+/Sanctity/Game.Realm/bin/Debug
+/Sanctity/Game.Realm/obj/Debug
+/Sanctity/Game.Server/bin/Debug
+/Sanctity/Game.Server/obj/Debug
+/Sanctity/Game.Tests/bin/Debug
+/Sanctity/Game.Tests/obj/Debug
+/Sanctity/Sanctity/bin/Debug
+/Sanctity/Sanctity/obj/Debug
+/Sanctity/Sanctity.Droid/obj/Debug
+/Sanctity/Sanctity.iOS/obj/iPhone/Debug
+/Sanctity/Sanctity.Windows/obj/Debug
+/Sanctity/Sanctity.WinForms/bin/Debug
+/Sanctity/Sanctity.WinForms/obj/Debug
+/Sanctity/Sanctity.WinPhone/bin/Debug
+/Sanctity/Sanctity.WinPhone/obj/Debug
