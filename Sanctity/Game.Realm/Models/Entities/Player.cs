@@ -16,6 +16,7 @@ namespace Game.Realm
         public Player() : base()
         {
             Type = EntityType.Player;
+            Gender = GenderType.Male;
         }
     }
 }

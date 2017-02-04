@@ -410,6 +410,18 @@ namespace Sanctity.WinForms
 
                         if (packet.Health != null)
                         {
+                            // TODO: Play a hurt sound (messes up packet timing for some reason)
+                            //if (Stats.HPs > packet.Health.HPs)
+                            //{
+                            //    var sound = Randomizer.Next(3);
+                            //    if (sound == 0)
+                            //        PlaySound(@"attack1.wav");
+                            //    else if (sound == 1)
+                            //        PlaySound(@"attack2.wav");
+                            //    else
+                            //        PlaySound(@"caiti_hit1.mp3");
+                            //}
+
                             Stats = packet.Health;
                             this.labelLevel.Text = "Level: " + Stats.Level.ToString();
                             this.labelExperience.Text = "Exp: " + Stats.Experience.ToString();
@@ -721,10 +733,13 @@ namespace Sanctity.WinForms
 
             if (this.listBoxEntities.SelectedItem != null)
             {
-                if (Randomizer.Next(2) > 0)
-                    PlaySound(@"attack1.wav");
+                var sound = Randomizer.Next(3);
+                if (sound == 0)
+                    PlaySound(@"sword1.wav");
+                else if (sound == 1)
+                    PlaySound(@"sword2.wav");
                 else
-                    PlaySound(@"attack2.wav");
+                    PlaySound(@"arrow1.wav");
 
                 string npcName = this.listBoxEntities.SelectedItem.ToString();
                 int found = npcName.IndexOf("(");

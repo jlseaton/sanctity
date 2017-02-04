@@ -284,7 +284,8 @@
             "Smindel the Halfling Thief",
             "Astef the Human Paladin",
             "Natillah the Elven Wizard",
-            "Faerune the Dwarven Cleric"});
+            "Faerune the Dwarven Cleric",
+            "Gayaa the Elven Archer"});
             this.comboBoxPlayers.Location = new System.Drawing.Point(107, 507);
             this.comboBoxPlayers.Name = "comboBoxPlayers";
             this.comboBoxPlayers.Size = new System.Drawing.Size(278, 21);

@@ -327,6 +327,32 @@ namespace Game.Realm
                 MainHandID = 4,
             });
 
+            Players.Add(new Player()
+            {
+                ID = 7,
+                Type = EntityType.Player,
+                Gender = GenderType.Female,
+                Race = RaceType.Elf,
+                Class = ClassType.Fighter,
+                Alignment = AlignmentType.ChaoticGood,
+                Name = "Gayaa",
+                Level = 5,
+                Strength = 12,
+                Dexterity = 20,
+                Constitution = 15,
+                Intelligence = 12,
+                Wisdom = 11,
+                Luck = 14,
+                HitPoints = 60,
+                MaxHitPoints = 60,
+                ManaPoints = 15,
+                MaxManaPoints = 15,
+                Experience = 2500,
+                Gold = 50,
+                LootClass = LootType.None,
+                MainHandID = 11,
+            });
+
             return Players;
         }
 
@@ -662,6 +688,17 @@ namespace Game.Realm
                 Article = "a",
                 Name = "chest",
                 Value = 1000,                
+            });
+
+            Items.Add(new Item()
+            {
+                ID = 11,
+                Type = ItemType.Weapon,
+                Article = "a",
+                Name = "longbow",
+                Value = 10,
+                MinDamage = 3,
+                MaxDamage = 12,
             });
 
             return Items;
