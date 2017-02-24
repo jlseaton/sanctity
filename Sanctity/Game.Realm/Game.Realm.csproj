@@ -46,7 +46,7 @@
     <Compile Include="Models\Entities\Entity.cs" />
     <Compile Include="Models\Entities\NPC.cs" />
     <Compile Include="Models\Entities\Party.cs" />
-    <Compile Include="Models\Entities\Player.cs" />
+    <Compile Include="Models\Entities\PC.cs" />
     <Compile Include="Models\Entities\Skill.cs" />
     <Compile Include="Models\Items\Effect.cs" />
     <Compile Include="Models\Items\Item.cs" />

@@ -187,7 +187,7 @@ namespace Game.Realm
 
                 Realm.SayMessage(result, target.Loc.AreaID, target.Loc.HexID);
 
-                if (target is Player)
+                if (target is PC)
                 {
                     Realm.SendPlayerStatus(target.ID, "You have died.");
                     Realm.BroadcastMessage(target.FullName + " has died.");
@@ -209,7 +209,7 @@ namespace Game.Realm
                     npc.Mood = MoodType.Aggressive;
                 }
 
-                if (target is Player)
+                if (target is PC)
                 {
                     Realm.SendPlayerStatus(target.ID);
                 }

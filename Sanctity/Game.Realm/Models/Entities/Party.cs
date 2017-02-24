@@ -9,6 +9,6 @@ namespace Game.Realm
 {
     public class Party : Thing
     {
-        public List<Player> Players = new List<Player>();
+        public List<PC> Players = new List<PC>();
     }
 }

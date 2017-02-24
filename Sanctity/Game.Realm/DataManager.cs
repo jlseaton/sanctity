@@ -179,11 +179,11 @@ namespace Game.Realm
             return Areas;
         }
 
-        public List<Player> LoadPlayers()
+        public List<PC> LoadPCs()
         {
-            List<Player> Players = new List<Player>();
+            List<PC> Players = new List<PC>();
 
-            Players.Add(new Player()
+            Players.Add(new PC()
             {
                 ID = 1,
                 Type = EntityType.Player,
@@ -206,7 +206,7 @@ namespace Game.Realm
                 MainHandID = 1,
             });
 
-            Players.Add(new Player()
+            Players.Add(new PC()
             {
                 ID = 2,
                 Type = EntityType.Player,
@@ -229,7 +229,7 @@ namespace Game.Realm
                 MainHandID = 6,
             });
 
-            Players.Add(new Player()
+            Players.Add(new PC()
             {
                 ID = 3,
                 Type = EntityType.Player,
@@ -252,7 +252,7 @@ namespace Game.Realm
                 MainHandID = 3,
             });
 
-            Players.Add(new Player()
+            Players.Add(new PC()
             {
                 ID = 4,
                 Type = EntityType.Player,
@@ -277,7 +277,7 @@ namespace Game.Realm
                 MainHandID = 5,
             });
 
-            Players.Add(new Player()
+            Players.Add(new PC()
             {
                 ID = 5,
                 Type = EntityType.Player,
@@ -302,7 +302,7 @@ namespace Game.Realm
                 MainHandID = 2,
             });
 
-            Players.Add(new Player()
+            Players.Add(new PC()
             {
                 ID = 6,
                 Type = EntityType.Player,
@@ -327,7 +327,7 @@ namespace Game.Realm
                 MainHandID = 4,
             });
 
-            Players.Add(new Player()
+            Players.Add(new PC()
             {
                 ID = 7,
                 Type = EntityType.Player,
@@ -356,7 +356,7 @@ namespace Game.Realm
             return Players;
         }
 
-        public void ReplacePlayer(Player oldPlayer, Player newPlayer)
+        public void ReplacePlayer(PC oldPlayer, PC newPlayer)
         {
             //for(int i= 0; i< Players.Count; i++)
             //{

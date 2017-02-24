@@ -12,7 +12,9 @@ using log4net.Config;
 using Sockets.Plugin;
 using Sockets.Plugin.Abstractions;
 using Game.Core;
+using Game.Data;
 using Game.Realm;
+using System.Collections.Generic;
 
 namespace Game.Server
 {
@@ -90,6 +92,20 @@ namespace Game.Server
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
+            //try
+            //{
+            //    var user = new UserManager().FindUserById(1);
+
+            //    if (user == null)
+            //    {
+            //        MessageBox.Show("Cannot find default user!");
+            //    }
+            //}
+            //catch(Exception ex)
+            //{
+            //    MessageBox.Show(ex.ToString());
+            //}
+
             if (Config.AutoStart)
             {
                 this.buttonStart_Click(this, null);
@@ -102,7 +118,7 @@ namespace Game.Server
             {
                 Realm.Stop();
 
-                SavePlayers();
+                SavePCs();
 
                 RefreshStatus();
             }
@@ -139,20 +155,20 @@ namespace Game.Server
                     Conn.Port = client.SocketClient.RemotePort;
                     Conn.Client = client.SocketClient as TcpSocketClient;
 
-                    Player player = null;
-                    player = Realm.FindPlayer(packet.ID);
+                    PC PC = null;
+                    PC = Realm.FindPlayer(packet.ID);
 
-                    if (player != null)
+                    if (PC != null)
                     {
                         // Use SendPacket since the write thread is not running yet
                         Conn.SendPacket(new Packet()
                         {
                             ID = packet.ID,
                             ActionType = ActionType.Exit,
-                            Text = "That player account is already adventuring in the realm. Please choose another.",
+                            Text = "That PC account is already adventuring in the realm. Please choose another.",
                         });
 
-                        LogEntry(player.FullName + " attempted to login again.");
+                        LogEntry(PC.FullName + " attempted to login again.");
 
                         if (Conn.Client.Socket.Connected)
                         {
@@ -161,14 +177,14 @@ namespace Game.Server
                     }
                     else
                     {
-                        player = Realm.AddPlayer(packet.ID, 1, packet.Text, Conn);
+                        PC = Realm.AddPlayer(packet.ID, 1, packet.Text, Conn);
 
-                        if (player != null)
+                        if (PC != null)
                         {
-                            LogEntry(player.FullName + " has joined the realm.");
+                            LogEntry(PC.FullName + " has joined the realm.");
 
-                            ThreadPool.QueueUserWorkItem(PlayerReadThread, player);
-                            ThreadPool.QueueUserWorkItem(PlayerWriteThread, player);
+                            ThreadPool.QueueUserWorkItem(PCReadThread, PC);
+                            ThreadPool.QueueUserWorkItem(PCWriteThread, PC);
                         }
                     }
                 }
@@ -179,19 +195,19 @@ namespace Game.Server
             }
         }
 
-        private void PlayerReadThread(object context)
+        private void PCReadThread(object context)
         {
-            var player = (Player)context;
+            var PC = (PC)context;
 
             bool threadRunning = true;
 
-            while (threadRunning && player.Conn.Client.Socket.Connected)
+            while (threadRunning && PC.Conn.Client.Socket.Connected)
             {
                 try
                 {
-                    //if (player.Conn.Client.Socket.Available > 0)
+                    //if (PC.Conn.Client.Socket.Available > 0)
                     {
-                        var packets = player.Conn.ReadPackets();
+                        var packets = PC.Conn.ReadPackets();
 
                         if (packets.Any())
                         {
@@ -199,15 +215,15 @@ namespace Game.Server
                             {
                                 if (packet.ActionType == ActionType.Exit)
                                 {
-                                    SavePlayer(player);
+                                    SavePC(PC);
 
-                                    Realm.RemovePlayer(player.ID);
+                                    Realm.RemovePC(PC.ID);
                                     threadRunning = false;
                                     break;
                                 }
                                 else
                                 {
-                                    Realm.HandlePacket(packet, player.ID);
+                                    Realm.HandlePacket(packet, PC.ID);
                                 }
                             }
                         }
@@ -226,18 +242,18 @@ namespace Game.Server
                 Thread.Sleep(Config.NetworkReadDelay);
             }
 
-            if (player.Conn.Client.Socket.Connected)
+            if (PC.Conn.Client.Socket.Connected)
             {
-                player.Conn.Disconnect();
+                PC.Conn.Disconnect();
             }
 
-            Realm.BroadcastMessage(player.FullName + " has left the realm.");
+            Realm.BroadcastMessage(PC.FullName + " has left the realm.");
         }
 
-        private void PlayerWriteThread(object context)
+        private void PCWriteThread(object context)
         {
-            var player = (Player)context;
-            var client = (TcpSocketClient)player.Conn.Client;
+            var PC = (PC)context;
+            var client = (TcpSocketClient)PC.Conn.Client;
 
             bool threadRunning = true;
 
@@ -245,7 +261,7 @@ namespace Game.Server
             {
                 try
                 {
-                    player.Conn.WritePackets();
+                    PC.Conn.WritePackets();
                 }
                 catch (IOException ioex)
                 {
@@ -284,24 +300,24 @@ namespace Game.Server
 
                     this.listBoxPlayers.Items.Clear();
 
-                    var players = Realm.GetPlayers();
+                    var PCs = Realm.GetPCs();
 
-                    for(int i= 0; i< players.Count; i++)
+                    for(int i= 0; i< PCs.Count; i++)
                     {
-                        var player = players[i];
+                        var PC = PCs[i];
 
-                        if (player.Conn != null && !player.Conn.Client.Socket.Connected)
+                        if (PC.Conn != null && !PC.Conn.Client.Socket.Connected)
                         {
-                            Realm.RemovePlayer(player.ID);
+                            Realm.RemovePC(PC.ID);
                         }
                         else
                         {
-                            if (!this.listBoxPlayers.Items.Contains((player.Name)))
+                            if (!this.listBoxPlayers.Items.Contains((PC.Name)))
                             {
-                                this.listBoxPlayers.Items.Add(player.Name + ", HexID:" + 
-                                    player.Loc.HexID.ToString() + 
-                                    ", HPs: " + player.HitPoints.ToString() + 
-                                    "/" + player.MaxHitPoints.ToString());
+                                this.listBoxPlayers.Items.Add(PC.Name + ", HexID:" + 
+                                    PC.Loc.HexID.ToString() + 
+                                    ", HPs: " + PC.HitPoints.ToString() + 
+                                    "/" + PC.MaxHitPoints.ToString());
                             }
                         }
                     }
@@ -329,7 +345,7 @@ namespace Game.Server
                 buttonStart.Text = "&Start";
                 buttonStart.Enabled = true;
 
-                SavePlayers();
+                SavePCs();
                 RefreshStatus();
             }
             else
@@ -339,7 +355,7 @@ namespace Game.Server
 
                 Realm.Start();
 
-                LoadPlayers();
+                LoadPCs();
 
                 Listener.StartListeningAsync(Config.ServerPort);
                 timerEvents.Enabled = true;
@@ -372,43 +388,43 @@ namespace Game.Server
             Realm.ProcessEvents();
         }
 
-        //TODO: Finish load/save players
-        public void LoadPlayers()
+        //TODO: Finish load/save PCs
+        public void LoadPCs()
         {
             return;
-            var players = Realm.Data.LoadPlayers();
+            var PCs = Realm.Data.LoadPCs();
 
-            foreach (Player p in players)
+            foreach (PC p in PCs)
             {
                 var fileName = p.Name = ".xml";
                 if (File.Exists(fileName))
                 {
                     try
                     {
-                        // If there is a player.xml file, overwrite the template
-                        Player newPlayer = DeserializePlayer(fileName);
-                        Realm.Data.ReplacePlayer(p, newPlayer);
+                        // If there is a PC.xml file, overwrite the template
+                        PC newPC = DeserializePC(fileName);
+                        Realm.Data.ReplacePlayer(p, newPC);
                     }
                     catch { }
                 }
             }
         }
 
-        public void SavePlayers()
+        public void SavePCs()
         {
             return;
-            foreach (Player p in Realm.GetPlayers())
+            foreach (PC p in Realm.GetPCs())
             {
-                SavePlayer(p);
+                SavePC(p);
             }
         }
 
-        public void SavePlayer(Player p)
+        public void SavePC(PC p)
         {
 
         }
 
-        public void SerializePlayer(string file, Player p)
+        public void SerializePC(string file, PC p)
         {
             var xs =
                 new XmlSerializer(p.GetType());
@@ -419,13 +435,13 @@ namespace Game.Server
             writer.Close();
         }
 
-        public Player DeserializePlayer(string file)
+        public PC DeserializePC(string file)
         {
             var xs =
-                new XmlSerializer(typeof(Player));
+                new XmlSerializer(typeof(PC));
 
             StreamReader reader = File.OpenText(file);
-            Player p = (Player)xs.Deserialize(reader);
+            PC p = (PC)xs.Deserialize(reader);
 
             reader.Close();
             return p;

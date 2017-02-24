@@ -62,14 +62,14 @@ namespace Game.Tests
 
             for (int i = 0; i < 10; i++)
             {
-                Player player = Realm.AddPlayer(1);
+                PC player = Realm.AddPlayer(1);
 
                 var npc = Realm.Data.LoadNPCs().Where(n => n.Name == "red dragon").Single();
                 Realm.AddEntity(npc);
 
                 string result = Fight(player, npc);
                 Assert.IsTrue(!String.IsNullOrEmpty(result));
-                Realm.RemovePlayer(player.ID);
+                Realm.RemovePC(player.ID);
                 Realm.RemoveEntity(npc);
 
                 player = Realm.AddPlayer(2);
@@ -78,14 +78,14 @@ namespace Game.Tests
 
                 result = Fight(player, npc);
                 Assert.IsTrue(!String.IsNullOrEmpty(result));
-                Realm.RemovePlayer(player.ID);
+                Realm.RemovePC(player.ID);
                 Realm.RemoveEntity(npc);
             }
 
             Realm.Stop();
         }
 
-        private string Fight(Player player, NPC npc)
+        private string Fight(PC player, NPC npc)
         {
             string result = String.Empty;
             int rounds = 0;

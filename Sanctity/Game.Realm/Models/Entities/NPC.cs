@@ -36,7 +36,7 @@ namespace Game.Realm
             return (NPC)this.MemberwiseClone();
         }
 
-        public void SendPacket(RealmManager realm, Packet packet, Player player)
+        public void SendPacket(RealmManager realm, Packet packet, PC player)
         {
             lock (this)
             {
