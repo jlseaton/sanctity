@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<areas>
+  <area id="0" description="Start Area" music="ambient">
+    <hexes>
+      <hex id="1">
+        <description>You are standing in a large cavernous room. A ladder in the ceiling leads up and to safety.</description>
+        <directions n="" s="" e="" w="" ne="" nw="" se="" sw="" up="0" dn=""></directions>
+        <spawns></spawns>
+      </hex>
+      <hex id="2">
+        <description></description>
+        <directions n="" s="" e="3" w="1" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns></spawns>
+      </hex>
+      <hex id="3">
+        <description></description>
+        <directions n="" s="7" e="4" w="2" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns>
+          <spawn type="group" etype="animal" max="3"/>
+        </spawns>
+      </hex>
+      <hex id="4">
+        <description>You are standing in a dank tomb.</description>
+        <directions n="" s="" e="" w="3" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns>
+          <spawn type="group" etype="undead" max="3"/>
+        </spawns>
+      </hex>
+      <hex id="5">
+        <description>You smell smoke and a foul odor in the air.</description>
+        <directions n="" s="" e="6" w="" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns>
+          <spawn type="group" etype="dragonkind" max="1"/>
+        </spawns>
+      </hex>
+      <hex id="6">
+        <description></description>
+        <directions n="" s="10" e="7" w="5" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns></spawns>
+      </hex>
+      <hex id="7">
+        <description></description>
+        <directions n="3" s="11" e="" w="8" ne="6" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns></spawns>
+      </hex>
+      <hex id="8">
+        <description></description>
+        <directions n="" s="12" e="7" w="" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns>
+          <spawn type="group" etype="animal" max="3"/>
+        </spawns>
+      </hex>
+      <hex id="9">
+        <description>You are in the presence of pure evil itself.</description>
+        <directions n="" s="" e="10" w="1" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns>
+          <spawn type="unique" etype="demogorgon" max="1"/>
+        </spawns>
+      </hex>
+      <hex id="10">
+        <description></description>
+        <directions n="6" s="" e="6" w="9" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns></spawns>
+      </hex>
+      <hex id="11">
+        <description></description>
+        <directions n="7" s="" e="12" w="10" ne="" nw="" se="" sw="" up="" dn=""></directions>
+        <spawns>
+          <spawn type="group" etype="veryrare" max="1"/>
+        </spawns>
+      </hex>
+      <hex id="12">
+        <description>You are at the top of a winding staircase leading down into utter darkness.</description>
+        <directions n="8" s="" e="" w="11" ne="" nw="" se="" sw="" up="" dn="-1"></directions>
+        <spawns></spawns>
+      </hex>
+    </hexes>
+  </area>
+</areas>

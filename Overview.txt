@@ -1,0 +1,24 @@
+Lords of Chaos: Sanctity’s Edge
+
+Single or multiplayer, Desktop and mobile support, all from one game engine
+
+2D rpg in the tradition of Wizardry, Eye of the Beholder, Kingdom of Drakkar
+Touch or mouse input, multiple platform support - desktop/mobile
+Base module + Premium DLC
+
+Emphasis on story, with user choices impacting different results
+Firm delineations between good and evil
+Fun combat, in the spirit of D&D and Diablo
+D&D style character progression, with towns/merchants
+ 
+Touchable objects in 2d field view that can progress/trigger storyline events
+Dim/Bright lighting and effects
+Background music, ambient and action sound effects
+Cinematic/story telling cut scenes for major plot points
+
+Radial flyouts for attack/spell/action selections
+Semi adjust encounters to party level, but not entirely (still can own/be owned)
+Elemental magic emphasis and rewarding of correct identification of when to use which
+Types of attacks based on opponents and rewarding of using more effective methods
+Tactile / timing needed for traps and chests
+
