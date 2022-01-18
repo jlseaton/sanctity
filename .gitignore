@@ -2,10 +2,10 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/Sanctity/v14/.suo
 /.vs
 /packages
 bin/
 obj/
 Publish/
 TestResults/
+Thumbs.db
