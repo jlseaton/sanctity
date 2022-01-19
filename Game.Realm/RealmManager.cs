@@ -88,34 +88,38 @@ namespace Game.Realm
         {
             foreach (var e in GetEncounterNPCs(EncounterType.Insect, 3).ToList())
             {
+                e.Loc.HexID = 3;
                 Areas[0].Hexes[2].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Undead, 3).ToList())
             {
+                e.Loc.HexID = 4;
                 Areas[0].Hexes[3].NPCs.Add(e);
             }
 
-            //foreach (var e in GetEncounterNPCs(EncounterType.Common, 2).ToList())
-            //{
-            //    Areas[0].Hexes[7].NPCs.Add(e);
-            //}
-
-            foreach (var e in GetEncounterNPCs(EncounterType.Animal, 4).ToList())
+            foreach (var e in GetEncounterNPCs(EncounterType.Common, 2).ToList())
             {
+                e.Loc.HexID = 8;
+                Areas[0].Hexes[7].NPCs.Add(e);
+            }
+
+            foreach (var e in GetEncounterNPCs(EncounterType.Animal, 8).ToList())
+            {
+                e.Loc.HexID = 10;
                 Areas[0].Hexes[9].NPCs.Add(e);
             }
 
-            var minotaur = GetEncounterNPCs(EncounterType.VeryRare, 1, 9).Single();
-            minotaur.Loc = new Location() { HexID = 11 };
+            var minotaur = GetEncounterNPCs(EncounterType.VeryRare, 5, 9).Single();
+            minotaur.Loc.HexID = 11;
             Areas[0].Hexes[10].NPCs.Add(minotaur);
 
             var dragon = GetEncounterNPCs(EncounterType.DragonKind, 1).Single();
-            dragon.Loc = new Location() { HexID = 5 };
+            dragon.Loc.HexID = 5;
             Areas[0].Hexes[4].NPCs.Add(dragon);
 
             var demogorgon = GetEncounterNPCs(EncounterType.Unique, 1, 1).Single();
-            demogorgon.Loc = new Location() { HexID = 9 };
+            demogorgon.Loc.HexID = 9;
             Areas[0].Hexes[8].NPCs.Add(demogorgon);
         }
 
@@ -301,10 +305,14 @@ namespace Game.Realm
 
                             if (player != null && target != null && (player.Loc.HexID == target.Loc.HexID))
                             {
-                                lock (Areas[player.Loc.AreaID].Hexes[player.Loc.HexID].NPCs)
+                                lock (Areas[player.Loc.AreaID].Hexes[player.Loc.HexID-1].NPCs)
                                 {
                                     result = Combat.Attack(player, target);
                                 }
+                            }
+                            else
+                            {
+                                SendPlayerStatus(playerId, "Your target is out of reach.");
                             }
                         }
                     }

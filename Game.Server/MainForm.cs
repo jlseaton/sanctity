@@ -503,6 +503,38 @@ namespace Game.Server
         {
             try
             {
+                if (Logging)
+                {
+                    try
+                    {
+                        string entry = DateTime.Now + "," + message;
+
+                        if (log != null)
+                        {
+                            if (type == "error")
+                            {
+                                if (e != null)
+                                {
+                                    log.Error(entry + e.ToString());
+                                }
+                                else
+                                {
+                                    log.Error(entry);
+                                }
+                            }
+                            else if (type == "warn")
+                            {
+                                log.Warn(entry);
+                            }
+                            else
+                            {
+                                log.Info(entry);
+                            }
+                        }
+                    }
+                    catch { }
+                }
+
                 if (InvokeRequired)
                 {
                     Invoke((Action)(() => LogEntry(message, type, e)));
@@ -516,38 +548,6 @@ namespace Game.Server
                         textBoxEvents.AppendText(formattedText);
                         textBoxEvents.SelectionStart = textBoxEvents.Text.Length;
                         textBoxEvents.ScrollToCaret();
-                    }
-
-                    if (Logging)
-                    {
-                        try
-                        {
-                            string entry = DateTime.Now + "," + message;
-
-                            if (log != null)
-                            {
-                                if (type == "error")
-                                {
-                                    if (e != null)
-                                    {
-                                        log.Error(entry + e.ToString());
-                                    }
-                                    else
-                                    {
-                                        log.Error(entry);
-                                    }
-                                }
-                                else if (type == "warn")
-                                {
-                                    log.Warn(entry);
-                                }
-                                else
-                                {
-                                    log.Info(entry);
-                                }
-                            }
-                        }
-                        catch { }
                     }
                 }
             }
