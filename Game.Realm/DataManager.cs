@@ -430,7 +430,7 @@ namespace Game.Realm
                 Alignment = AlignmentType.Neutral,
                 ArmorClass = 0,
                 Article = "a",
-                Name = "snake",
+                Name = "coppersnake",
                 HitPoints = 5,
                 MaxHitPoints = 5,
                 MinDamage = 1,
@@ -471,7 +471,7 @@ namespace Game.Realm
                 Alignment = AlignmentType.Neutral,
                 ArmorClass = 2,
                 Article = "a",
-                Name = "tiger",
+                Name = "racoon",
                 HitPoints = 15,
                 MaxHitPoints = 15,
                 MinDamage = 3,
@@ -492,7 +492,7 @@ namespace Game.Realm
                 Alignment = AlignmentType.Neutral,
                 ArmorClass = 2,
                 Article = "a",
-                Name = "lion",
+                Name = "blackspider",
                 HitPoints = 20,
                 MaxHitPoints = 20,
                 MinDamage = 5,
@@ -501,8 +501,8 @@ namespace Game.Realm
                 Gold = 0,
                 WanderRange = 5,
                 Follows = 3,
-                EncounterClass = EncounterType.Animal,
-                LootClass = LootType.Animal
+                EncounterClass = EncounterType.Insect,
+                LootClass = LootType.Insect
             });
 
             NPCs.Add(new NPC()
@@ -555,7 +555,7 @@ namespace Game.Realm
                 Alignment = AlignmentType.ChaoticNeutral,
                 ArmorClass = 4,
                 Article = "a",
-                Name = "ghoul",
+                Name = "ghost",
                 HitPoints = 12,
                 MaxHitPoints = 12,
                 MinDamage = 1,
@@ -832,6 +832,26 @@ namespace Game.Realm
                 ArmorClass = 2,
                 Article = "a",
                 Name = "scorpion",
+                HitPoints = 15,
+                MaxHitPoints = 15,
+                MinDamage = 3,
+                MaxDamage = 5,
+                Experience = 20,
+                Gold = 0,
+                WanderRange = 5,
+                EncounterClass = EncounterType.Insect,
+                LootClass = LootType.Insect
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = 22,
+                Type = EntityType.NPC,
+                Level = 2,
+                Alignment = AlignmentType.Neutral,
+                ArmorClass = 2,
+                Article = "a",
+                Name = "whitespider",
                 HitPoints = 15,
                 MaxHitPoints = 15,
                 MinDamage = 3,
