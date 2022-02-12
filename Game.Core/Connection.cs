@@ -1,7 +1,4 @@
-﻿using Sockets.Plugin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Net.Sockets;
 using System.Text;
 
 namespace Game.Core
@@ -11,11 +8,7 @@ namespace Game.Core
     /// </summary>
     public class Connection
     {
-        public string HostIP { get; set; }
-
-        public int Port { get; set; }
-
-        public TcpSocketClient Client { get; set; }
+        public TcpClient Client { get; set; }
 
         public DateTime Connected { get; set; }
 
@@ -29,15 +22,15 @@ namespace Game.Core
         {
             Connected = DateTime.Now;
 
-            Client = new TcpSocketClient();
+            Client = new TcpClient();
             inStream = new byte[Constants.PacketBufferSize];
         }
 
-        public async void Disconnect()
+        public void Disconnect()
         {
             if (Client != null)
             {
-                await Client.DisconnectAsync();
+                Client.Close();
             }
         }
 
@@ -45,11 +38,11 @@ namespace Game.Core
         {
             List<Packet> packets = new List<Packet>();
 
-            var read = Client.ReadStream.Read(inStream, 0, Constants.PacketBufferSize);
+            var read = Client.GetStream().Read(inStream, 0, Constants.PacketBufferSize);
             var data = Encoding.UTF8.GetString(inStream, 0, read);
 
             int passes = 0;
-            while (!String.IsNullOrEmpty(data) && data.Contains(Constants.PacketDelimiter) 
+            while (!String.IsNullOrEmpty(data) && data.Contains(Constants.PacketDelimiter)
                 && passes++ < 5)
             {
                 int delimiterOffset = Constants.PacketCompression
@@ -102,7 +95,7 @@ namespace Game.Core
         {
             string message = Packet.Serialize(packet);
 
-            var stream = Client.WriteStream;
+            var stream = Client.GetStream();
             byte[] outStream = Encoding.UTF8.GetBytes(message);
             stream.Write(outStream, 0, outStream.Length);
             stream.Flush();

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Game.Core
+﻿namespace Game.Core
 {
     public class Thing
     {

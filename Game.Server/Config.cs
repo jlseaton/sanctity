@@ -1,6 +1,6 @@
 ﻿using System.IO;
-using System.Xml.Linq;
 using System.Linq;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace Game.Server
@@ -42,7 +42,7 @@ namespace Game.Server
                     NetworkWriteDelay = int.Parse(cfg.Attribute("NetworkWriteDelay").Value),
                 }).SingleOrDefault();
 
-            config.RealmID= appConfig.RealmID;
+            config.RealmID = appConfig.RealmID;
             config.AutoStart = appConfig.AutoStart;
             config.ServerPort = appConfig.ServerPort;
             config.NetworkReadDelay = appConfig.NetworkReadDelay;
@@ -65,7 +65,7 @@ namespace Game.Server
 
         public void Serialize(string file, Config c)
         {
-            var xs = 
+            var xs =
                 new XmlSerializer(c.GetType());
 
             StreamWriter writer = File.CreateText(file);
@@ -76,12 +76,12 @@ namespace Game.Server
 
         public Config Deserialize(string file)
         {
-            var xs = 
+            var xs =
                 new XmlSerializer(typeof(Config));
 
             StreamReader reader = File.OpenText(file);
             Config c = (Config)xs.Deserialize(reader);
-            
+
             reader.Close();
             return c;
         }

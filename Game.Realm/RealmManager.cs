@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Game.Core;
+﻿using Game.Core;
 
 namespace Game.Realm
 {
@@ -86,19 +83,25 @@ namespace Game.Realm
 
         public void SpawnNPCs()
         {
-            foreach (var e in GetEncounterNPCs(EncounterType.Insect, 3).ToList())
+            foreach (var e in GetEncounterNPCs(EncounterType.Insect, 4).ToList())
+            {
+                e.Loc.HexID = 2;
+                Areas[0].Hexes[1].NPCs.Add(e);
+            }
+
+            foreach (var e in GetEncounterNPCs(EncounterType.Undead, 4).ToList())
             {
                 e.Loc.HexID = 3;
                 Areas[0].Hexes[2].NPCs.Add(e);
             }
 
-            foreach (var e in GetEncounterNPCs(EncounterType.Undead, 3).ToList())
+            foreach (var e in GetEncounterNPCs(EncounterType.RareUndead, 3).ToList())
             {
                 e.Loc.HexID = 4;
                 Areas[0].Hexes[3].NPCs.Add(e);
             }
 
-            foreach (var e in GetEncounterNPCs(EncounterType.Common, 2).ToList())
+            foreach (var e in GetEncounterNPCs(EncounterType.Common, 5).ToList())
             {
                 e.Loc.HexID = 8;
                 Areas[0].Hexes[7].NPCs.Add(e);
@@ -106,17 +109,35 @@ namespace Game.Realm
 
             foreach (var e in GetEncounterNPCs(EncounterType.Animal, 8).ToList())
             {
+                e.Loc.HexID = 8;
+                Areas[0].Hexes[7].NPCs.Add(e);
+            }
+
+            foreach (var e in GetEncounterNPCs(EncounterType.VeryRare, 5).ToList())
+            {
                 e.Loc.HexID = 10;
                 Areas[0].Hexes[9].NPCs.Add(e);
             }
 
-            var minotaur = GetEncounterNPCs(EncounterType.VeryRare, 5, 9).Single();
-            minotaur.Loc.HexID = 11;
-            Areas[0].Hexes[10].NPCs.Add(minotaur);
+            foreach (var e in GetEncounterNPCs(EncounterType.Demonic, 5).ToList())
+            {
+                e.Loc.HexID = 11;
+                Areas[0].Hexes[10].NPCs.Add(e);
+            }
 
-            var dragon = GetEncounterNPCs(EncounterType.DragonKind, 1).Single();
-            dragon.Loc.HexID = 5;
-            Areas[0].Hexes[4].NPCs.Add(dragon);
+            foreach (var e in GetEncounterNPCs(EncounterType.DragonKind, 8).ToList())
+            {
+                e.Loc.HexID = 5;
+                Areas[0].Hexes[4].NPCs.Add(e);
+            }
+
+            //var minotaur = GetEncounterNPCs(EncounterType.VeryRare, 5, 9).Single();
+            //minotaur.Loc.HexID = 12;
+            //Areas[0].Hexes[11].NPCs.Add(minotaur);
+
+            //var dragon = GetEncounterNPCs(EncounterType.DragonKind, 1).Single();
+            //dragon.Loc.HexID = 5;
+            //Areas[0].Hexes[4].NPCs.Add(dragon);
 
             var demogorgon = GetEncounterNPCs(EncounterType.Unique, 1, 1).Single();
             demogorgon.Loc.HexID = 9;
@@ -137,14 +158,14 @@ namespace Game.Realm
                             {
                                 var npc = hex.NPCs[i];
 
-                                if (npc.State != StateType.Dead && (npc.State == StateType.Combat || 
+                                if (npc.State != StateType.Dead && (npc.State == StateType.Combat ||
                                     npc.Mood >= MoodType.Aggressive))
                                 {
                                     var target = FindPlayer(npc.LastAttackerID);
 
-                                    if (target != null && target.Loc.HexID == 
+                                    if (target != null && target.Loc.HexID ==
                                         npc.Loc.HexID &&
-                                        target.State != StateType.Invisible && 
+                                        target.State != StateType.Invisible &&
                                         target.State != StateType.Ethereal)
                                     {
                                         Combat.Attack(npc, target);
@@ -161,7 +182,7 @@ namespace Game.Realm
 
                                 if (npc.State == StateType.Dead)
                                 {
-                                    if (DateTime.Now.Subtract(npc.DeathTime).Seconds >= 
+                                    if (DateTime.Now.Subtract(npc.DeathTime).Seconds >=
                                         Constants.NPCCorpseDecay)
                                     {
                                         //RemoveEntity(npc);
@@ -219,7 +240,7 @@ namespace Game.Realm
 
                             SendPlayerStatus(playerId);
 
-                            SayMessage(player.FullName + " is revived!", 
+                            SayMessage(player.FullName + " is revived!",
                                 player.Loc.AreaID, player.Loc.HexID);
                         }
                     }
@@ -270,7 +291,7 @@ namespace Game.Realm
 
                     if (player != null)
                     {
-                        YellMessage(player.FullName + " yells, \"" + packet.Text + "\"", 
+                        YellMessage(player.FullName + " yells, \"" + packet.Text + "\"",
                             player.Loc.AreaID);
                     }
 
@@ -305,7 +326,7 @@ namespace Game.Realm
 
                             if (player != null && target != null && (player.Loc.HexID == target.Loc.HexID))
                             {
-                                lock (Areas[player.Loc.AreaID].Hexes[player.Loc.HexID-1].NPCs)
+                                lock (Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].NPCs)
                                 {
                                     result = Combat.Attack(player, target);
                                 }
@@ -352,7 +373,7 @@ namespace Game.Realm
                 lock (Players)
                 {
                     Areas[entity.Loc.AreaID]
-                        .Hexes[entity.Loc.HexID-1]
+                        .Hexes[entity.Loc.HexID - 1]
                         .Players.Add((PC)entity);
                 }
             }
@@ -361,7 +382,7 @@ namespace Game.Realm
                 lock (NPCs)
                 {
                     Areas[entity.Loc.AreaID]
-                        .Hexes[entity.Loc.HexID-1]
+                        .Hexes[entity.Loc.HexID - 1]
                         .NPCs.Add((NPC)entity);
                 }
             }
@@ -504,7 +525,7 @@ namespace Game.Realm
             return players;
         }
 
-        public PC AddPlayer(int playerId = 0, int partyId = 1, string playerName = "", 
+        public PC AddPlayer(int playerId = 0, int partyId = 1, string playerName = "",
             Connection conn = null)
         {
             if (!Running)
@@ -555,7 +576,7 @@ namespace Game.Realm
 
         public void RemoveEntity(Entity e)
         {
-            var hex = Areas[e.Loc.AreaID].Hexes[e.Loc.HexID-1];
+            var hex = Areas[e.Loc.AreaID].Hexes[e.Loc.HexID - 1];
 
             lock (hex.NPCs)
             {
@@ -708,7 +729,7 @@ namespace Game.Realm
                         }
                     }
 
-                    var newHex = Areas[areaId].Hexes[hexId-1];
+                    var newHex = Areas[areaId].Hexes[hexId - 1];
 
                     string arriving = player.FullName + " enters the area.";
 
@@ -744,7 +765,7 @@ namespace Game.Realm
                     }
                     catch { }
 
-                    SendPlayerStatus(entity.ID, arriving, true );
+                    SendPlayerStatus(entity.ID, arriving, true);
                 }
 
                 if (entity is NPC)
@@ -807,7 +828,7 @@ namespace Game.Realm
                     {
                         guy.ID = EntityCount++;
                     }
-                    
+
                     encounter.Add(monster.Clone());
                 }
             }
@@ -836,10 +857,10 @@ namespace Game.Realm
 
         public void SayMessage(string message, int areaId, int hexId)
         {
-            foreach (PC player in Areas[areaId].Hexes[hexId-1].Players)
+            foreach (PC player in Areas[areaId].Hexes[hexId - 1].Players)
             {
-                WritePacket(player.Conn, 
-                    new Packet() { ActionType = ActionType.Text, Text = message } );
+                WritePacket(player.Conn,
+                    new Packet() { ActionType = ActionType.Text, Text = message });
             }
         }
 
@@ -857,9 +878,9 @@ namespace Game.Realm
 
         private void PublishGameEvent(Packet packet)
         {
-            foreach(Area area in Areas)
+            foreach (Area area in Areas)
             {
-                foreach(Hex hex in area.Hexes)
+                foreach (Hex hex in area.Hexes)
                 {
                     foreach (PC player in hex.Players)
                     {

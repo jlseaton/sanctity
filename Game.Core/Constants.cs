@@ -5,6 +5,7 @@
         public static readonly bool PacketCompression = true;
         public static readonly int PacketBufferSize = 4096;
         public static readonly string PacketDelimiter = "\r\n}";
+        public static readonly int VisibleTiles = 49; // Default visible grid is 7 X 7 tiles
 
         public static readonly int MaxLevel = 50;
         public static readonly int MaxGroupSize = 6;

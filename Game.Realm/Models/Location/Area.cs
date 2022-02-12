@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Game.Core;
+﻿using Game.Core;
 
 namespace Game.Realm
 {
@@ -15,7 +14,7 @@ namespace Game.Realm
         public int StartX { get; set; }
         public int StartY { get; set; }
         public int StartZ { get; set; }
-        
+
         public List<Hex> Hexes { get; set; }
     }
 }

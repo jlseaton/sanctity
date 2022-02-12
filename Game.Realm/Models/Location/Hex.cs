@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Game.Core;
+﻿using Game.Core;
+using System.Text;
 
 namespace Game.Realm
 {
@@ -46,7 +44,9 @@ namespace Game.Realm
 
             desc += "\r\n" + Tile.GetExits();
 
-            string found = String.Empty;
+            StringBuilder players = new StringBuilder();
+            StringBuilder npcs = new StringBuilder();
+            StringBuilder items = new StringBuilder();
 
             bool playersFound = false;
             foreach (PC player in Players)
@@ -57,26 +57,43 @@ namespace Game.Realm
                     string corpse = String.Empty;
                     if (player.State == StateType.Dead)
                         corpse = "a corpse of ";
-                    found += "\r\n" + corpse + player.FullName;
+                    players.Append(corpse + player.FullName + ", ");
                 }
             }
 
+            if (playersFound)
+            {
+                players.Length -= 2; // Remove trailing comma
+                desc += "\r\n" + "You see the following players here:\r\n" + players;
+            }
+
+            bool npcsFound = false;
             foreach (NPC npc in NPCs)
             {
+                npcsFound = true;
                 string corpse = String.Empty;
                 if (npc.State == StateType.Dead)
                     corpse = "a corpse of ";
-                found += "\r\n" + corpse + npc.FullName;
+                npcs.Append(corpse + npc.FullName + ", ");
             }
 
+            if (npcsFound)
+            {
+                npcs.Length -= 2; // Remove trailing comma
+                desc += "\r\n" + "You also see here:\r\n" + npcs;
+            }
+
+            bool itemsFound = false;
             foreach (Item item in Items)
             {
-                found += "\r\n" + item.FullName;
+                itemsFound = true;
+                items.Append(item.FullName + ", ");
             }
 
-            if (playersFound || NPCs.Any() || Items.Any())
+            if (itemsFound)
             {
-                desc += "\r\n" + "You also see here:" + found;
+                items.Length -= 2; // Remove trailing comma
+                desc += "\r\n" + "You find here:\r\n" + items;
             }
 
             return desc;

@@ -1,6 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 
 namespace Game.Core
 {
@@ -41,7 +39,8 @@ namespace Game.Core
         {
             return new Packet
             {
-                Type = typeof(T), Value = JToken.FromObject(value)
+                Type = typeof(T),
+                Value = JToken.FromObject(value)
             };
         }
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Game.Core
+﻿namespace Game.Core
 {
     /// <summary>
     /// Randomizer circa 1995 :)
@@ -22,7 +16,7 @@ namespace Game.Core
             long a = 100001;
 
             a = (a * 125) % 2796203;
-            return (float) a / 2796203;
+            return (float)a / 2796203;
         }
 
         public float Random()

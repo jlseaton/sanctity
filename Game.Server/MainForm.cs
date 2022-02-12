@@ -1,18 +1,13 @@
-﻿using System;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Windows.Forms;
-using System.Xml.Serialization;
+﻿using Game.Core;
+using Game.Realm;
 using log4net;
 using log4net.Config;
-using Sockets.Plugin;
-using Sockets.Plugin.Abstractions;
-using Game.Core;
-using Game.Realm;
+using System.Data;
+using System.Net;
+using System.Net.Sockets;
+using System.Reflection;
+using System.Text;
+using System.Xml.Serialization;
 
 namespace Game.Server
 {
@@ -24,10 +19,11 @@ namespace Game.Server
         private bool Running { get; set; }
 
         private Config Config { get; set; }
+        private TcpServer Server { get; set; }
 
         private RealmManager Realm;
 
-        private TcpSocketListener Listener;
+        private TcpListener Listener;
 
         public ILog log = null;
 
@@ -45,7 +41,6 @@ namespace Game.Server
             Application.ThreadException += Application_ThreadException;
 
             Config = new Config().LoadConfig("realmconfig.xml");
-            Logging = true;
 
             Realm = new RealmManager(Config.RealmID, "Sanctity");
 
@@ -54,15 +49,19 @@ namespace Game.Server
             timerEvents.Tick += TimerEvents_Tick;
             timerEvents.Enabled = false;
 
-            Listener = new TcpSocketListener();
-            Listener.ConnectionReceived += Listener_ConnectionReceived;
+            Logging = true;
 
             var assembly =
                 System.Reflection.Assembly.GetExecutingAssembly();
 
+            #pragma warning disable CS8602 // Dereference of a possibly null reference.
             Text += " - v" + assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
                 assembly.GetName().Version.Build.ToString() + " - Realm: " + Realm.FullName;
+        }
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+
         }
 
         private void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
@@ -70,7 +69,7 @@ namespace Game.Server
             ProcessException(e.Exception);
         }
 
-        private void ProcessException(Exception ex, bool showMessage = false, 
+        private void ProcessException(Exception ex, bool showMessage = false,
             string errorMessage = "")
         {
             string message = String.IsNullOrEmpty(errorMessage) ? ex.Message : errorMessage;
@@ -92,15 +91,47 @@ namespace Game.Server
 
         #region Communications
 
-        private void Listener_ConnectionReceived(object sender, 
-            TcpSocketListenerConnectEventArgs client)
+        #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        /// <summary>
+        /// Listener thread that sets up clients from async incoming connections
+        /// </summary>
+        private async void StartTcpListenerThread()
+        {
+            Thread tcpListenerThread = new Thread(async () =>
+            {
+                while (Running)
+                {
+                    try
+                    {
+                        var client = await GetTcpClientAsync();
+                        PCConnectionReceived(client);
+                    }
+                    catch (Exception ex)
+                    {
+                        ProcessException(ex);
+                    }
+                }
+            });
+            tcpListenerThread.Start();
+        }
+
+        private async Task<TcpClient> GetTcpClientAsync()
+        {
+            return await Listener.AcceptTcpClientAsync();
+        }
+
+        /// <summary>
+        /// Processes an incoming PC connection and sets up their read/write threads
+        /// </summary>
+        /// <param name="client">The connected Tcp Client</param>
+        private void PCConnectionReceived(TcpClient client)
         {
             try
             {
                 byte[] inStream = new byte[Constants.PacketBufferSize];
 
-                var read = client.SocketClient.ReadStream.Read(inStream, 0, 
-                    Constants.PacketBufferSize);
+                var read = client.Client.Receive(inStream, 0,
+                    Constants.PacketBufferSize, SocketFlags.None);
                 var data = Encoding.UTF8.GetString(inStream, 0, read);
 
                 if (Constants.PacketCompression)
@@ -113,12 +144,10 @@ namespace Game.Server
                 if (packet.ActionType == ActionType.Join)
                 {
                     var Conn = new Connection();
-                    Conn.HostIP = client.SocketClient.RemoteAddress;
-                    Conn.Port = client.SocketClient.RemotePort;
-                    Conn.Client = client.SocketClient as TcpSocketClient;
 
-                    PC PC = null;
-                    PC = Realm.FindPlayer(packet.ID);
+                    Conn.Client = client;
+
+                    PC? PC = Realm.FindPlayer(packet.ID);
 
                     if (PC != null)
                     {
@@ -132,7 +161,7 @@ namespace Game.Server
 
                         LogEntry(PC.FullName + " attempted to login again.");
 
-                        if (Conn.Client.Socket.Connected)
+                        if (Conn.Client.Connected)
                         {
                             Conn.Disconnect();
                         }
@@ -151,7 +180,7 @@ namespace Game.Server
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ProcessException(ex);
             }
@@ -163,11 +192,11 @@ namespace Game.Server
 
             bool threadRunning = true;
 
-            while (threadRunning && PC.Conn.Client.Socket.Connected)
+            while (threadRunning && PC.Conn.Client.Connected)
             {
                 try
                 {
-                    //if (PC.Conn.Client.Socket.Available > 0)
+                    if (PC.Conn.Client.Available > 0)
                     {
                         var packets = PC.Conn.ReadPackets();
 
@@ -204,7 +233,7 @@ namespace Game.Server
                 Thread.Sleep(Config.NetworkReadDelay);
             }
 
-            if (PC.Conn.Client.Socket.Connected)
+            if (PC.Conn.Client.Connected)
             {
                 PC.Conn.Disconnect();
             }
@@ -215,11 +244,11 @@ namespace Game.Server
         private void PCWriteThread(object context)
         {
             var PC = (PC)context;
-            var client = (TcpSocketClient)PC.Conn.Client;
+            var client = (TcpClient)PC.Conn.Client;
 
             bool threadRunning = true;
 
-            while (threadRunning && client.Socket.Connected)
+            while (threadRunning && client.Connected)
             {
                 try
                 {
@@ -241,7 +270,59 @@ namespace Game.Server
 
         #endregion
 
-        #region UI
+        #region Game Control
+
+        private void buttonStart_Click(object sender, EventArgs e)
+        {
+            var cancellation = new CancellationTokenSource();
+
+            if (Running)
+            {
+                buttonStart.Enabled = false;
+                LogEntry("Stopping Game Server...");
+                cancellation.Token.Register(() => Listener.Stop());
+                Listener.Stop();
+                timerEvents.Enabled = false;
+                Realm.Stop();
+                Running = false;
+                LogEntry("Game Server Stopped");
+                buttonStart.Text = "&Start";
+                buttonStart.Enabled = true;
+                SavePCs();
+                RefreshStatus();
+            }
+            else
+            {
+                buttonStart.Enabled = false;
+                LogEntry("Starting Game Server...");
+                Realm.Start();
+                LoadPCs();
+                timerEvents.Enabled = true;
+                Listener = new TcpListener(IPAddress.Any, Config.ServerPort);
+                Listener.Start();
+                StartTcpListenerThread();
+                Running = true;
+                LogEntry("Game Server Started and listening for connections on port " + Config.ServerPort.ToString());
+                buttonStart.Text = "&Stop";
+                buttonStart.Enabled = true;
+                RefreshStatus();
+            }
+        }
+
+        public void HandleGameEvent(object sender, Packet packet)
+        {
+            try
+            {
+                if (packet != null && packet.ActionType == ActionType.Broadcast)
+                {
+                    LogEntry(packet.Text, "info");
+                }
+            }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+            }
+        }
 
         private void RefreshStatus()
         {
@@ -264,11 +345,11 @@ namespace Game.Server
 
                     var PCs = Realm.GetPCs();
 
-                    for(int i= 0; i< PCs.Count; i++)
+                    for (int i = 0; i < PCs.Count; i++)
                     {
                         var PC = PCs[i];
 
-                        if (PC.Conn != null && !PC.Conn.Client.Socket.Connected)
+                        if (PC.Conn != null && !PC.Conn.Client.Connected)
                         {
                             Realm.RemovePC(PC.ID);
                         }
@@ -276,9 +357,9 @@ namespace Game.Server
                         {
                             if (!listBoxPlayers.Items.Contains((PC.Name)))
                             {
-                                listBoxPlayers.Items.Add(PC.Name + ", HexID:" + 
-                                    PC.Loc.HexID.ToString() + 
-                                    ", HPs: " + PC.HitPoints.ToString() + 
+                                listBoxPlayers.Items.Add(PC.Name + ", HexID:" +
+                                    PC.Loc.HexID.ToString() +
+                                    ", HPs: " + PC.HitPoints.ToString() +
                                     "/" + PC.MaxHitPoints.ToString());
                             }
                         }
@@ -291,44 +372,70 @@ namespace Game.Server
             }
         }
 
-        private void buttonStart_Click(object sender, EventArgs e)
+        private void TimerEvents_Tick(object sender, EventArgs e)
         {
-            if (Running)
+            RefreshStatus();
+            Realm.ProcessEvents();
+        }
+
+        #endregion
+
+        #region Data
+
+        public void LoadPCs()
+        {
+            var PCs = Realm.Data.LoadPCs();
+
+            foreach (PC p in PCs)
             {
-                buttonStart.Enabled = false;
-                LogEntry("Stopping Game Server...");
-
-                Listener.StopListeningAsync();
-                timerEvents.Enabled = false;
-
-                Realm.Stop();
-                Running = false;
-                LogEntry("Game Server Stopped");
-                buttonStart.Text = "&Start";
-                buttonStart.Enabled = true;
-
-                SavePCs();
-                RefreshStatus();
-            }
-            else
-            {
-                buttonStart.Enabled = false;
-                LogEntry("Starting Game Server...");
-
-                Realm.Start();
-
-                LoadPCs();
-
-                Listener.StartListeningAsync(Config.ServerPort);
-                timerEvents.Enabled = true;
-
-                Running = true;
-                LogEntry("Game Server Started and listening for connections on port " + Config.ServerPort.ToString());
-                buttonStart.Text = "&Stop";
-                buttonStart.Enabled = true;
-                RefreshStatus();
+                var fileName = p.Name = ".xml";
+                if (File.Exists(fileName))
+                {
+                    try
+                    {
+                        // If there is a PC.xml file, overwrite the template
+                        PC newPC = DeserializePC(fileName);
+                        //Realm.Data.ReplacePlayer(p, newPC);
+                    }
+                    catch { }
+                }
             }
         }
+
+        public void SavePCs()
+        {
+            foreach (PC p in Realm.GetPCs())
+            {
+                SavePC(p);
+            }
+        }
+
+        public void SavePC(PC p)
+        {
+
+        }
+
+        public void SerializePC(string file, PC p)
+        {
+            var xs = new XmlSerializer(p.GetType());
+            StreamWriter writer = File.CreateText(file);
+            xs.Serialize(writer, p);
+            writer.Flush();
+            writer.Close();
+        }
+
+        public PC DeserializePC(string file)
+        {
+            var xs = new XmlSerializer(typeof(PC));
+            StreamReader reader = File.OpenText(file);
+            PC p = (PC) xs.Deserialize(reader);
+            reader.Close();
+            return p;
+        }
+
+        #endregion
+
+        #region UI
 
         private void buttonBroadcast_Click(object sender, EventArgs e)
         {
@@ -382,9 +489,7 @@ namespace Game.Server
             if (Running)
             {
                 Realm.Stop();
-
                 SavePCs();
-
                 RefreshStatus();
             }
 
@@ -413,91 +518,7 @@ namespace Game.Server
 
         #endregion
 
-        #region Game Control
-
-        private void TimerEvents_Tick(object sender, EventArgs e)
-        {
-            RefreshStatus();
-            Realm.ProcessEvents();
-        }
-
-        //TODO: Finish load/save PCs
-        public void LoadPCs()
-        {
-            //return;
-            var PCs = Realm.Data.LoadPCs();
-
-            foreach (PC p in PCs)
-            {
-                var fileName = p.Name = ".xml";
-                if (File.Exists(fileName))
-                {
-                    try
-                    {
-                        // If there is a PC.xml file, overwrite the template
-                        PC newPC = DeserializePC(fileName);
-                        //Realm.Data.ReplacePlayer(p, newPC);
-                    }
-                    catch { }
-                }
-            }
-        }
-
-        public void SavePCs()
-        {
-            //return;
-            foreach (PC p in Realm.GetPCs())
-            {
-                SavePC(p);
-            }
-        }
-
-        public void SavePC(PC p)
-        {
-
-        }
-
-        public void SerializePC(string file, PC p)
-        {
-            var xs =
-                new XmlSerializer(p.GetType());
-
-            StreamWriter writer = File.CreateText(file);
-            xs.Serialize(writer, p);
-            writer.Flush();
-            writer.Close();
-        }
-
-        public PC DeserializePC(string file)
-        {
-            var xs =
-                new XmlSerializer(typeof(PC));
-
-            StreamReader reader = File.OpenText(file);
-            PC p = (PC)xs.Deserialize(reader);
-
-            reader.Close();
-            return p;
-        }
-
-        #endregion
-
         #region Logging
-
-        public void HandleGameEvent(object sender, Packet packet)
-        {
-            try
-            {
-                if (packet != null && packet.ActionType == ActionType.Broadcast)
-                {
-                    LogEntry(packet.Text, "info");
-                }
-            }
-            catch (Exception ex)
-            {
-                ProcessException(ex);
-            }
-        }
 
         private void LogEntry(string message, string type = "info", Exception e = null)
         {
@@ -551,7 +572,7 @@ namespace Game.Server
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ProcessException(ex);
             }

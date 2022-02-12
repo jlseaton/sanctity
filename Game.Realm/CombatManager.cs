@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using Game.Core;
+﻿using Game.Core;
 
 namespace Game.Realm
 {
@@ -10,12 +8,12 @@ namespace Game.Realm
 
         public CombatManager(RealmManager realm)
         {
-            Realm = realm;            
+            Realm = realm;
         }
 
         public string Attack(Entity attacker, Entity target)
         {
-            if (attacker == null || target == null || 
+            if (attacker == null || target == null ||
                 attacker.State == StateType.Dead || target.State == StateType.Dead)
             {
                 return String.Empty;
@@ -61,7 +59,7 @@ namespace Game.Realm
 
                         damage += procDamage;
 
-                        string verb = effect.Verb == String.Empty 
+                        string verb = effect.Verb == String.Empty
                             ? " attacks and hits " : effect.Verb;
 
                         result = attacker.FullName + verb + target.FullName + weaponName +
@@ -98,19 +96,19 @@ namespace Game.Realm
 
                 if (damage <= 0)
                 {
-                    result = attacker.FullName + " attacks " 
+                    result = attacker.FullName + " attacks "
                         + target.FullName + " and misses";
                 }
                 else
                 {
                     damage += minDamage;
 
-                    result = attacker.FullName + " attacks and hits " + target.FullName + 
+                    result = attacker.FullName + " attacks and hits " + target.FullName +
                         weaponName + " for " + damage.ToString() + " damage";
 
                     // Weapon procs
                     if (attacker.MainHand != null &&
-                        attacker.MainHand.Effects != null && 
+                        attacker.MainHand.Effects != null &&
                         attacker.MainHand.Effects.Any())
                     {
                         foreach (int id in attacker.MainHand.Effects)
@@ -121,12 +119,12 @@ namespace Game.Realm
 
                             if (chance > eff.FizzleChance)
                             {
-                                int procDamage = Randomizer.Next(eff.MaxDamage) 
+                                int procDamage = Randomizer.Next(eff.MaxDamage)
                                     + eff.MinDamage;
 
                                 damage += procDamage;
 
-                                string verb = eff.Verb == String.Empty 
+                                string verb = eff.Verb == String.Empty
                                     ? " attacks and hits " : eff.Verb;
 
                                 result += "\r\n" + attacker.FullName + verb +
@@ -148,20 +146,20 @@ namespace Game.Realm
 
                 attacker.LastAttackerID = 0;
                 attacker.State = StateType.Normal;
-                
+
                 string rewards = String.Empty;
 
                 if (target.Experience > 0)
                 {
                     attacker.Experience += target.Experience;
-                    rewards += "You earned " + target.Experience.ToString() 
+                    rewards += "You earned " + target.Experience.ToString()
                         + " experience points.";
                 }
 
                 if (target.Gold > 0)
                 {
                     attacker.Gold += target.Gold;
-                    rewards += "\r\nYou found " + target.Gold.ToString() 
+                    rewards += "\r\nYou found " + target.Gold.ToString()
                         + " gold pieces.";
                 }
 
@@ -182,7 +180,7 @@ namespace Game.Realm
                     }
                 }
 
-                result += "\r\n" + target.FullName + " has been killed by " 
+                result += "\r\n" + target.FullName + " has been killed by "
                     + attacker.FullName;
 
                 Realm.SayMessage(result, target.Loc.AreaID, target.Loc.HexID);
@@ -195,7 +193,7 @@ namespace Game.Realm
                 else
                 {
                     Realm.SendPlayerStatus(attacker.ID, rewards);
-                    Realm.BroadcastMessage(target.FullName + " was killed by " 
+                    Realm.BroadcastMessage(target.FullName + " was killed by "
                         + attacker.FullName + ".");
                 }
             }

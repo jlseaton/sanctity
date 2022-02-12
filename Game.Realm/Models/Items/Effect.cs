@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Game.Realm
+﻿namespace Game.Realm
 {
     public enum EffectType
     {

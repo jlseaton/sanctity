@@ -1,6 +1,6 @@
 Lords of Chaos: Sanctity’s Edge
 
-Single or multiplayer, Desktop and mobile support, all from one game engine
+Game client and server engine using .NET 6 Framework
 
 2D rpg in the tradition of Wizardry, Eye of the Beholder, Kingdom of Drakkar
 Touch or mouse input, multiple platform support - desktop/mobile
@@ -21,4 +21,3 @@ Semi adjust encounters to party level, but not entirely (still can own/be owned)
 Elemental magic emphasis and rewarding of correct identification of when to use which
 Types of attacks based on opponents and rewarding of using more effective methods
 Tactile / timing needed for traps and chests
-
