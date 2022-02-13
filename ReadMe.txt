@@ -1,48 +1,34 @@
 Lords of Chaos: Sanctity's Edge
 -------------------------------
+Game client and server engine for Windows, requiring the .NET 6 Desktop Framework, which can be installed here:
+  x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.1-windows-x64-installer
 
 Project Descriptions:
-
-Game.Client: .NET 6 WinForms game client
-
+---------------------
+Game.Client: Game client using .NET 6 WinForms
 Game.Core: Contains shared models and utility classes
-
-Game.Realm: Game world server
-
-Game.Server: Game server implementation using WinForms
-
+Game.Realm: Game realm logic for specific areas
+Game.Server: Game server logic for realms and .NET 6 WinForms
 Game.Test: Unit tests
-
-Game.World: Console based game server to run on multiple platforms
-
+Game.World: Console based game server to run multiple realms on different platforms
 --------------------------------
 
-Deprecated:
-
+Deprecated Projects:
+--------------------
 Game.Core.PCL: Contains shared models and utility classes
-
 Game.Realm.PCL: Game world server logic, which can be hosted in a separate server or within the client application also, ie. single player mode
-
 Game.Server.PCL: A WinForms game engine server, currently hosted on an Azure server full-time or can be connected to on localhost during development
-
 Sanctity: Xamarin.Forms based PCL project that contains all of the mobile domain logic and UIs
-
 Sanctity.Droid: Android Client including local assets and native api calls
-
 Sanctity.iOS: iOS Client including local assets and native api calls
-
 Sanctity.UWP: Windows Univeral Client (Windows 10, etc) including local assets and native api calls
-
 Sanctity.Windows: Windows 8.1 Client including local assets and native api calls
-
 Sanctity.WinForms: A WinForms client, using ClickOnce to handle automatic updates
-
 Sanctity.WinPhone: Windows Phone 8.1 Client including local assets and native api calls
-
 --------------------------------
 
 Build Notes:
+------------
 
 - No known issues
-
 --------------------------------
