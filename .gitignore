@@ -6,6 +6,7 @@
 /packages
 bin/
 obj/
+logs/
 Publish/
 TestResults/
 Update/
