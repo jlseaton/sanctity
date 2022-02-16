@@ -232,30 +232,6 @@ namespace Game.Realm
             {
                 ID = 2,
                 Type = EntityType.Player,
-                Race = RaceType.Dwarf,
-                Class = ClassType.Fighter,
-                Alignment = AlignmentType.Neutral,
-                Name = "Owlshonor",
-                Level = 5,
-                Strength = 18,
-                Dexterity = 15,
-                Constitution = 15,
-                Intelligence = 10,
-                Wisdom = 8,
-                Luck = 10,
-                HitPoints = 75,
-                MaxHitPoints = 75,
-                Experience = 2500,
-                Gold = 50,
-                LootClass = LootType.None,
-                MainHandID = 6,
-                ImageName = "bluefighter",
-            });
-
-            Players.Add(new PC()
-            {
-                ID = 3,
-                Type = EntityType.Player,
                 Race = RaceType.Gnome,
                 Class = ClassType.Thief,
                 Alignment = AlignmentType.ChaoticNeutral,
@@ -278,7 +254,7 @@ namespace Game.Realm
 
             Players.Add(new PC()
             {
-                ID = 4,
+                ID = 3,
                 Type = EntityType.Player,
                 Race = RaceType.Demon,
                 Class = ClassType.Assassin,
@@ -300,6 +276,30 @@ namespace Game.Realm
                 LootClass = LootType.None,
                 MainHandID = 4,
                 ImageName = "monk",
+            });
+
+            Players.Add(new PC()
+            {
+                ID = 4,
+                Type = EntityType.Player,
+                Race = RaceType.Dwarf,
+                Class = ClassType.Fighter,
+                Alignment = AlignmentType.Neutral,
+                Name = "Owlshonor",
+                Level = 5,
+                Strength = 18,
+                Dexterity = 15,
+                Constitution = 15,
+                Intelligence = 10,
+                Wisdom = 8,
+                Luck = 10,
+                HitPoints = 75,
+                MaxHitPoints = 75,
+                Experience = 2500,
+                Gold = 50,
+                LootClass = LootType.None,
+                MainHandID = 6,
+                ImageName = "bluefighter",
             });
 
             Players.Add(new PC()

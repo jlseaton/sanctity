@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            WorldID="0"
+            WorldID="1"
             WorldName="Myrnn"
             AutoStart="true"
             ServerPort="1412"
             NetworkReadDelay="250"
             NetworkWriteDelay="250">
+	<Realms>
+		<Realm id="lab" title="Dungeon Lab" description="An experimental starter area."></Realm>
+	</Realms>
 </Config>

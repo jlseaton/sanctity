@@ -304,6 +304,11 @@ namespace Game.Client
             }
         }
 
+        private void comboBoxPlayers_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ShowImage(playerPics[this.comboBoxPlayers.SelectedIndex], this.pictureBoxPC.Image);
+        }
+
         #endregion
 
         #region Sound
@@ -761,10 +766,5 @@ namespace Game.Client
         }
 
         #endregion
-
-        private void comboBoxPlayers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            ShowImage(playerPics[this.comboBoxPlayers.SelectedIndex], this.pictureBoxPC.Image);
-        }
     }
 }
