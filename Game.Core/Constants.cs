@@ -98,11 +98,13 @@
         Unknown,
         Human,
         Elf,
+        HalfElf,
+        Halfling,
         Dwarf,
         Gnome,
         Orc,
+        Demonic,
         Animal,
-        Demon,
     };
 
     public enum ClassType
@@ -113,6 +115,7 @@
         Paladin,
         Cleric,
         Wizard,
+        Druid,
         Thief,
         Assassin,
     };
@@ -121,10 +124,9 @@
     {
         Neutral,
         LawfulGood,
-        ChaoticGood,
-        ChaoticNeutral,
-        ChaoticEvil,
         LawfulEvil,
+        ChaoticGood,
+        ChaoticEvil,
     }
 
     public enum MoodType
