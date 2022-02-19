@@ -57,6 +57,7 @@ namespace Game.Realm
 
         public int Experience { get; set; }
         public int Gold { get; set; }
+        public int Stealth { get; set; }
 
         public Stats Stats { get; set; }
 
@@ -136,6 +137,18 @@ namespace Game.Realm
                     MaxDamage = weapon.MaxDamage;
                 }
             }
+        }
+
+        public bool AttemptToHide()
+        {
+            int stealthCheck = Randomizer.Next(0, 100);
+
+            if (stealthCheck <= Stealth)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public Entity Clone()

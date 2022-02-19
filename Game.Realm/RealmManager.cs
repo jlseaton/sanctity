@@ -257,8 +257,16 @@ namespace Game.Realm
                             }
                             else
                             {
-                                player.State = StateType.Invisible;
-                                SendPlayerStatus(playerId, "You hide in the shadows.");
+                                if (player.AttemptToHide())
+                                {
+                                    player.State = StateType.Invisible;
+                                    SendPlayerStatus(playerId, "You hide in the shadows.");
+                                }
+                                else
+                                {
+                                    player.State = StateType.Normal;
+                                    SendPlayerStatus(playerId, "You fail to hide in the shadows.");
+                                }
                             }
                         }
                     }

@@ -476,12 +476,6 @@ namespace Game.Server
                 Hide();
                 notifyIcon1.Visible = true;
             }
-            else
-            {
-                Show();
-                WindowState = FormWindowState.Normal;
-                notifyIcon1.Visible = false;
-            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -499,17 +493,14 @@ namespace Game.Server
         private void contextMenuStrip1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
-            WindowState = FormWindowState.Normal;
             notifyIcon1.Visible = false;
         }
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)
         {
             Show();
-            WindowState = FormWindowState.Normal;
             notifyIcon1.Visible = false;
         }
-
 
         private void toolStripMenuItem2_Click(object sender, EventArgs e)
         {
