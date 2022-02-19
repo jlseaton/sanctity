@@ -433,8 +433,9 @@
             this.comboBoxPlayers.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxPlayers.FormattingEnabled = true;
             this.comboBoxPlayers.Items.AddRange(new object[] {
-            "Hoxore the Orcish Barbarian",
-            "Smindel the Gnomish Thief",
+            "Hoxore the Orc Barbarian",
+            "Smindel the Halfling Thief",
+            "Lyle the Gnome Druid",
             "Faerune the Demonic Assassin",
             "Owlshonor the Dwarven Fighter",
             "Natillah the Elven Wizard",

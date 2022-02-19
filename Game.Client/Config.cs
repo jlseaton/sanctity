@@ -5,9 +5,8 @@ namespace Game.Client
     public class Config
     {
         public bool Images { get; set; }
-        public bool Graphics { get; set; }
-        public bool SoundEnabled { get; set; }
-        public bool MusicEnabled { get; set; }
+        public bool Sounds { get; set; }
+        public bool Music { get; set; }
         public bool AutoStart { get; set; }
         public bool ServerMode { get; set; }
         public string ServerHost { get; set; }
@@ -16,12 +15,11 @@ namespace Game.Client
         public Config()
         {
             Images = true;
-            Graphics = true;
-            SoundEnabled = true;
-            MusicEnabled = true;
+            Sounds = true;
+            Music = false;
             AutoStart = false;
             ServerMode = true;
-            ServerHost = "appnicity.cloudapp.net";
+            ServerHost = "dev.appnicity.com";
             ServerPort = 1412;
         }
 
@@ -39,9 +37,9 @@ namespace Game.Client
                 {
                     Images = (cfg.Attribute("Images").Value)
                         .ToLower() == "true" ? true : false,
-                    SoundEnabled = (cfg.Attribute("SoundEnabled").Value)
+                    Sounds = (cfg.Attribute("Sounds").Value)
                         .ToLower() == "true" ? true : false,
-                    MusicEnabled = (cfg.Attribute("MusicEnabled").Value)
+                    Music = (cfg.Attribute("Music").Value)
                         .ToLower() == "true" ? true : false,
                     AutoStart = (cfg.Attribute("AutoStart").Value)
                         .ToLower() == "true" ? true : false,
@@ -52,8 +50,8 @@ namespace Game.Client
                 }).SingleOrDefault();
 
             config.Images = appConfig.Images;
-            config.SoundEnabled = appConfig.SoundEnabled;
-            config.MusicEnabled = appConfig.MusicEnabled;
+            config.Sounds = appConfig.Sounds;
+            config.Music = appConfig.Music;
             config.AutoStart = appConfig.AutoStart;
             config.ServerMode = appConfig.ServerMode;
             config.ServerHost = appConfig.ServerHost;
@@ -67,8 +65,8 @@ namespace Game.Client
             var doc = XDocument.Load(fileName);
             var root = doc.Root;
             root.SetAttributeValue("Images", config.Images.ToString());
-            root.SetAttributeValue("SoundEnabled", config.SoundEnabled.ToString());
-            root.SetAttributeValue("MusicEnabled", config.MusicEnabled.ToString());
+            root.SetAttributeValue("SoundEnabled", config.Sounds.ToString());
+            root.SetAttributeValue("MusicEnabled", config.Music.ToString());
             root.SetAttributeValue("AutoStart", config.AutoStart.ToString());
             root.SetAttributeValue("ServerMode", config.ServerMode.ToString());
             root.SetAttributeValue("ServerHost", config.ServerHost.ToString());

@@ -315,7 +315,7 @@ namespace Game.Client
 
         private void PlayMusic(string fileName, bool loop = false)
         {
-            if (Config.MusicEnabled)
+            if (Config.Music)
             {
                 try
                 {
@@ -343,7 +343,7 @@ namespace Game.Client
 
         private void PlaySound(string fileName)
         {
-            if (Config.SoundEnabled)
+            if (Config.Sounds)
             {
                 try
                 {
@@ -606,7 +606,7 @@ namespace Game.Client
 
         private void ShowImage(string imageName, Image image)
         {
-            if (!Config.Graphics)
+            if (!Config.Images)
                 return;
 
             foreach (string s in ImageFilenames)
