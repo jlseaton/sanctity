@@ -21,6 +21,7 @@
         private void checkBoxServerMode_CheckedChanged(object sender, EventArgs e)
         {
             this.comboBoxServerURL.Enabled = checkBoxServerMode.Checked;
+            this.numericUpDownServerPort.Enabled = checkBoxServerMode.Checked;
         }
 
         private void buttonOk_Click(object sender, EventArgs e)

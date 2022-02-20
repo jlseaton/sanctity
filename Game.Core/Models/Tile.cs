@@ -52,7 +52,7 @@
                 exits += ", West";
             if (Up > 0 || Up == -1)
                 exits += ", Up";
-            if (Down > 0)
+            if (Down > 0 || Down == -1)
                 exits += ", Down";
 
             if (String.IsNullOrEmpty(exits))

@@ -229,21 +229,6 @@ namespace Game.Realm
                     {
                         SendPlayerStatus(playerId, "", true);
                     }
-                    else if (packet.Text.ToLower().Trim() == "revive")
-                    {
-                        player = FindPlayer(playerId);
-
-                        if (player != null)
-                        {
-                            player.State = StateType.Normal;
-                            player.HitPoints = player.MaxHitPoints;
-
-                            SendPlayerStatus(playerId);
-
-                            SayMessage(player.FullName + " is revived!",
-                                player.Loc.AreaID, player.Loc.HexID);
-                        }
-                    }
                     else if (packet.Text.ToLower().Trim() == "hide")
                     {
                         player = FindPlayer(playerId);
@@ -268,6 +253,37 @@ namespace Game.Realm
                                     SendPlayerStatus(playerId, "You fail to hide in the shadows.");
                                 }
                             }
+                        }
+                    }
+                    else if (packet.Text.ToLower().Trim() == "inspect")
+                    {
+                        if (packet.TargetID <= 0)
+                        {
+                            player = FindPlayer(playerId);
+                        }
+                        else
+                        {
+                            player = FindPlayer(packet.TargetID);
+                        }
+
+                        if (player != null)
+                        {
+                            SendPlayerStatus(playerId, player.Description);
+                        }
+                    }
+                    else if (packet.Text.ToLower().Trim() == "revive")
+                    {
+                        player = FindPlayer(playerId);
+
+                        if (player != null)
+                        {
+                            player.State = StateType.Normal;
+                            player.HitPoints = player.MaxHitPoints;
+
+                            SendPlayerStatus(playerId);
+
+                            SayMessage(player.FullName + " is revived!",
+                                player.Loc.AreaID, player.Loc.HexID);
                         }
                     }
                     break;
@@ -685,6 +701,8 @@ namespace Game.Realm
                         {
                             var status = entity.FullName + " has left the realm.";
 
+                            BroadcastMessage(status);
+
                             WritePacket(FindPlayer(entity.ID).Conn, new Packet()
                             {
                                 ActionType = ActionType.Exit,
@@ -693,7 +711,6 @@ namespace Game.Realm
                             });
 
                             RemovePC(entity.ID);
-                            BroadcastMessage(status);
                         }
                         break;
                     case "down":
@@ -702,6 +719,21 @@ namespace Game.Realm
                             hexId = hex.Tile.Down;
                             md = MoveDirection.Down;
                             moved = true;
+                        }
+                        else if (hex.Tile.Down < 0)
+                        {
+                            var status = entity.FullName + " has left the realm.";
+
+                            BroadcastMessage(status);
+
+                            WritePacket(FindPlayer(entity.ID).Conn, new Packet()
+                            {
+                                ActionType = ActionType.Exit,
+                                ID = entity.ID,
+                                Text = status,
+                            });
+
+                            RemovePC(entity.ID);
                         }
                         break;
                 }

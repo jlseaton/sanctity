@@ -3,7 +3,7 @@
     public static class Constants
     {
         public static readonly bool PacketCompression = true;
-        public static readonly int PacketBufferSize = 4096;
+        public static readonly int PacketBufferSize = 1500;
         public static readonly string PacketDelimiter = "\r\n}";
 
         public static readonly int RoundInterval = 2000;
@@ -59,9 +59,13 @@
     public enum EntityType
     {
         Unknown,
-        Player,
-        NPC,
         Merchant,
+        PC,
+        NPC,
+        Hero,
+        Demigod,
+        LesserGod,
+        GreaterGod,
         DM,
     };
 
@@ -71,6 +75,7 @@
         Dead,
         Combat,
         Stunned,
+        Immobile,
         Invisible,
         Ethereal,
         Trading,
@@ -86,6 +91,7 @@
     public enum SizeType
     {
         Medium,
+        Tiny,
         Small,
         Large,
         VeryLage,
@@ -97,14 +103,19 @@
     {
         Unknown,
         Human,
+        Halfling,
         Elf,
         HalfElf,
-        Halfling,
+        HalfOrc,
         Dwarf,
         Gnome,
-        Orc,
-        Demonic,
+        Humanoid,
         Animal,
+        Aquatic,
+        Insect,
+        Reptillian,
+        Demonic,
+        Planar,
     };
 
     public enum ClassType
@@ -115,9 +126,11 @@
         Paladin,
         Cleric,
         Wizard,
+        Sorcerer,
+        Bard,
         Druid,
+        Ranger,
         Thief,
-        Assassin,
     };
 
     public enum AlignmentType
@@ -129,9 +142,21 @@
         ChaoticEvil,
     }
 
+    public enum Language
+    {
+        Common,
+        Human,
+        Elvish,
+        Dwarven,
+        Gnomish,
+        Orcish,
+        Planar,
+    };
+
     public enum MoodType
     {
         Normal,
+        Scared,
         Suspicous,
         Aggitated,
         Aggressive,
@@ -189,5 +214,28 @@
         None,
         Scary,
         Waterdrip,
+    };
+
+    public enum Command
+    {
+        None,
+        Join,
+        Quit,
+        Say,
+        Yell,
+        Send,
+        Mail,
+        Appeal,
+        Revive,
+        Transcend,
+        Move,
+        Look,
+        Attack,
+        Cast,
+        Hide,
+        Get,
+        Interact,
+        Trade,
+        Inventory,
     };
 }

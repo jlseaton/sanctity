@@ -28,7 +28,7 @@ namespace Game.Client
         private string[] SoundFilenames;
         private string[] ImageFilenames;
 
-        string[] playerPics = { "barbarian", "bluefighter", "halfling", "monk", "wizardress", "monkess", "valkyrie" };
+        private List<PC> PCs = new List<PC>();
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace Game.Client
 
             Application.ThreadException += Application_ThreadException;
 
-            Tiles = new Tile[49];
+            Tiles = new Tile[Constants.VisibleTiles];
 
             var assembly =
                 System.Reflection.Assembly.GetExecutingAssembly();
@@ -48,33 +48,42 @@ namespace Game.Client
             #pragma warning disable CS8602 // Dereference of a possibly null reference.
             this.Text += " - v" + assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
-                assembly.GetName().Version.Build.ToString();
+                assembly.GetName().Version.Build.ToString() + "." +
+                assembly.GetName().Version.Revision.ToString();
 
-            Realm = new RealmManager(1, "Sanctity");
+            Realm = new RealmManager(1, "Lords of Chaos");
 
             #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             Realm.GameEvents += HandlePacket;
+            PCs = Realm.Data.LoadPCs();
+
+            foreach(var pc in PCs)
+            {
+                this.listBoxPCs.Items.Add(pc.Name + ", the " + pc.Race + " " 
+                    + pc.Class + " (" + pc.Level.ToString() + ")");
+            }
 
             Config = new Config().LoadConfig("config.xml");
 
-            if (!Config.Images)
-            {
-                //TitleImage.Visible = false;
-            }
-            else
-            {
-                // Index all music, sound, and images file names
-                MusicFilenames = Directory.GetFiles("Music\\", "*.*", SearchOption.AllDirectories);
-                SoundFilenames = Directory.GetFiles("Sounds\\", "*.*", SearchOption.AllDirectories);
-                ImageFilenames = Directory.GetFiles("Images\\", "*.*", SearchOption.AllDirectories);
-                ShowImage("background", panelView.BackgroundImage);
-                //TitleImage.Visible = true;
-                //TitleImage.BringToFront();
-            }
+            // Index all music, sound, and images file names
+            MusicFilenames = Directory.GetFiles("Music\\", "*.*", SearchOption.AllDirectories);
+            SoundFilenames = Directory.GetFiles("Sounds\\", "*.*", SearchOption.AllDirectories);
+            ImageFilenames = Directory.GetFiles("Images\\", "*.*", SearchOption.AllDirectories);
 
-            this.comboBoxPlayers.SelectedIndex = 0;
+            this.listBoxPCs.SelectedIndex = 0;
 
             PlayMusic(@"ambient.mp3", true);
+        }
+
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.OemQuestion && !this.textBoxSend.Focused)
+            {
+                this.textBoxSend.Focus();
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -185,7 +194,7 @@ namespace Game.Client
                 }
                 else
                 {
-                    Realm.HandlePacket(packet, this.comboBoxPlayers.SelectedIndex + 1);
+                    Realm.HandlePacket(packet, this.listBoxPCs.SelectedIndex + 1);
                 }
 
                 result = true;
@@ -211,7 +220,13 @@ namespace Game.Client
             }
             else
             {
-                ShowImage(playerPics[this.comboBoxPlayers.SelectedIndex], this.pictureBoxPC.Image);
+                var pc = 
+                    PCs.Find(pc => pc.ID == this.listBoxPCs.SelectedIndex + 1);
+
+                if (pc != null)
+                {
+                    this.pictureBoxPC.Image = ShowImage(pc.ImageName);
+                }
 
                 if (Connected)
                 {
@@ -220,7 +235,10 @@ namespace Game.Client
                     this.panelMovement.Visible = true;
                     this.panelStats.Visible = true;
                     this.panelNPCs.Visible = true;
-                    this.panelPCs.Visible = false;
+                    this.panelTiles.Visible = true;
+                    this.panelPCs.Visible = true;
+                    this.listBoxPCs.Enabled = false;
+                    panelView.BackgroundImage = null;
 
                     if (Stats != null && Stats.HPs <= 0)
                     {
@@ -229,12 +247,6 @@ namespace Game.Client
                     else
                     {
                         this.panelObjects.Visible = true;
-                    }
-
-                    if (Config.Images)
-                    {
-                        //TitleImage.Visible = false;
-                        //TitleImage.SendToBack();
                     }
                 }
                 else
@@ -245,16 +257,10 @@ namespace Game.Client
                     this.panelStats.Visible = false;
                     this.panelObjects.Visible = false;
                     this.panelNPCs.Visible = false;
+                    this.panelTiles.Visible = false;
                     this.panelPCs.Visible = false;
-
-                    var g = this.panelView.CreateGraphics();
-                    g.Clear(Color.Black);
-
-                    if (Config.Images)
-                    {
-                        //TitleImage.Visible = true;
-                        //TitleImage.BringToFront();
-                    }
+                    this.listBoxPCs.Enabled = true;
+                    panelView.BackgroundImage = ShowImage("background");//, panelView.BackgroundImage);
                 }
             }
         }
@@ -304,9 +310,9 @@ namespace Game.Client
             }
         }
 
-        private void comboBoxPlayers_SelectedIndexChanged(object sender, EventArgs e)
+        private void listBoxPCs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ShowImage(playerPics[this.comboBoxPlayers.SelectedIndex], this.pictureBoxPC.Image);
+            RefreshStatus();
         }
 
         #endregion
@@ -408,7 +414,11 @@ namespace Game.Client
                         }
                     }
 
-                    if (packet.Tile != null)
+                    if (packet.ActionType == ActionType.Exit)
+                    {
+                        buttonStart_Click(this, null);
+                    }
+                    else if (packet.Tile != null)
                     {
                         //this.Tiles = packet.Tile;
 
@@ -465,7 +475,7 @@ namespace Game.Client
                             {
                                 //var parsedNpc = npc.Value
                                 //AddNPC(npc);
-                                ShowImage(npc.Value.Name, this.pictureBoxTile0.Image);
+                                //ShowImage(npc.Value.Name, this.pictureBoxTile0.Image);
                                 this.listBoxEntities.Items.Add(npc.Value.Name.ToLower().Trim() +
                                     " (" + npc.Value.HPs.ToString() + "/" + npc.Value.MaxHPs.ToString() + ")");
                             }
@@ -515,7 +525,7 @@ namespace Game.Client
                         Packet packet = new Packet()
                         {
                             ActionType = ActionType.Exit,
-                            Text = this.comboBoxPlayers.Text,
+                            Text = this.listBoxPCs.Text,
                         };
 
                         Conn.SendPacket(packet);
@@ -559,8 +569,8 @@ namespace Game.Client
                     var join = new Packet()
                     {
                         ActionType = ActionType.Join,
-                        ID = this.comboBoxPlayers.SelectedIndex + 1,
-                        Text = this.comboBoxPlayers.Text,
+                        ID = this.listBoxPCs.SelectedIndex + 1,
+                        Text = this.listBoxPCs.Text,
                     };
 
                     if (SendPacket(join))
@@ -604,28 +614,31 @@ namespace Game.Client
 
         }
 
-        private void ShowImage(string imageName, Image image)
+        private Image ShowImage(string imageName)
         {
             if (!Config.Images)
-                return;
+                return null;
 
             foreach (string s in ImageFilenames)
             {
                 if (imageName == Path.GetFileNameWithoutExtension(s))
                 {
-                    ShowCenterImage(image, s);
+                    return Image.FromFile(s);
+                    //ShowCenterImage(image, s);
                 }
             }
+
+            return null;
         }
 
         private void ShowCenterImage(Image image, string fileName)
         {
             image = Image.FromFile(fileName);
 
-            //picBox.Location =
-            //    new Point((picBox.Parent.ClientSize.Width / 2) - 
-            //    (picBox.Image.Width / 2), (picBox.Parent.ClientSize.Height / 2) - 
-            //    (picBox.Image.Height / 2));
+            //pictureBoxTile24.Location =
+            //    new Point((pictureBoxTile24.Parent.ClientSize.Width / 2) -
+            //    (pictureBoxTile24.Image.Width / 2), (pictureBoxTile24.Parent.ClientSize.Height / 2) -
+            //    (pictureBoxTile24.Image.Height / 2));
 
             //image.Refresh();
         }
@@ -726,6 +739,11 @@ namespace Game.Client
         private void buttonHide_Click(object sender, EventArgs e)
         {
             SendPacket(new Packet() { ActionType = ActionType.Command, Text = "hide" });
+        }
+
+        private void buttonInspect_Click(object sender, EventArgs e)
+        {
+            SendPacket(new Packet() { ActionType = ActionType.Command, Text = "inspect" });
         }
 
         private void buttonRevive_Click(object sender, EventArgs e)

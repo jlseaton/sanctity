@@ -67,7 +67,7 @@
             // 
             // numericUpDownServerPort
             // 
-            this.numericUpDownServerPort.Location = new System.Drawing.Point(141, 134);
+            this.numericUpDownServerPort.Location = new System.Drawing.Point(150, 197);
             this.numericUpDownServerPort.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownServerPort.Maximum = new decimal(new int[] {
             32767,
@@ -91,7 +91,7 @@
             // checkBoxAutoStart
             // 
             this.checkBoxAutoStart.AutoSize = true;
-            this.checkBoxAutoStart.Location = new System.Drawing.Point(141, 238);
+            this.checkBoxAutoStart.Location = new System.Drawing.Point(150, 248);
             this.checkBoxAutoStart.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxAutoStart.Name = "checkBoxAutoStart";
             this.checkBoxAutoStart.Size = new System.Drawing.Size(250, 24);
@@ -104,19 +104,19 @@
             this.checkBoxServerMode.AutoSize = true;
             this.checkBoxServerMode.Checked = true;
             this.checkBoxServerMode.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxServerMode.Location = new System.Drawing.Point(143, 42);
+            this.checkBoxServerMode.Location = new System.Drawing.Point(152, 105);
             this.checkBoxServerMode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxServerMode.Name = "checkBoxServerMode";
-            this.checkBoxServerMode.Size = new System.Drawing.Size(296, 24);
+            this.checkBoxServerMode.Size = new System.Drawing.Size(105, 24);
             this.checkBoxServerMode.TabIndex = 7;
-            this.checkBoxServerMode.Text = "&Use multiplayer client/server connection";
+            this.checkBoxServerMode.Text = "&Play Online";
             this.checkBoxServerMode.UseVisualStyleBackColor = true;
             this.checkBoxServerMode.CheckedChanged += new System.EventHandler(this.checkBoxServerMode_CheckedChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(45, 75);
+            this.label1.Location = new System.Drawing.Point(54, 138);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 20);
@@ -126,7 +126,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(45, 138);
+            this.label2.Location = new System.Drawing.Point(54, 201);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 20);
@@ -138,7 +138,7 @@
             this.checkBoxSounds.AutoSize = true;
             this.checkBoxSounds.Checked = true;
             this.checkBoxSounds.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSounds.Location = new System.Drawing.Point(244, 189);
+            this.checkBoxSounds.Location = new System.Drawing.Point(255, 44);
             this.checkBoxSounds.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxSounds.Name = "checkBoxSounds";
             this.checkBoxSounds.Size = new System.Drawing.Size(121, 24);
@@ -151,7 +151,7 @@
             this.checkBoxMusic.AutoSize = true;
             this.checkBoxMusic.Checked = true;
             this.checkBoxMusic.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMusic.Location = new System.Drawing.Point(397, 189);
+            this.checkBoxMusic.Location = new System.Drawing.Point(408, 44);
             this.checkBoxMusic.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxMusic.Name = "checkBoxMusic";
             this.checkBoxMusic.Size = new System.Drawing.Size(69, 24);
@@ -164,7 +164,7 @@
             this.checkBoxSplash.AutoSize = true;
             this.checkBoxSplash.Checked = true;
             this.checkBoxSplash.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSplash.Location = new System.Drawing.Point(141, 189);
+            this.checkBoxSplash.Location = new System.Drawing.Point(152, 44);
             this.checkBoxSplash.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxSplash.Name = "checkBoxSplash";
             this.checkBoxSplash.Size = new System.Drawing.Size(79, 24);
@@ -179,7 +179,7 @@
             "sol",
             "localhost",
             "dev.appnicity.com"});
-            this.comboBoxServerURL.Location = new System.Drawing.Point(141, 71);
+            this.comboBoxServerURL.Location = new System.Drawing.Point(150, 134);
             this.comboBoxServerURL.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.comboBoxServerURL.Name = "comboBoxServerURL";
             this.comboBoxServerURL.Size = new System.Drawing.Size(289, 28);

@@ -6,21 +6,26 @@ namespace Game.Realm
     {
         public int UID { get; set; }
 
-        public int AttackingTileID { get; set; }
-        public int DeadTileID { get; set; }
+        public Location Loc { get; set; }
         public MoveDirection Facing { get; set; }
 
+        public string Surname { get; set; }
         public string Title { get; set; }
-        public string Homeland { get; set; }
-        public string Diety { get; set; }
+        public string Origin { get; set; }
         public string Bio { get; set; }
+        public string Diety { get; set; }
         public string ImageName { get; set; }
+        public string Description
+        {
+            get
+            {
+                return "You see " + Name + ", " + Article + " " + Race + " " + Class + "\r\n" + Bio;
+            }
+        }
 
-        public Location Loc { get; set; }
-
-        public long LastActionRound { get; set; }
         public int LastAttackerID { get; set; }
         public int LastTargetID { get; set; }
+        public long LastActionRound { get; set; }
 
         public int SoundID { get; set; }
         public int VoiceID { get; set; }
@@ -44,7 +49,9 @@ namespace Game.Realm
 
         public bool NotAttackable { get; set; }
 
+        public int Age { get; set; }
         public int Level { get; set; }
+
         public int Strength { get; set; }
         public int Dexterity { get; set; }
         public int Constitution { get; set; }
@@ -79,6 +86,7 @@ namespace Game.Realm
 
         public List<int> Skills { get; set; }
         public List<int> Spells { get; set; }
+        public List<int> Languages { get; set; }
 
         public List<Resist> Resists { get; set; }
         public List<Item> Inventory { get; set; }
@@ -111,6 +119,8 @@ namespace Game.Realm
 
             Loc = new Location() { AreaID = areaId, HexID = hexId };
             Stats = new Stats() { Name = Name };
+
+            Languages = new List<int> { 0 }; // Everyone knows the common language
         }
 
         public virtual void Die()

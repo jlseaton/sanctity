@@ -10,7 +10,7 @@ namespace Game.Realm
 
         public PC() : base()
         {
-            Type = EntityType.Player;
+            Type = EntityType.PC;
             Gender = GenderType.Male;
         }
     }
