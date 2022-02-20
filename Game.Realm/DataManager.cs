@@ -469,7 +469,7 @@ namespace Game.Realm
                 Race = RaceType.HalfElf,
                 Class = ClassType.Ranger,
                 Alignment = AlignmentType.ChaoticGood,
-                Name = "Arawn",
+                Name = "Derwin",
                 Age = 23,
                 Level = 5,
                 Strength = 13,

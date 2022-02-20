@@ -17,7 +17,7 @@ namespace Game.Realm
 
         public Tile Tile { get; set; }
 
-        public List<PC> Players = new List<PC>();
+        public List<PC> PCs = new List<PC>();
         public List<NPC> NPCs = new List<NPC>();
 
         public List<Item> Items = new List<Item>();
@@ -49,7 +49,7 @@ namespace Game.Realm
             StringBuilder items = new StringBuilder();
 
             bool playersFound = false;
-            foreach (PC player in Players)
+            foreach (PC player in PCs)
             {
                 if (player.ID != playerId)
                 {

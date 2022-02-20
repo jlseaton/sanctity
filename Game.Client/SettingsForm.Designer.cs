@@ -67,7 +67,7 @@
             // 
             // numericUpDownServerPort
             // 
-            this.numericUpDownServerPort.Location = new System.Drawing.Point(150, 197);
+            this.numericUpDownServerPort.Location = new System.Drawing.Point(150, 180);
             this.numericUpDownServerPort.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownServerPort.Maximum = new decimal(new int[] {
             32767,
@@ -91,7 +91,7 @@
             // checkBoxAutoStart
             // 
             this.checkBoxAutoStart.AutoSize = true;
-            this.checkBoxAutoStart.Location = new System.Drawing.Point(150, 248);
+            this.checkBoxAutoStart.Location = new System.Drawing.Point(150, 224);
             this.checkBoxAutoStart.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxAutoStart.Name = "checkBoxAutoStart";
             this.checkBoxAutoStart.Size = new System.Drawing.Size(250, 24);
@@ -126,7 +126,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(54, 201);
+            this.label2.Location = new System.Drawing.Point(54, 182);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 20);
@@ -138,7 +138,7 @@
             this.checkBoxSounds.AutoSize = true;
             this.checkBoxSounds.Checked = true;
             this.checkBoxSounds.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSounds.Location = new System.Drawing.Point(255, 44);
+            this.checkBoxSounds.Location = new System.Drawing.Point(246, 44);
             this.checkBoxSounds.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxSounds.Name = "checkBoxSounds";
             this.checkBoxSounds.Size = new System.Drawing.Size(121, 24);
@@ -151,7 +151,7 @@
             this.checkBoxMusic.AutoSize = true;
             this.checkBoxMusic.Checked = true;
             this.checkBoxMusic.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMusic.Location = new System.Drawing.Point(408, 44);
+            this.checkBoxMusic.Location = new System.Drawing.Point(375, 44);
             this.checkBoxMusic.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxMusic.Name = "checkBoxMusic";
             this.checkBoxMusic.Size = new System.Drawing.Size(69, 24);

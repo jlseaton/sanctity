@@ -9,29 +9,54 @@ namespace Game.Core
     public class Connection
     {
         public TcpClient Client { get; set; }
+        public string Host { get; private set; }
+        public int Port { get; private set; }
+        public bool OfflineMode { get; private set; }
+        public bool Connected { get; private set; }
 
-        public DateTime Connected { get; set; }
+        public DateTime LastConnected { get; private set; }
 
-        public DateTime LastActive { get; set; }
+        public DateTime LastActive { get; private set; }
 
-        public List<Packet> WritePacketBuffer = new List<Packet>();
+        private List<Packet> WritePacketBuffer = new List<Packet>();
 
-        private byte[] inStream;
+        private byte[] inStream = new byte[Constants.PacketBufferSize];
 
-        public Connection()
+        public Connection(bool offlineMode, 
+            string host = "localhost", int port = 1214)
         {
-            Connected = DateTime.Now;
+            if (port <= 0)
+            {
+                port = Constants.ServerPort;
+            }
+            
+            Host = host;
+            Port = port;
+            LastConnected = DateTime.Now;
+            LastActive = DateTime.Now;
+            OfflineMode = offlineMode;
+        }
 
-            Client = new TcpClient();
-            inStream = new byte[Constants.PacketBufferSize];
+        public void Connect()
+        {
+            if (OfflineMode)
+            {
+                Connected = true;
+            }
+            else
+            {
+                Client = new TcpClient();
+                Connected = true;
+            }
         }
 
         public void Disconnect()
         {
-            if (Client != null)
+            if (!OfflineMode && Client != null)
             {
                 Client.Close();
             }
+            Connected = false;
         }
 
         public List<Packet> ReadPackets()
@@ -93,14 +118,17 @@ namespace Game.Core
 
         public void SendPacket(Packet packet)
         {
-            string message = Packet.Serialize(packet);
+            if (!OfflineMode)
+            {
+                string message = Packet.Serialize(packet);
 
-            var stream = Client.GetStream();
-            byte[] outStream = Encoding.UTF8.GetBytes(message);
-            stream.Write(outStream, 0, outStream.Length);
-            stream.Flush();
+                var stream = Client.GetStream();
+                byte[] outStream = Encoding.UTF8.GetBytes(message);
+                stream.Write(outStream, 0, outStream.Length);
+                stream.Flush();
 
-            LastActive = DateTime.Now;
+                LastActive = DateTime.Now;
+            }
         }
     }
 }

@@ -100,7 +100,7 @@ namespace Game.World
 
                 if (packet.ActionType == ActionType.Join)
                 {
-                    var Conn = new Connection();
+                    var Conn = new Connection(false);
 
                     Conn.Client = client;
 

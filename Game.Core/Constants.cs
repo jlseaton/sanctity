@@ -2,9 +2,10 @@
 {
     public static class Constants
     {
-        public static readonly bool PacketCompression = true;
+        public static readonly int ServerPort = 1500;
         public static readonly int PacketBufferSize = 1500;
         public static readonly string PacketDelimiter = "\r\n}";
+        public static readonly bool PacketCompression = true;
 
         public static readonly int RoundInterval = 2000;
         public static readonly int VisibleTiles = 49; // Default visible grid is 7 X 7 tiles
@@ -13,6 +14,7 @@
         public static readonly int MaxGroupSize = 6;
         public static readonly int NPCCorpseDecay = 30;
         public static readonly int PlayerCorpseDecay = 30;
+        public static readonly string PCDefaultSecret = "loc";
     }
 
     public enum MoveDirection

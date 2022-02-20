@@ -130,9 +130,10 @@
             this.listBoxItems = new System.Windows.Forms.ListBox();
             this.panelObjects = new System.Windows.Forms.Panel();
             this.panelAccount = new System.Windows.Forms.Panel();
-            this.buttonInspect = new System.Windows.Forms.Button();
             this.listBoxPCs = new System.Windows.Forms.ListBox();
+            this.buttonInspect = new System.Windows.Forms.Button();
             this.panelMovement = new System.Windows.Forms.Panel();
+            this.labelAge = new System.Windows.Forms.Label();
             this.panelStats.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPC)).BeginInit();
             this.panelChat.SuspendLayout();
@@ -215,7 +216,8 @@
             // 
             // buttonStart
             // 
-            this.buttonStart.Location = new System.Drawing.Point(16, 92);
+            this.buttonStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonStart.Location = new System.Drawing.Point(356, 94);
             this.buttonStart.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(89, 35);
@@ -285,22 +287,24 @@
             // 
             this.panelStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelStats.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelStats.Controls.Add(this.labelAge);
             this.panelStats.Controls.Add(this.labelGold);
             this.panelStats.Controls.Add(this.labelExperience);
             this.panelStats.Controls.Add(this.labelLevel);
             this.panelStats.Controls.Add(this.labelMPs);
             this.panelStats.Controls.Add(this.labelHPs);
-            this.panelStats.Location = new System.Drawing.Point(600, 764);
+            this.panelStats.Location = new System.Drawing.Point(453, 1);
             this.panelStats.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelStats.Name = "panelStats";
-            this.panelStats.Size = new System.Drawing.Size(432, 96);
+            this.panelStats.Size = new System.Drawing.Size(130, 164);
             this.panelStats.TabIndex = 8;
             this.panelStats.Visible = false;
             // 
             // labelGold
             // 
             this.labelGold.AutoSize = true;
-            this.labelGold.Location = new System.Drawing.Point(9, 56);
+            this.labelGold.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.labelGold.Location = new System.Drawing.Point(11, 132);
             this.labelGold.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelGold.Name = "labelGold";
             this.labelGold.Size = new System.Drawing.Size(48, 20);
@@ -310,7 +314,7 @@
             // labelExperience
             // 
             this.labelExperience.AutoSize = true;
-            this.labelExperience.Location = new System.Drawing.Point(9, 31);
+            this.labelExperience.Location = new System.Drawing.Point(15, 107);
             this.labelExperience.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelExperience.Name = "labelExperience";
             this.labelExperience.Size = new System.Drawing.Size(44, 20);
@@ -320,7 +324,7 @@
             // labelLevel
             // 
             this.labelLevel.AutoSize = true;
-            this.labelLevel.Location = new System.Drawing.Point(9, 5);
+            this.labelLevel.Location = new System.Drawing.Point(5, 87);
             this.labelLevel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLevel.Name = "labelLevel";
             this.labelLevel.Size = new System.Drawing.Size(50, 20);
@@ -330,7 +334,8 @@
             // labelMPs
             // 
             this.labelMPs.AutoSize = true;
-            this.labelMPs.Location = new System.Drawing.Point(90, 31);
+            this.labelMPs.ForeColor = System.Drawing.Color.Blue;
+            this.labelMPs.Location = new System.Drawing.Point(14, 39);
             this.labelMPs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelMPs.Name = "labelMPs";
             this.labelMPs.Size = new System.Drawing.Size(36, 20);
@@ -340,7 +345,8 @@
             // labelHPs
             // 
             this.labelHPs.AutoSize = true;
-            this.labelHPs.Location = new System.Drawing.Point(91, 5);
+            this.labelHPs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.labelHPs.Location = new System.Drawing.Point(14, 12);
             this.labelHPs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelHPs.Name = "labelHPs";
             this.labelHPs.Size = new System.Drawing.Size(41, 20);
@@ -371,7 +377,8 @@
             // 
             // pictureBoxPC
             // 
-            this.pictureBoxPC.Location = new System.Drawing.Point(17, 3);
+            this.pictureBoxPC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxPC.Location = new System.Drawing.Point(356, 5);
             this.pictureBoxPC.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBoxPC.Name = "pictureBoxPC";
             this.pictureBoxPC.Size = new System.Drawing.Size(89, 83);
@@ -381,8 +388,7 @@
             // 
             // buttonAttack
             // 
-            this.buttonAttack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAttack.Location = new System.Drawing.Point(14, 195);
+            this.buttonAttack.Location = new System.Drawing.Point(3, 110);
             this.buttonAttack.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonAttack.Name = "buttonAttack";
             this.buttonAttack.Size = new System.Drawing.Size(69, 35);
@@ -393,11 +399,11 @@
             // 
             // buttonLook
             // 
-            this.buttonLook.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonLook.Location = new System.Drawing.Point(499, 5);
+            this.buttonLook.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonLook.Location = new System.Drawing.Point(13, 250);
             this.buttonLook.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonLook.Name = "buttonLook";
-            this.buttonLook.Size = new System.Drawing.Size(84, 35);
+            this.buttonLook.Size = new System.Drawing.Size(70, 35);
             this.buttonLook.TabIndex = 13;
             this.buttonLook.Text = "&Look";
             this.buttonLook.UseVisualStyleBackColor = true;
@@ -429,7 +435,8 @@
             // 
             // buttonSettings
             // 
-            this.buttonSettings.Location = new System.Drawing.Point(17, 132);
+            this.buttonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonSettings.Location = new System.Drawing.Point(356, 130);
             this.buttonSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.Size = new System.Drawing.Size(89, 35);
@@ -467,11 +474,11 @@
             // 
             // buttonHide
             // 
-            this.buttonHide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonHide.Location = new System.Drawing.Point(499, 50);
+            this.buttonHide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonHide.Location = new System.Drawing.Point(13, 295);
             this.buttonHide.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonHide.Name = "buttonHide";
-            this.buttonHide.Size = new System.Drawing.Size(84, 35);
+            this.buttonHide.Size = new System.Drawing.Size(70, 35);
             this.buttonHide.TabIndex = 15;
             this.buttonHide.Text = "&Hide";
             this.buttonHide.UseVisualStyleBackColor = true;
@@ -479,11 +486,11 @@
             // 
             // buttonRevive
             // 
-            this.buttonRevive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonRevive.Location = new System.Drawing.Point(499, 132);
+            this.buttonRevive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonRevive.Location = new System.Drawing.Point(90, 295);
             this.buttonRevive.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonRevive.Name = "buttonRevive";
-            this.buttonRevive.Size = new System.Drawing.Size(84, 35);
+            this.buttonRevive.Size = new System.Drawing.Size(68, 35);
             this.buttonRevive.TabIndex = 14;
             this.buttonRevive.Text = "&Revive";
             this.buttonRevive.UseVisualStyleBackColor = true;
@@ -1419,8 +1426,8 @@
             // 
             // buttonGet
             // 
-            this.buttonGet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonGet.Location = new System.Drawing.Point(91, 195);
+            this.buttonGet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonGet.Location = new System.Drawing.Point(3, 185);
             this.buttonGet.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonGet.Name = "buttonGet";
             this.buttonGet.Size = new System.Drawing.Size(69, 35);
@@ -1433,7 +1440,7 @@
             this.listBoxEntities.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxEntities.FormattingEnabled = true;
             this.listBoxEntities.ItemHeight = 20;
-            this.listBoxEntities.Location = new System.Drawing.Point(2, 6);
+            this.listBoxEntities.Location = new System.Drawing.Point(3, 5);
             this.listBoxEntities.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.listBoxEntities.Name = "listBoxEntities";
             this.listBoxEntities.Size = new System.Drawing.Size(250, 104);
@@ -1444,7 +1451,7 @@
             this.listBoxItems.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxItems.FormattingEnabled = true;
             this.listBoxItems.ItemHeight = 20;
-            this.listBoxItems.Location = new System.Drawing.Point(2, 117);
+            this.listBoxItems.Location = new System.Drawing.Point(2, 223);
             this.listBoxItems.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.listBoxItems.Name = "listBoxItems";
             this.listBoxItems.Size = new System.Drawing.Size(250, 124);
@@ -1456,10 +1463,12 @@
             this.panelObjects.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelObjects.Controls.Add(this.listBoxEntities);
             this.panelObjects.Controls.Add(this.listBoxItems);
+            this.panelObjects.Controls.Add(this.buttonAttack);
+            this.panelObjects.Controls.Add(this.buttonGet);
             this.panelObjects.Location = new System.Drawing.Point(774, 504);
             this.panelObjects.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelObjects.Name = "panelObjects";
-            this.panelObjects.Size = new System.Drawing.Size(258, 250);
+            this.panelObjects.Size = new System.Drawing.Size(258, 356);
             this.panelObjects.TabIndex = 20;
             this.panelObjects.Visible = false;
             // 
@@ -1468,31 +1477,16 @@
             this.panelAccount.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelAccount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panelAccount.Controls.Add(this.buttonInspect);
-            this.panelAccount.Controls.Add(this.buttonRevive);
             this.panelAccount.Controls.Add(this.listBoxPCs);
             this.panelAccount.Controls.Add(this.pictureBoxPC);
+            this.panelAccount.Controls.Add(this.panelStats);
             this.panelAccount.Controls.Add(this.buttonStart);
-            this.panelAccount.Controls.Add(this.buttonHide);
             this.panelAccount.Controls.Add(this.buttonSettings);
-            this.panelAccount.Controls.Add(this.buttonLook);
             this.panelAccount.Location = new System.Drawing.Point(3, 688);
             this.panelAccount.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelAccount.Name = "panelAccount";
             this.panelAccount.Size = new System.Drawing.Size(589, 172);
             this.panelAccount.TabIndex = 16;
-            // 
-            // buttonInspect
-            // 
-            this.buttonInspect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonInspect.Location = new System.Drawing.Point(499, 92);
-            this.buttonInspect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.buttonInspect.Name = "buttonInspect";
-            this.buttonInspect.Size = new System.Drawing.Size(84, 35);
-            this.buttonInspect.TabIndex = 16;
-            this.buttonInspect.Text = "&Inspect";
-            this.buttonInspect.UseVisualStyleBackColor = true;
-            this.buttonInspect.Click += new System.EventHandler(this.buttonInspect_Click);
             // 
             // listBoxPCs
             // 
@@ -1502,30 +1496,54 @@
             this.listBoxPCs.Font = new System.Drawing.Font("Segoe Script", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.listBoxPCs.FormattingEnabled = true;
             this.listBoxPCs.ItemHeight = 20;
-            this.listBoxPCs.Location = new System.Drawing.Point(113, 5);
+            this.listBoxPCs.Location = new System.Drawing.Point(17, 5);
             this.listBoxPCs.Name = "listBoxPCs";
-            this.listBoxPCs.Size = new System.Drawing.Size(379, 164);
+            this.listBoxPCs.Size = new System.Drawing.Size(332, 164);
             this.listBoxPCs.TabIndex = 15;
             this.listBoxPCs.SelectedIndexChanged += new System.EventHandler(this.listBoxPCs_SelectedIndexChanged);
+            // 
+            // buttonInspect
+            // 
+            this.buttonInspect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonInspect.Location = new System.Drawing.Point(90, 250);
+            this.buttonInspect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonInspect.Name = "buttonInspect";
+            this.buttonInspect.Size = new System.Drawing.Size(68, 35);
+            this.buttonInspect.TabIndex = 16;
+            this.buttonInspect.Text = "&Inspect";
+            this.buttonInspect.UseVisualStyleBackColor = true;
+            this.buttonInspect.Click += new System.EventHandler(this.buttonInspect_Click);
             // 
             // panelMovement
             // 
             this.panelMovement.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelMovement.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelMovement.Controls.Add(this.buttonRevive);
+            this.panelMovement.Controls.Add(this.buttonInspect);
             this.panelMovement.Controls.Add(this.buttonNorth);
-            this.panelMovement.Controls.Add(this.buttonGet);
             this.panelMovement.Controls.Add(this.buttonWest);
-            this.panelMovement.Controls.Add(this.buttonAttack);
+            this.panelMovement.Controls.Add(this.buttonHide);
             this.panelMovement.Controls.Add(this.buttonEast);
             this.panelMovement.Controls.Add(this.buttonSouth);
             this.panelMovement.Controls.Add(this.buttonUp);
+            this.panelMovement.Controls.Add(this.buttonLook);
             this.panelMovement.Controls.Add(this.buttonDown);
             this.panelMovement.Location = new System.Drawing.Point(600, 504);
             this.panelMovement.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panelMovement.Name = "panelMovement";
-            this.panelMovement.Size = new System.Drawing.Size(170, 250);
+            this.panelMovement.Size = new System.Drawing.Size(170, 356);
             this.panelMovement.TabIndex = 15;
             this.panelMovement.Visible = false;
+            // 
+            // labelAge
+            // 
+            this.labelAge.AutoSize = true;
+            this.labelAge.Location = new System.Drawing.Point(12, 66);
+            this.labelAge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.labelAge.Name = "labelAge";
+            this.labelAge.Size = new System.Drawing.Size(43, 20);
+            this.labelAge.TabIndex = 15;
+            this.labelAge.Text = "Age: ";
             // 
             // MainForm
             // 
@@ -1537,7 +1555,6 @@
             this.Controls.Add(this.panelObjects);
             this.Controls.Add(this.panelView);
             this.Controls.Add(this.panelChat);
-            this.Controls.Add(this.panelStats);
             this.Controls.Add(this.textBoxEvents);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -1738,6 +1755,7 @@
         private PictureBox pictureBoxTile43;
         private ListBox listBoxPCs;
         private Button buttonInspect;
+        private Label labelAge;
     }
 }
 

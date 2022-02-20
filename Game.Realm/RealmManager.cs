@@ -398,7 +398,7 @@ namespace Game.Realm
                 {
                     Areas[entity.Loc.AreaID]
                         .Hexes[entity.Loc.HexID - 1]
-                        .Players.Add((PC)entity);
+                        .PCs.Add((PC)entity);
                 }
             }
             else if (entity is NPC)
@@ -418,9 +418,9 @@ namespace Game.Realm
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    lock (hex.Players)
+                    lock (hex.PCs)
                     {
-                        foreach (PC player in hex.Players)
+                        foreach (PC player in hex.PCs)
                         {
                             if (player.ID == playerId)
                             {
@@ -463,7 +463,7 @@ namespace Game.Realm
                 }
 
                 var players = new Dictionary<int, Stats>();
-                foreach (var pc in hex.Players)
+                foreach (var pc in hex.PCs)
                 {
                     players.Add(pc.ID,
                         new Stats()
@@ -472,6 +472,7 @@ namespace Game.Realm
                             Name = pc.Name,
                             ImageName = pc.Name,
                             Facing = pc.Facing,
+                            Age = pc.Age,
                             Level = pc.Level,
                             Experience = pc.Experience,
                             Gold = pc.Gold,
@@ -499,6 +500,7 @@ namespace Game.Realm
                         ID = player.ID,
                         Name = player.Name,
                         Facing = player.Facing,
+                        Age = player.Age,
                         Level = player.Level,
                         Experience = player.Experience,
                         Gold = player.Gold,
@@ -535,9 +537,9 @@ namespace Game.Realm
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    lock (hex.Players)
+                    lock (hex.PCs)
                     {
-                        foreach (PC player in hex.Players)
+                        foreach (PC player in hex.PCs)
                         {
                             if (player.Conn != null)
                             {
@@ -622,18 +624,18 @@ namespace Game.Realm
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    lock (hex.Players)
+                    lock (hex.PCs)
                     {
-                        for (int i = 0; i < hex.Players.Count; i++)
+                        for (int i = 0; i < hex.PCs.Count; i++)
                         {
-                            if (playerId == 0 || hex.Players[i].ID == playerId)
+                            if (playerId == 0 || hex.PCs[i].ID == playerId)
                             {
-                                var player = (PC)hex.Players[i];
+                                var player = (PC)hex.PCs[i];
 
                                 if (player.Conn != null)
                                     player.Conn.Disconnect();
 
-                                hex.Players.RemoveAt(i);
+                                hex.PCs.RemoveAt(i);
                             }
                         }
                     }
@@ -758,14 +760,14 @@ namespace Game.Realm
                 {
                     var player = entity as PC;
 
-                    lock (hex.Players)
+                    lock (hex.PCs)
                     {
                         var playerIndex =
-                            hex.Players.FindIndex(p => p.ID == entity.ID);
+                            hex.PCs.FindIndex(p => p.ID == entity.ID);
 
-                        hex.Players.RemoveAt(playerIndex);
+                        hex.PCs.RemoveAt(playerIndex);
 
-                        foreach (var p in hex.Players)
+                        foreach (var p in hex.PCs)
                         {
                             WritePacket(p.Conn, packet);
                         }
@@ -775,9 +777,9 @@ namespace Game.Realm
 
                     string arriving = player.FullName + " enters the area.";
 
-                    lock (newHex.Players)
+                    lock (newHex.PCs)
                     {
-                        foreach (var p in newHex.Players)
+                        foreach (var p in newHex.PCs)
                         {
                             WritePacket(p.Conn,
                                 new Packet()
@@ -789,7 +791,7 @@ namespace Game.Realm
                                 });
                         }
 
-                        newHex.Players.Add(player);
+                        newHex.PCs.Add(player);
                         player.Loc.HexID = newHex.ID;
                     }
 
@@ -822,7 +824,7 @@ namespace Game.Realm
 
                         hex.NPCs.RemoveAt(npcIndex);
 
-                        foreach (var p in hex.Players)
+                        foreach (var p in hex.PCs)
                         {
                             WritePacket(p.Conn, packet);
                         }
@@ -833,9 +835,9 @@ namespace Game.Realm
 
                     string arriving = npc.FullName + " enters the area.";
 
-                    lock (newHex.Players)
+                    lock (newHex.PCs)
                     {
-                        foreach (var p in newHex.Players)
+                        foreach (var p in newHex.PCs)
                         {
                             WritePacket(p.Conn,
                                 new Packet()
@@ -899,7 +901,7 @@ namespace Game.Realm
 
         public void SayMessage(string message, int areaId, int hexId)
         {
-            foreach (PC player in Areas[areaId].Hexes[hexId - 1].Players)
+            foreach (PC player in Areas[areaId].Hexes[hexId - 1].PCs)
             {
                 WritePacket(player.Conn,
                     new Packet() { ActionType = ActionType.Text, Text = message });
@@ -910,7 +912,7 @@ namespace Game.Realm
         {
             foreach (Hex hex in Areas[areaId].Hexes)
             {
-                foreach (PC player in hex.Players)
+                foreach (PC player in hex.PCs)
                 {
                     WritePacket(player.Conn,
                         new Packet() { ActionType = ActionType.Text, Text = message });
@@ -924,7 +926,7 @@ namespace Game.Realm
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    foreach (PC player in hex.Players)
+                    foreach (PC player in hex.PCs)
                     {
                         if (player.Conn != null)
                         {
