@@ -420,6 +420,29 @@ namespace Game.Client
                     }
                     else if (packet.Tile != null)
                     {
+                        var tileFiles = new List<string>();
+
+                        if (packet.Tile.Tile1ID != null)
+                        {
+                            tileFiles.Add(this.GetImageFileName(packet.Tile.Tile1ID));
+                        }
+                        if (packet.Tile.Tile2ID != null)
+                        {
+                            tileFiles.Add(this.GetImageFileName(packet.Tile.Tile2ID));
+                        }
+                        if (packet.NPCs.Any())
+                        {
+                            tileFiles.Add(this.GetImageFileName(packet.NPCs.First().Value.ImageName));
+                        }
+                        if (packet.PCs.Any() && !packet.NPCs.Any())
+                        {
+                            tileFiles.Add(this.GetImageFileName(packet.PCs.First().Value.ImageName));
+                        }
+                        if (tileFiles.Any())
+                        {
+                            this.pictureBoxTile24.Image = CombineBitmap(tileFiles);
+                        }
+
                         //this.Tiles = packet.Tile;
 
                         //this.pictureBoxTile0.Image = null;
@@ -614,21 +637,24 @@ namespace Game.Client
 
         }
 
+        private string GetImageFileName(string imageName)
+        {
+            foreach (string s in ImageFilenames)
+            {
+                if (imageName == Path.GetFileNameWithoutExtension(s).ToLower())
+                {
+                    return s.ToLower();
+                }
+            }
+            return null;
+        }
+
         private Image ShowImage(string imageName)
         {
             if (!Config.Images)
                 return null;
 
-            foreach (string s in ImageFilenames)
-            {
-                if (imageName == Path.GetFileNameWithoutExtension(s))
-                {
-                    return Image.FromFile(s);
-                    //ShowCenterImage(image, s);
-                }
-            }
-
-            return null;
+            return Image.FromFile(GetImageFileName(imageName));
         }
 
         private void ShowCenterImage(Image image, string fileName)
@@ -641,6 +667,65 @@ namespace Game.Client
             //    (pictureBoxTile24.Image.Height / 2));
 
             //image.Refresh();
+        }
+
+        public static Bitmap CombineBitmap(IEnumerable<string> files)
+        {
+            //read all images into memory
+            List<Bitmap> images = new List<Bitmap>();
+            Bitmap finalImage = null;
+
+            try
+            {
+                int width = 0;
+                int height = 0;
+
+                foreach (string image in files)
+                {
+                    if (image != null)
+                    {
+                        // create a Bitmap from the file and add it to the list
+                        Bitmap bitmap = new Bitmap(image);
+
+                        // update the size of the final bitmap
+                        width += bitmap.Width;
+                        height = bitmap.Height > height ? bitmap.Height : height;
+
+                        images.Add(bitmap);
+                    }
+                }
+
+                // create a bitmap to hold the combined image
+                finalImage = new Bitmap(width, height);
+
+                // get a graphics object from the image so we can draw on it
+                using (Graphics g = Graphics.FromImage(finalImage))
+                {
+                    // set background color
+                    g.Clear(Color.Transparent);
+
+                    // go through each image and draw it on the final image
+                    foreach (Bitmap image in images)
+                    {
+                        g.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height));
+                    }
+                }
+
+                return finalImage;
+            }
+            catch (Exception)
+            {
+                if (finalImage != null) finalImage.Dispose();
+                throw;
+            }
+            finally
+            {
+                // clean up memory
+                foreach (Bitmap image in images)
+                {
+                    image.Dispose();
+                }
+            }
         }
 
         public void RefreshView(Tile tile)

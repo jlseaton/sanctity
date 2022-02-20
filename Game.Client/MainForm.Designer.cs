@@ -130,9 +130,9 @@
             this.listBoxItems = new System.Windows.Forms.ListBox();
             this.panelObjects = new System.Windows.Forms.Panel();
             this.panelAccount = new System.Windows.Forms.Panel();
+            this.buttonInspect = new System.Windows.Forms.Button();
             this.listBoxPCs = new System.Windows.Forms.ListBox();
             this.panelMovement = new System.Windows.Forms.Panel();
-            this.buttonInspect = new System.Windows.Forms.Button();
             this.panelStats.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPC)).BeginInit();
             this.panelChat.SuspendLayout();
@@ -1482,6 +1482,18 @@
             this.panelAccount.Size = new System.Drawing.Size(589, 172);
             this.panelAccount.TabIndex = 16;
             // 
+            // buttonInspect
+            // 
+            this.buttonInspect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonInspect.Location = new System.Drawing.Point(499, 92);
+            this.buttonInspect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonInspect.Name = "buttonInspect";
+            this.buttonInspect.Size = new System.Drawing.Size(84, 35);
+            this.buttonInspect.TabIndex = 16;
+            this.buttonInspect.Text = "&Inspect";
+            this.buttonInspect.UseVisualStyleBackColor = true;
+            this.buttonInspect.Click += new System.EventHandler(this.buttonInspect_Click);
+            // 
             // listBoxPCs
             // 
             this.listBoxPCs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -1515,18 +1527,6 @@
             this.panelMovement.TabIndex = 15;
             this.panelMovement.Visible = false;
             // 
-            // buttonInspect
-            // 
-            this.buttonInspect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonInspect.Location = new System.Drawing.Point(499, 92);
-            this.buttonInspect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.buttonInspect.Name = "buttonInspect";
-            this.buttonInspect.Size = new System.Drawing.Size(84, 35);
-            this.buttonInspect.TabIndex = 16;
-            this.buttonInspect.Text = "&Inspect";
-            this.buttonInspect.UseVisualStyleBackColor = true;
-            this.buttonInspect.Click += new System.EventHandler(this.buttonInspect_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -1542,7 +1542,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "MainForm";
-            this.Text = "Lords of Chaos: Sanctity";
+            this.Text = "Lords of Chaos: Sanctity\'s Edge";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);

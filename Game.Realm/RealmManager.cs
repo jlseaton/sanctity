@@ -451,6 +451,7 @@ namespace Game.Realm
                         new Stats()
                         {
                             ID = npc.ID,
+                            ImageName = npc.Name,
                             Name = npc.Name,
                             Facing = npc.Facing,
                             HPs = npc.HitPoints,
@@ -462,21 +463,22 @@ namespace Game.Realm
                 }
 
                 var players = new Dictionary<int, Stats>();
-                foreach (var p in hex.Players)
+                foreach (var pc in hex.Players)
                 {
-                    players.Add(p.ID,
+                    players.Add(pc.ID,
                         new Stats()
                         {
-                            ID = p.ID,
-                            Name = p.Name,
-                            Facing = p.Facing,
-                            Level = p.Level,
-                            Experience = p.Experience,
-                            Gold = p.Gold,
-                            HPs = p.HitPoints,
-                            MaxHPs = p.MaxHitPoints,
-                            MPs = p.ManaPoints,
-                            MaxMPs = p.MaxManaPoints
+                            ID = pc.ID,
+                            Name = pc.Name,
+                            ImageName = pc.Name,
+                            Facing = pc.Facing,
+                            Level = pc.Level,
+                            Experience = pc.Experience,
+                            Gold = pc.Gold,
+                            HPs = pc.HitPoints,
+                            MaxHPs = pc.MaxHitPoints,
+                            MPs = pc.ManaPoints,
+                            MaxMPs = pc.MaxManaPoints
                         });
                 }
 
@@ -508,7 +510,7 @@ namespace Game.Realm
 
                     Tile = hex.Tile,
                     NPCs = npcs,
-                    Players = players,
+                    PCs = players,
                     Items = items,
                 };
 

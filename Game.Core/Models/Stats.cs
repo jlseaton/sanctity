@@ -4,6 +4,7 @@
     {
         public int ID { get; set; }
         public string Name { get; set; }
+        public string ImageName { get; set; }
 
         public int HPs { get; set; }
         public int MaxHPs { get; set; }

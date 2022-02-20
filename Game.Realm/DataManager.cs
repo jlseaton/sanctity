@@ -21,6 +21,7 @@ namespace Game.Realm
                     ID = 1,
                     Tile = new Tile()
                     {
+                        Tile2ID = "stairsup",
                         Name = "Dungeon Entrance",
                         East = 2,
                         Up = -1,
@@ -165,6 +166,7 @@ namespace Game.Realm
                     Name = "Stairway to the Unknown",
                     Tile = new Tile()
                     {
+                        Tile2ID = "stairsup",
                         North = 8,
                         West = 11,
                         Down = -1,
@@ -507,9 +509,11 @@ namespace Game.Realm
             var demoInven = new List<Item>();
             demoInven.Add(vorpal);
 
+            var id = 1;
+
             NPCs.Add(new NPC()
             {
-                ID = 1,
+                ID = id++,
                 QuestID = 1,
                 Origin = "Gaping Maw",
                 Type = EntityType.NPC,
@@ -537,7 +541,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 2,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 1,
                 Alignment = AlignmentType.Neutral,
@@ -558,7 +562,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 3,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.Neutral,
@@ -578,7 +582,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 4,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.Neutral,
@@ -599,7 +603,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 5,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 5,
                 Alignment = AlignmentType.Neutral,
@@ -620,7 +624,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 6,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 3,
                 Alignment = AlignmentType.Neutral,
@@ -641,7 +645,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 7,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 3,
                 Alignment = AlignmentType.ChaoticEvil,
@@ -662,7 +666,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 8,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 1,
                 Alignment = AlignmentType.Neutral,
@@ -687,7 +691,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 9,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.ChaoticEvil,
@@ -708,7 +712,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 10,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 15,
                 Size = SizeType.Monstrous,
@@ -732,7 +736,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 11,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.ChaoticEvil,
@@ -753,7 +757,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 12,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.ChaoticEvil,
@@ -774,7 +778,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 13,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.ChaoticEvil,
@@ -795,7 +799,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 14,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.LawfulGood,
@@ -816,7 +820,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 15,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.Neutral,
@@ -836,7 +840,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 16,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.Neutral,
@@ -856,7 +860,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 17,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.Neutral,
@@ -876,7 +880,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 18,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 5,
                 Alignment = AlignmentType.Neutral,
@@ -897,7 +901,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 19,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 5,
                 Alignment = AlignmentType.Neutral,
@@ -918,7 +922,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 20,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.Neutral,
@@ -938,7 +942,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 21,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.Neutral,
@@ -958,7 +962,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 22,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Alignment = AlignmentType.Neutral,
@@ -978,7 +982,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 23,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 7,
                 Alignment = AlignmentType.ChaoticEvil,
@@ -998,7 +1002,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 24,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 11,
                 Alignment = AlignmentType.ChaoticEvil,
@@ -1019,7 +1023,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 25,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 11,
                 Alignment = AlignmentType.LawfulEvil,
@@ -1040,7 +1044,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 26,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 11,
                 Alignment = AlignmentType.LawfulGood,
@@ -1060,7 +1064,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 27,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 11,
                 Alignment = AlignmentType.LawfulGood,
@@ -1080,7 +1084,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 28,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 11,
                 Alignment = AlignmentType.Neutral,
@@ -1100,7 +1104,7 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = 29,
+                ID = id++,
                 Type = EntityType.NPC,
                 Level = 3,
                 Alignment = AlignmentType.Neutral,
@@ -1126,9 +1130,11 @@ namespace Game.Realm
         {
             List<Item> Items = new List<Item>();
 
+            var id = 1;
+
             Items.Add(new Item()
             {
-                ID = 1,
+                ID = id++,
                 QuestID = 1,
                 Type = ItemType.Weapon,
                 Article = "a",
@@ -1143,7 +1149,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 2,
+                ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
                 Name = "staff",
@@ -1154,7 +1160,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 3,
+                ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
                 Name = "dagger",
@@ -1165,7 +1171,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 4,
+                ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
                 Name = "mace",
@@ -1176,7 +1182,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 5,
+                ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
                 Name = "longsword",
@@ -1187,7 +1193,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 6,
+                ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
                 Name = "two-handed sword",
@@ -1198,7 +1204,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 7,
+                ID = id++,
                 Type = ItemType.Armor,
                 Article = "a",
                 Name = "leather armor",
@@ -1208,7 +1214,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 8,
+                ID = id++,
                 Type = ItemType.Armor,
                 Article = "a",
                 Name = "chainmail",
@@ -1218,7 +1224,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 9,
+                ID = id++,
                 Type = ItemType.Armor,
                 Article = "a",
                 Name = "buckler shield",
@@ -1228,7 +1234,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 10,
+                ID = id++,
                 Type = ItemType.Treasure,
                 Article = "a",
                 Name = "chest",
@@ -1237,7 +1243,7 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = 11,
+                ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
                 Name = "longbow",
@@ -1253,9 +1259,11 @@ namespace Game.Realm
         {
             List<Effect> Effects = new List<Effect>();
 
+            var id = 1;
+
             Effects.Add(new Effect()
             {
-                ID = 1,
+                ID = id++,
                 Name = "behead",
                 Type = EffectType.Death,
                 Damage = DamageType.Acid,
@@ -1268,7 +1276,7 @@ namespace Game.Realm
 
             Effects.Add(new Effect()
             {
-                ID = 2,
+                ID = id++,
                 Name = "dragonfire",
                 Type = EffectType.Damage,
                 Damage = DamageType.Fire,
@@ -1281,7 +1289,7 @@ namespace Game.Realm
 
             Effects.Add(new Effect()
             {
-                ID = 3,
+                ID = id++,
                 Name = "dragonfear",
                 Type = EffectType.Stun,
                 Damage = DamageType.Mental,
@@ -1300,9 +1308,11 @@ namespace Game.Realm
         {
             List<Quest> Quests = new List<Quest>();
 
+            var id = 1;
+
             Quests.Add(new Quest()
             {
-                ID = 1,
+                ID = id++,
                 Name = "Sanctity's Edge",
                 Description = "Main quest line.",
                 RewardText = "You have completed the game.",
