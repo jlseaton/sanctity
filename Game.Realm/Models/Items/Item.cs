@@ -14,6 +14,7 @@ namespace Game.Realm
 
         public int MinDamage { get; set; }
         public int MaxDamage { get; set; }
+        public int Range { get; set; }
         public bool IsWeapon
         {
             get

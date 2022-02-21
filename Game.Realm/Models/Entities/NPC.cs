@@ -24,6 +24,7 @@ namespace Game.Realm
         public NPC() : base()
         {
             Type = EntityType.NPC;
+            ImageName = Name;
         }
 
         public new NPC Clone()

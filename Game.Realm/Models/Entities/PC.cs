@@ -8,6 +8,23 @@ namespace Game.Realm
         public string Token { get; private set; }
         public string Secret { get; private set; }
         public bool Authenticated { get; private set; }
+        public new string FullName
+        {
+            get
+            {
+                if (!String.IsNullOrEmpty(Article))
+                {
+                    return Article + " " + Name;
+                }
+
+                if (!String.IsNullOrEmpty(Surname))
+                {
+                    return Name + " " + Surname;
+                }
+
+                return Name;
+            }
+        }
 
         public Connection Conn { get; set; }
 

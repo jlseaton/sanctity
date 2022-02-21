@@ -34,7 +34,7 @@
 
         public Tile()
         {
-            Tile1ID = "grasses1";
+            Tile1ID = "grassdark1";
             SoundID = "ambient";
         }
 

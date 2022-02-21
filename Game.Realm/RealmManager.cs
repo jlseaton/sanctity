@@ -451,7 +451,7 @@ namespace Game.Realm
                         new Stats()
                         {
                             ID = npc.ID,
-                            ImageName = npc.Name,
+                            ImageName = npc.ImageName,
                             Name = npc.Name,
                             Facing = npc.Facing,
                             HPs = npc.HitPoints,
@@ -469,8 +469,8 @@ namespace Game.Realm
                         new Stats()
                         {
                             ID = pc.ID,
-                            Name = pc.Name,
-                            ImageName = pc.Name,
+                            Name = pc.FullName,
+                            ImageName = pc.ImageName,
                             Facing = pc.Facing,
                             Age = pc.Age,
                             Level = pc.Level,

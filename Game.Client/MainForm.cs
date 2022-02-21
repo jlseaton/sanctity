@@ -8,25 +8,20 @@ namespace Game.Client
     {
         #region Fields
 
-        private Config Config = new Config();
-
         private WaveOut Music = new WaveOut();
         private WaveOut Sounds = new WaveOut();
         private AudioEngine Audio = new AudioEngine();
 
+        private Config Config = new Config();
         private Connection? Conn;
-
         private RealmManager Realm;
 
         private Tile[] Tiles { get; set; }
-
         private Stats Stats { get; set; }
-
-        private string[] MusicFilenames;
-        private string[] SoundFilenames;
-        private string[] ImageFilenames;
-
         private List<PC> PCs = new List<PC>();
+
+        private string[] 
+            MusicFilenames, SoundFilenames, ImageFilenames;
 
         #endregion
 
@@ -57,8 +52,8 @@ namespace Game.Client
 
             foreach(var pc in PCs)
             {
-                this.listBoxPCs.Items.Add(pc.Name + ", the " + pc.Race + " " 
-                    + pc.Class + " (" + pc.Level.ToString() + ")");
+                this.listBoxPCs.Items.Add(pc.Name + ", the " + pc.Race + " " +
+                    " Level " + pc.Level.ToString() + " " + pc.Class);
             }
 
             Config = new Config().LoadConfig("config.xml");
@@ -70,7 +65,11 @@ namespace Game.Client
 
             this.listBoxPCs.SelectedIndex = 0;
 
-            PlayMusic(@"ambient.mp3", true);
+            this.BackgroundImage = ShowImage("skin");
+            this.pictureBoxStatus.BackgroundImage = ShowImage("hourglass");
+            this.pictureBoxPC.BackgroundImage = ShowImage("stars1");
+
+            PlayMusic("ambient1");
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -83,18 +82,22 @@ namespace Game.Client
             else if (keyData == Keys.Up)
             {
                 buttonNorth_Click(this, null);
+                return true;
             }
             else if (keyData == Keys.Down)
             {
                 buttonSouth_Click(this, null);
+                return true;
             }
             else if (keyData == Keys.Right)
             {
                 buttonEast_Click(this, null);
+                return true;
             }
             else if (keyData == Keys.Left)
             {
                 buttonWest_Click(this, null);
+                return true;
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -261,7 +264,7 @@ namespace Game.Client
                         if (packet.Text.Contains("You have died"))
                         {
                             Music.Stop();
-                            PlayMusic(@"death.mp3");
+                            PlayMusic("death1");
                         }
                     }
 
@@ -269,29 +272,106 @@ namespace Game.Client
                     {
                         buttonStart_Click(this, null);
                     }
-                    else if (packet.Tile != null)
+                    else if (packet.ActionType == ActionType.Status && packet.Tile != null)
                     {
+                        var tileFileName = String.Empty;
                         var tileFiles = new List<string>();
 
                         if (packet.Tile.Tile1ID != null)
                         {
-                            tileFiles.Add(this.GetImageFileName(packet.Tile.Tile1ID));
+                            tileFileName = GetIndexedFileName(this.ImageFilenames, packet.Tile.Tile1ID);
+                            if (!String.IsNullOrEmpty(tileFileName))
+                            {
+                                tileFiles.Add(tileFileName);
+                            }
                         }
                         if (packet.Tile.Tile2ID != null)
                         {
-                            tileFiles.Add(this.GetImageFileName(packet.Tile.Tile2ID));
+                            tileFileName = GetIndexedFileName(this.ImageFilenames, packet.Tile.Tile2ID);
+                            if (!String.IsNullOrEmpty(tileFileName))
+                            {
+                                tileFiles.Add(tileFileName);
+                            }
                         }
+                        if (Stats != null && !String.IsNullOrEmpty(Stats.ImageName))
+                        {
+                            tileFileName = this.GetIndexedFileName(this.ImageFilenames, Stats.ImageName);
+                            if (!String.IsNullOrEmpty(tileFileName))
+                            {
+                                tileFiles.Add(tileFileName);
+                            }
+                        }
+                        this.pictureBoxNPC1.Image = null;
+                        this.pictureBoxNPC2.Image = null;
+                        this.pictureBoxNPC3.Image = null;
+                        this.pictureBoxNPC4.Image = null;
+                        this.pictureBoxNPC5.Image = null;
+                        this.pictureBoxNPC6.Image = null;
+                        this.pictureBoxNPC7.Image = null;
+                        this.pictureBoxNPC8.Image = null;
+                        this.pictureBoxNPC9.Image = null;
+                        this.pictureBoxNPC10.Image = null;
                         if (packet.NPCs.Any())
                         {
-                            tileFiles.Add(this.GetImageFileName(packet.NPCs.First().Value.ImageName));
+                            int npcCount = 1;
+                            foreach(var npc in packet.NPCs)
+                            {
+                                tileFileName = this.GetIndexedFileName(this.ImageFilenames, npc.Value.Name);
+                                if (!String.IsNullOrEmpty(tileFileName))
+                                {
+                                    foreach(Control c in this.panelNPCs.Controls)
+                                    {
+                                        if (c.Name == "pictureBoxNPC" + npcCount.ToString())
+                                        {
+                                            var p = (PictureBox)c;
+                                            p.Image = ShowImage(npc.Value.Name);
+                                        }
+                                    }
+                                }
+
+                                npcCount++;
+
+                                if (npcCount > 9)
+                                    break;
+                            }
                         }
-                        if (packet.PCs.Any() && !packet.NPCs.Any())
+                        this.pictureBoxPC1.Image = null;
+                        this.pictureBoxPC2.Image = null;
+                        this.pictureBoxPC3.Image = null;
+                        this.pictureBoxPC4.Image = null;
+                        this.pictureBoxPC5.Image = null;
+                        this.pictureBoxPC6.Image = null;
+                        this.pictureBoxPC7.Image = null;
+                        this.pictureBoxPC8.Image = null;
+                        this.pictureBoxPC9.Image = null;
+                        this.pictureBoxPC10.Image = null;
+                        if (packet.PCs.Any())
                         {
-                            tileFiles.Add(this.GetImageFileName(packet.PCs.First().Value.ImageName));
+                            int npcCount = 1;
+                            foreach (var pc in packet.PCs)
+                            {
+                                tileFileName = this.GetIndexedFileName(this.ImageFilenames, pc.Value.ImageName);
+                                if (!String.IsNullOrEmpty(tileFileName))
+                                {
+                                    foreach (Control c in this.panelPCs.Controls)
+                                    {
+                                        if (c.Name == "pictureBoxPC" + npcCount.ToString())
+                                        {
+                                            var p = (PictureBox)c;
+                                            p.Image = ShowImage(pc.Value.ImageName);
+                                        }
+                                    }
+                                }
+
+                                npcCount++;
+
+                                if (npcCount > 9)
+                                    break;
+                            }
                         }
                         if (tileFiles.Any())
                         {
-                            this.pictureBoxTile24.Image = CombineBitmap(tileFiles);
+                            this.pictureBoxTilesMain.Image = CombineBitmap(tileFiles);
                         }
 
                         //this.Tiles = packet.Tile;
@@ -325,6 +405,7 @@ namespace Game.Client
                             //}
 
                             Stats = packet.Health;
+                            this.labelPCName.Text = Stats.Name;
                             this.labelAge.Text = "Age: " + Stats.Age.ToString();
                             this.labelLevel.Text = "Level: " + Stats.Level.ToString();
                             this.labelExperience.Text = "Exp: " + Stats.Experience.ToString();
@@ -362,14 +443,22 @@ namespace Game.Client
                             this.listBoxEntities.Items.Clear();
                         }
 
-                        if (packet.Items != null && packet.Items.Any())
+                        if (packet.PCs != null && packet.PCs.Any())
                         {
                             int selected = this.listBoxItems.SelectedIndex;
                             this.listBoxItems.Items.Clear();
 
-                            foreach (var item in packet.Items)
+                            foreach (var s in packet.PCs)
                             {
-                                this.listBoxItems.Items.Add(item.Value.Trim());
+                                this.listBoxItems.Items.Add(s.Value.Name.Trim());
+                            }
+
+                            if (packet.Items != null && packet.Items.Any())
+                            {
+                                foreach (var i in packet.Items)
+                                {
+                                    this.listBoxItems.Items.Add(i.Value.Trim());
+                                }
                             }
 
                             this.listBoxItems.SelectedIndex = selected;
@@ -401,7 +490,7 @@ namespace Game.Client
                 Conn.SendPacket(packet);
                 Conn.Disconnect();
                 Music.Stop();
-                PlayMusic(@"ambient.mp3");
+                PlayMusic("ambient1");
                 RefreshStatus();
 
                 if (!Config.ServerMode)
@@ -449,7 +538,7 @@ namespace Game.Client
                     if (SendPacket(join))
                     {
                         Music.Stop();
-                        PlayMusic(@"entrance.mp3");
+                        PlayMusic("entrance1");
                     }
 
                     RefreshStatus();
@@ -527,21 +616,22 @@ namespace Game.Client
                     this.panelTiles.Visible = false;
                     this.panelPCs.Visible = false;
                     this.listBoxPCs.Enabled = true;
-                    panelView.BackgroundImage = ShowImage("background");//, panelView.BackgroundImage);
+                    panelView.BackgroundImage = ShowImage("loctitle");
                 }
             }
         }
 
-        private string GetImageFileName(string imageName)
+        private string GetIndexedFileName(string[] list, string name)
         {
-            foreach (string s in ImageFilenames)
+            foreach (string s in list)
             {
-                if (imageName == Path.GetFileNameWithoutExtension(s).ToLower())
+                if (name == 
+                    Path.GetFileNameWithoutExtension(s).ToLower())
                 {
                     return s.ToLower();
                 }
             }
-            return null;
+            return String.Empty;
         }
 
         private Image ShowImage(string imageName)
@@ -549,7 +639,7 @@ namespace Game.Client
             if (!Config.Images)
                 return null;
 
-            return Image.FromFile(GetImageFileName(imageName));
+            return Image.FromFile(GetIndexedFileName(this.ImageFilenames, imageName));
         }
 
         private void ShowCenterImage(Image image, string fileName)
@@ -792,11 +882,20 @@ namespace Game.Client
             {
                 var sound = Randomizer.Next(3);
                 if (sound == 0)
-                    PlaySound(@"sword1.wav");
+                {
+                    PlaySound("sword1");
+                    //PlayMusic("combat1");
+                }
                 else if (sound == 1)
-                    PlaySound(@"sword2.wav");
+                {
+                    PlaySound("sword2");
+                    //PlayMusic("combat1");
+                }
                 else
-                    PlaySound(@"arrow1.wav");
+                {
+                    PlaySound("arrow1");
+                    //PlayMusic("combat1");
+                }
 
                 string npcName = this.listBoxEntities.SelectedItem.ToString();
                 int found = npcName.IndexOf("(");
@@ -809,8 +908,6 @@ namespace Game.Client
                 });
 
                 Thread.Sleep(1000); // Simulate a delay in attacking, TODO: Use player attack speed
-
-                PlayMusic(@"combat.mp3");
             }
 
             this.buttonAttack.Enabled = true;
@@ -820,15 +917,20 @@ namespace Game.Client
 
         #region Sound
 
-        private void PlayMusic(string fileName, bool loop = false)
+        private void PlayMusic(string name, bool loop = false)
         {
             if (Config.Music)
             {
                 try
                 {
+                    var fileName = GetIndexedFileName(MusicFilenames, name);
+
+                    Music.Stop();
+                    Music.Volume = 0.1F;
+
                     if (loop)
                     {
-                        var r = new Mp3FileReader(@"music\" + fileName);
+                        var r = new Mp3FileReader(fileName);
                         var loopStream = new LoopStream(r);
                         Music.Init(loopStream);
                         Music.Play();
@@ -838,7 +940,7 @@ namespace Game.Client
                     }
                     else
                     {
-                        AudioEngine.Instance.PlaySound(@"music\" + fileName);
+                        AudioEngine.Instance.PlaySound(fileName);
                     }
                 }
                 catch (Exception ex)
@@ -848,13 +950,15 @@ namespace Game.Client
             }
         }
 
-        private void PlaySound(string fileName)
+        private void PlaySound(string name)
         {
             if (Config.Sounds)
             {
                 try
                 {
-                    var r = new Mp3FileReader(@"sounds\" + fileName);
+                    var fileName = GetIndexedFileName(MusicFilenames, name);
+
+                    var r = new Mp3FileReader(fileName);
                     Sounds.Init(r);
                     Sounds.Play();
                     AudioEngine.Instance.PlaySound(fileName);
