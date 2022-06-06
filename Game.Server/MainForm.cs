@@ -147,7 +147,7 @@ namespace Game.Server
 
                     Conn.Client = client;
 
-                    PC? PC = Realm.FindPlayer(packet.ID);
+                    PC? PC = Realm.FindPC(packet.ID);
 
                     if (PC != null)
                     {
@@ -359,8 +359,8 @@ namespace Game.Server
                             {
                                 listBoxPlayers.Items.Add(PC.Name + ", HexID:" +
                                     PC.Loc.HexID.ToString() +
-                                    ", HPs: " + PC.HitPoints.ToString() +
-                                    "/" + PC.MaxHitPoints.ToString());
+                                    ", HPs: " + PC.HPs.ToString() +
+                                    "/" + PC.MaxHPs.ToString());
                             }
                         }
                     }
@@ -553,13 +553,11 @@ namespace Game.Server
                 }
                 else
                 {
-                    string formattedText = DateTime.Now.ToString() + ", " + message + "\r\n";
+                    string formattedText = DateTime.Now.ToString() + ", " + message;
 
                     lock (textBoxEvents)
                     {
                         textBoxEvents.AppendText(formattedText);
-                        textBoxEvents.SelectionStart = textBoxEvents.Text.Length;
-                        textBoxEvents.ScrollToCaret();
                     }
                 }
             }

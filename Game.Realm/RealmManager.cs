@@ -32,7 +32,8 @@ namespace Game.Realm
 
         #region Application
 
-        public RealmManager(int id, string name, int roundDuration = 2000, int pulseRate = 2000)
+        public RealmManager(int id, string name = "Dungeon Lab", 
+            int roundDuration = 2000, int pulseRate = 2000)
         {
             ID = id;
             Name = name;
@@ -86,62 +87,64 @@ namespace Game.Realm
             foreach (var e in GetEncounterNPCs(EncounterType.Insect, 4).ToList())
             {
                 e.Loc.HexID = 2;
-                Areas[0].Hexes[1].NPCs.Add(e);
+                Areas[1].Hexes[1].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Undead, 4).ToList())
             {
                 e.Loc.HexID = 3;
-                Areas[0].Hexes[2].NPCs.Add(e);
+                Areas[1].Hexes[2].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.RareUndead, 3).ToList())
             {
                 e.Loc.HexID = 4;
-                Areas[0].Hexes[3].NPCs.Add(e);
+                Areas[1].Hexes[3].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Common, 5).ToList())
             {
-                e.Loc.HexID = 8;
-                Areas[0].Hexes[7].NPCs.Add(e);
+                e.Loc.HexID = 6;
+                Areas[1].Hexes[5].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Animal, 8).ToList())
             {
                 e.Loc.HexID = 8;
-                Areas[0].Hexes[7].NPCs.Add(e);
+                Areas[1].Hexes[7].NPCs.Add(e);
             }
 
-            foreach (var e in GetEncounterNPCs(EncounterType.VeryRare, 5).ToList())
+            foreach (var e in GetEncounterNPCs(EncounterType.Aquatic, 5).ToList())
             {
                 e.Loc.HexID = 10;
-                Areas[0].Hexes[9].NPCs.Add(e);
+                Areas[1].Hexes[9].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Demonic, 5).ToList())
             {
                 e.Loc.HexID = 11;
-                Areas[0].Hexes[10].NPCs.Add(e);
+                Areas[1].Hexes[10].NPCs.Add(e);
+            }
+
+            foreach (var e in GetEncounterNPCs(EncounterType.VeryRare, 5).ToList())
+            {
+                e.Loc.HexID = 11;
+                Areas[1].Hexes[10].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.DragonKind, 8).ToList())
             {
                 e.Loc.HexID = 5;
-                Areas[0].Hexes[4].NPCs.Add(e);
+                Areas[1].Hexes[4].NPCs.Add(e);
             }
 
-            //var minotaur = GetEncounterNPCs(EncounterType.VeryRare, 5, 9).Single();
-            //minotaur.Loc.HexID = 12;
-            //Areas[0].Hexes[11].NPCs.Add(minotaur);
-
-            //var dragon = GetEncounterNPCs(EncounterType.DragonKind, 1).Single();
-            //dragon.Loc.HexID = 5;
-            //Areas[0].Hexes[4].NPCs.Add(dragon);
-
-            var demogorgon = GetEncounterNPCs(EncounterType.Unique, 1, 1).Single();
+            var demogorgon = GetEncounterNPCs(EncounterType.Unique, 1, 10000).Single();
             demogorgon.Loc.HexID = 9;
-            Areas[0].Hexes[8].NPCs.Add(demogorgon);
+            Areas[1].Hexes[8].NPCs.Add(demogorgon);
+
+            var seer = GetEncounterNPCs(EncounterType.Unique, 1, 10001).Single();
+            seer.Loc.HexID = 7;
+            Areas[1].Hexes[6].NPCs.Add(seer);
         }
 
         public void ProcessEvents()
@@ -161,7 +164,7 @@ namespace Game.Realm
                                 if (npc.State != StateType.Dead && (npc.State == StateType.Combat ||
                                     npc.Mood >= MoodType.Aggressive))
                                 {
-                                    var target = FindPlayer(npc.LastAttackerID);
+                                    var target = FindPC(npc.LastAttackerID);
 
                                     if (target != null && target.Loc.HexID ==
                                         npc.Loc.HexID &&
@@ -188,8 +191,8 @@ namespace Game.Realm
                                         //RemoveEntity(npc);
                                         // Resurrect for now
                                         npc.State = StateType.Normal;
-                                        npc.HitPoints = npc.MaxHitPoints;
-                                        npc.ManaPoints = npc.MaxManaPoints;
+                                        npc.HPs = npc.MaxHPs;
+                                        npc.MPs = npc.MaxMPs;
                                         npc.Mood = MoodType.Normal;
                                         npc.Followed = 0;
                                     }
@@ -211,162 +214,398 @@ namespace Game.Realm
 
         public string HandlePacket(Packet packet, int playerId)
         {
-            PC player = null;
+            PC? player = null;
+            Entity? target = null;
             string result = String.Empty;
 
-            switch (packet.ActionType)
+            // This join only occurs in local single player mode
+            if (packet.ActionType == ActionType.Join)
             {
-                case ActionType.Join:
-                    AddPlayer(playerId);
-                    break;
+                // Remove any previous instances of player
+                player = FindPC(playerId);
+                if (player != null)
+                {
+                    RemovePC(player.ID);
+                }
+                AddPlayer(playerId);
+                player = FindPC(playerId);
+                var joined = player.FullName + " has joined the realm.";
+                BroadcastMessage(joined);
+                SendPlayerStatusToHex(player.Loc, joined);
+                SendPlayerStatus(player.ID, "", true);
+            }
+            else
+            {
+                player = FindPC(playerId);
+            }
 
-                case ActionType.Exit:
-                    RemovePC(playerId);
-                    break;
+            if (player != null)
+            {
+                if (!String.IsNullOrEmpty(packet.Text))
+                {
+                    packet.Text = packet.Text.Trim();
 
-                case ActionType.Command:
-                    if (packet.Text.ToLower().Trim() == "look")
+                    if (packet.Text.StartsWith("/"))
                     {
-                        SendPlayerStatus(playerId, "", true);
+                        packet.ActionType = ActionType.Command;
+                        packet.Text = packet.Text.Replace("/", "").Trim().ToLower();
                     }
-                    else if (packet.Text.ToLower().Trim() == "hide")
-                    {
-                        player = FindPlayer(playerId);
+                }
 
-                        if (player != null)
+                // Find a PC or NPC, if a target ID is provided
+                if (packet.TargetID > 0)
+                {
+                    target = FindPC(packet.TargetID);
+
+                    if (target == null)
+                    {
+                        target = FindNPC(packet.TargetID);
+                    }
+                }
+
+                switch (packet.ActionType)
+                {
+                    case ActionType.Exit:
+                        var exitMessage = player.FullName + " has left the realm.";
+                        SendPlayerStatusToHex(player.Loc);
+                        BroadcastMessage(exitMessage);
+                        RemovePC(player.ID);
+                        break;
+
+                    case ActionType.Command:
+                        if (player.AccountType != AccountType.DungeonMaster && 
+                            (packet.Text.StartsWith("kill") ||
+                            packet.Text.StartsWith("hps") ||
+                            packet.Text.StartsWith("spawn") ||
+                            packet.Text.StartsWith("tp")))
+                        {
+                            SendPlayerMessage(player.ID, "You have no knowledge of how to use this power.");
+                            return "";
+                        }
+
+                        if (packet.Text.ToLower() == "help")
+                        {
+                            SendPlayerStatus(player.ID, "List of / commands:\r\nhelp, hps, kill, look, pvp, revive, spawn, tp");
+                        }
+                        else if (packet.Text.StartsWith("kill"))
+                        {
+                            string killResult = "Unable to kill target. Usage: kill <target name>";
+                            try
+                            {
+                                var killTarget = packet.Text.Split(" ")[1].Trim();
+                                if (killTarget != null)
+                                {
+                                    Entity killed = FindEntity(0, killTarget);
+                                    if (killed != null)
+                                    {
+                                        killed.Die();
+                                        killResult = killed.FullName + " has been killed by " + player.Name + "!";
+                                        SendPlayerStatusToHex(player.Loc);
+                                        BroadcastMessage(killResult);
+                                    }
+                                    else
+                                    {
+                                        SendPlayerMessage(player.ID, "Unable to find kill target " + killTarget + ".");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, killResult);
+                            }
+                        }
+                        else if (packet.Text.StartsWith("hps"))
+                        {
+                            string hpResult = "Unable to change maximum hit points. Usage: hps <hp amount>";
+                            try
+                            {
+                                var newHps = packet.Text.Split(" ")[1].Trim();
+                                if (newHps != null)
+                                {
+                                    player.MaxHPs = Int16.Parse(newHps);
+                                    player.Revive();
+                                    hpResult = player.FullName + " maximum hit points are now set to " + newHps;
+                                    SendPlayerStatusToHex(player.Loc, hpResult);
+                                }
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, hpResult);
+                            }
+                        }
+                        else if (packet.Text.StartsWith("spawn"))
+                        {
+                            string spawnResult = "Unable to spawn target. Usage: spawn <target name>";
+                            try
+                            {
+                                var spawnTarget = packet.Text.Split(" ")[1].Trim();
+                                if (spawnTarget != null)
+                                {
+                                    var spawn = NPCs.Where(npc => npc.Name.ToLower() == spawnTarget.ToLower()).Single();
+                                    if (spawn != null)
+                                    {
+                                        spawn.Loc = player.Loc;
+                                        Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].NPCs.Add(spawn);
+
+                                        spawnResult = spawn.FullName + " has been spawned by " + player.Name + "!";
+                                        SendPlayerStatusToHex(player.Loc);
+                                        BroadcastMessage(spawnResult);
+                                    }
+                                    else
+                                    {
+                                        SendPlayerMessage(player.ID, "Unable to find spawn target " + spawnTarget + ".");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, spawnResult);
+                            }
+                        }
+                        else if (packet.Text.StartsWith("tp"))
+                        {
+                            string tpResult = "Unable to teleport target. Usage: tp <target name> <area id> <hex id>";
+                            try
+                            {
+                                var name = packet.Text.Split(" ")[1].Trim();
+                                var areaId = packet.Text.Split(" ")[2].Trim();
+                                var hexId = packet.Text.Split(" ")[3].Trim();
+                                Entity tpTarget = FindEntity(0, name);
+                                if (tpTarget != null)
+                                {
+                                    var newAreaId = Int16.Parse(areaId);
+                                    var newHexId = Int16.Parse(hexId);
+
+                                    if (newAreaId >= 0 && newAreaId < Areas.Count &&
+                                        newHexId > 0 && newHexId <= Areas[newAreaId].Hexes.Count)
+                                    {
+                                        tpTarget.Loc.AreaID = newAreaId;
+                                        tpTarget.Loc.HexID = newHexId;
+                                        tpResult = tpTarget.FullName + " has been teleported here by " + player.Name + "!";
+                                        SendPlayerStatusToHex(player.Loc);
+                                        BroadcastMessage(tpResult);
+                                        SendPlayerStatus(player.ID, "", true);
+                                    }
+                                    else
+                                    {
+                                        SendPlayerStatus(player.ID, tpResult);
+                                    }
+                                }
+                                else
+                                {
+                                    SendPlayerStatus(player.ID, tpResult);
+                                }
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, tpResult);
+                            }
+                        }
+                        else if (packet.Text == "look")
+                        {
+                            SendPlayerStatus(player.ID, "", true);
+                        }
+                        else if (packet.Text.StartsWith("revive"))
+                        {
+                            if (target != null)
+                            {
+                                target.Revive();
+                                SendPlayerStatus(player.ID, target.Name + " has been revived by " + player.Name + "!");
+                            }
+                            else if (packet.Text.Contains("("))
+                            {
+                                var targetName = packet.Text.Split(" ")[1].Trim();
+
+                                if (!String.IsNullOrEmpty(targetName))
+                                {
+                                    var pc = FindPC(-1, targetName);
+                                    if (pc != null)
+                                    {
+                                        pc.Revive();
+                                        SendPlayerStatusToHex(pc.Loc,
+                                            pc.Name + " has been revived by " + player.Name + "!");
+                                    }
+                                    else
+                                    {
+                                        var npc = FindNPC(-1, targetName);
+                                        if (npc != null)
+                                        {
+                                            npc.Revive();
+                                            SendPlayerStatusToHex(npc.Loc,
+                                                npc.Name + " has been revived by " + player.Name + "!");
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                player.Revive();
+                                SendPlayerStatusToHex(player.Loc,
+                                    player.Name + " has been revived by " + player.Name + "!");
+                            }
+                        }
+                        else if (packet.Text == "pvp")
+                        {
+                            SendPlayerMessage(player.ID,
+                                "Usage: PVP <on/off>\r\nYour current PVP combat status: " +
+                                (player.PVP == true ? "ON" : "OFF"));
+                        }
+                        else if (packet.Text == "pvp on")
+                        {
+                            player.PVP = true;
+                            SendPlayerMessage(player.ID, "PVP combat is now turned ON.");
+                        }
+                        else if (packet.Text == "pvp off")
+                        {
+                            player.PVP = false;
+                            SendPlayerMessage(player.ID, "PVP combat is now turned OFF.");
+                        }
+                        else if (packet.Text == "hide")
                         {
                             if (player.State == StateType.Invisible)
                             {
                                 player.State = StateType.Normal;
-                                SendPlayerStatus(playerId, "You emerge from the shadows.");
+                                SendPlayerStatusToHex(player.Loc);
+                                SendPlayerMessage(player.ID, "You emerge from the shadows.");
                             }
                             else
                             {
                                 if (player.AttemptToHide())
                                 {
                                     player.State = StateType.Invisible;
-                                    SendPlayerStatus(playerId, "You hide in the shadows.");
+                                    SendPlayerStatusToHex(player.Loc);
+                                    SendPlayerMessage(player.ID, "You hide in the shadows.");
                                 }
                                 else
                                 {
                                     player.State = StateType.Normal;
-                                    SendPlayerStatus(playerId, "You fail to hide in the shadows.");
+                                    SendPlayerMessage(player.ID, "You fail to hide in the shadows.");
                                 }
                             }
                         }
-                    }
-                    else if (packet.Text.ToLower().Trim() == "inspect")
-                    {
-                        if (packet.TargetID <= 0)
+                        else if (packet.Text.StartsWith("inspect"))
                         {
-                            player = FindPlayer(playerId);
-                        }
-                        else
-                        {
-                            player = FindPlayer(packet.TargetID);
-                        }
-
-                        if (player != null)
-                        {
-                            SendPlayerStatus(playerId, player.Description);
-                        }
-                    }
-                    else if (packet.Text.ToLower().Trim() == "revive")
-                    {
-                        player = FindPlayer(playerId);
-
-                        if (player != null)
-                        {
-                            player.State = StateType.Normal;
-                            player.HitPoints = player.MaxHitPoints;
-
-                            SendPlayerStatus(playerId);
-
-                            SayMessage(player.FullName + " is revived!",
-                                player.Loc.AreaID, player.Loc.HexID);
-                        }
-                    }
-                    break;
-
-                case ActionType.Movement:
-                    player = FindPlayer(playerId);
-
-                    if (player != null)
-                    {
-                        if (player.State != StateType.Dead && player.State != StateType.Stunned)
-                        {
-                            Move(player, packet.Text);
-                        }
-                    }
-                    break;
-
-                case ActionType.Say:
-                    player = FindPlayer(playerId);
-
-                    if (player != null)
-                    {
-                        SayMessage(player.FullName + " says, \"" + packet.Text + "\"",
-                            player.Loc.AreaID, player.Loc.HexID);
-                    }
-                    break;
-
-                case ActionType.Yell:
-                    player = FindPlayer(playerId);
-
-                    if (player != null)
-                    {
-                        YellMessage(player.FullName + " yells, \"" + packet.Text + "\"",
-                            player.Loc.AreaID);
-                    }
-
-                    break;
-
-                case ActionType.Broadcast:
-                    if (player != null)
-                    {
-                        BroadcastMessage(player.FullName ?? String.Empty + ":" + packet.Text);
-                    }
-                    else
-                    {
-                        BroadcastMessage(packet.Text);
-                    }
-                    break;
-
-                case ActionType.Damage:
-                    try
-                    {
-                        player = FindPlayer(playerId);
-
-                        if (player.State != StateType.Dead && player.State != StateType.Stunned)
-                        {
-                            NPC target = null;
-                            try
+                            if (target != null)
                             {
-                                target =
-                                (NPC)Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1]
-                                    .NPCs.Where(n => n.Name.ToLower().StartsWith(packet.Text)).Single();
+                                SendPlayerStatus(player.ID, target.Description);
                             }
-                            catch { }
-
-                            if (player != null && target != null && (player.Loc.HexID == target.Loc.HexID))
+                            else if (packet.Text.Contains("("))
                             {
-                                lock (Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].NPCs)
+                                var inspectedName = packet.Text.Split(" ")[1].Trim();
+
+                                if (!String.IsNullOrEmpty(inspectedName))
                                 {
-                                    result = Combat.Attack(player, target);
+                                    var pc = FindPC(-1, inspectedName);
+                                    if (pc != null)
+                                    {
+                                        SendPlayerStatus(player.ID, pc.Description);
+                                    }
+                                    else
+                                    {
+                                        var npc = FindNPC(-1, inspectedName);
+                                        if (npc != null)
+                                        {
+                                            SendPlayerStatus(player.ID, npc.Description);
+                                        }
+                                    }
                                 }
                             }
                             else
                             {
-                                SendPlayerStatus(playerId, "Your target is out of reach.");
+                                SendPlayerStatus(player.ID, player.Description);
                             }
                         }
-                    }
-                    catch//(Exception ex)
-                    {
-                        return "Target was not found.";
-                    }
+                        else if (packet.Text.StartsWith("get"))
+                        {
+                            SendPlayerMessage(player.ID, "You cannot pick up items... yet!");
+                        }
+                        else
+                        {
+                            SendPlayerStatus(player.ID, "Command not recognized.");
+                        }
+                        break;
 
-                    break;
+                    case ActionType.Movement:
+                        if (player.State != StateType.Dead && 
+                            player.State != StateType.Stunned)
+                        {
+                            if (Move(player, packet.Text))
+                            {
+                                SendPlayerStatus(player.ID, "", true);
+                            }
+                        }
+                        break;
+
+                    case ActionType.Say:
+                        SayMessage(player.FullName + " says, \"" + packet.Text + "\"",
+                            player.Loc.AreaID, player.Loc.HexID);
+                        break;
+
+                    case ActionType.Yell:
+                        YellMessage(player.FullName + " yells, \"" + packet.Text + "\"",
+                            player.Loc.AreaID);
+                        break;
+
+                    case ActionType.Tell:
+                        SendPlayerMessage(player.ID,
+                            player.FullName + " tells you, \"" + packet.Text + "\"", target.ID);
+                        break;
+
+                    case ActionType.Broadcast:
+                        BroadcastMessage(player.FullName ?? String.Empty + ":" + packet.Text);
+                        break;
+
+                    case ActionType.Damage:
+                        try
+                        {
+                            // Find target whether its an NPC or PC
+                            if (packet.Text != null)
+                            {
+                                target = Areas[player.Loc.AreaID]
+                                    .Hexes[player.Loc.HexID - 1].NPCs.Find(n => n.Name == packet.Text);
+
+                                if (target == null)
+                                {
+                                    target = Areas[player.Loc.AreaID]
+                                        .Hexes[player.Loc.HexID - 1].PCs.Find(n => n.Name == packet.Text);
+                                }
+                            }
+
+                            if (player.State != StateType.Dead &&
+                                player.State != StateType.Stunned)
+                            {
+                                if (player != null && target != null &&
+                                    (player.Loc.HexID == target.Loc.HexID))
+                                {
+                                    if (target.Attackable)
+                                    {
+                                        if (player is PC && target is PC && ((!((PC)player).PVP) || (!((PC)target).PVP)))
+                                        {
+                                            SendPlayerMessage(player.ID, "PVP is not enabled for one of the involved players.");
+                                        }
+                                        else
+                                        {
+                                            result = Combat.Attack(player, target);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        SendPlayerMessage(player.ID, "This target is not attackable at this time.");
+                                    }
+                                }
+                                else
+                                {
+                                    SendPlayerMessage(player.ID, "Your target is out of reach.");
+                                }
+                            }
+                        }
+                        catch//(Exception ex)
+                        {
+                            return "Target was not found.";
+                        }
+
+                        break;
+                }
             }
 
             return result;
@@ -412,7 +651,7 @@ namespace Game.Realm
             }
         }
 
-        public PC FindPlayer(int playerId)
+        public Entity FindEntity(int id, string name = "")
         {
             foreach (Area area in Areas)
             {
@@ -420,11 +659,18 @@ namespace Game.Realm
                 {
                     lock (hex.PCs)
                     {
-                        foreach (PC player in hex.PCs)
+                        foreach (PC p in hex.PCs)
                         {
-                            if (player.ID == playerId)
+                            if (p.ID == id || p.Name.ToLower() == name.ToLower())
                             {
-                                return player;
+                                return p;
+                            }
+                        }
+                        foreach (NPC n in hex.NPCs)
+                        {
+                            if (n.ID == id || n.Name == name)
+                            {
+                                return n;
                             }
                         }
                     }
@@ -434,91 +680,135 @@ namespace Game.Realm
             return null;
         }
 
-        public void SendPlayerStatus(int playerId, string text = "", bool includeDescription = false)
+        public PC FindPC(int id, string name = "")
         {
-            var player = FindPlayer(playerId);
+            foreach (Area area in Areas)
+            {
+                foreach (Hex hex in area.Hexes)
+                {
+                    lock (hex.PCs)
+                    {
+                        foreach (PC p in hex.PCs)
+                        {
+                            if (p.ID == id || p.Name == name)
+                            {
+                                return p;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public NPC FindNPC(int id, string name = "")
+        {
+            foreach (Area area in Areas)
+            {
+                foreach (Hex hex in area.Hexes)
+                {
+                    lock (hex.PCs)
+                    {
+                        foreach (NPC n in hex.NPCs)
+                        {
+                            if (n.ID == id || n.Name == name)
+                            {
+                                return n;
+                            }
+                        }
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public void SendPlayerStatusToHex(Loc loc, 
+            string text = "", bool hexDescription = false, int skipId = 0)
+        {
+            var hex = Areas[loc.AreaID].Hexes[loc.HexID-1];
+
+            foreach (var pc in hex.PCs)
+            {
+                if (skipId > 0)
+                {
+                    if (pc.ID != skipId)
+                    {
+                        SendPlayerStatus(pc.ID, text, hexDescription);
+                    }
+                }
+                else
+                {
+                    SendPlayerStatus(pc.ID, text, hexDescription);
+                }
+            }
+        }
+
+        public void SendPlayerMessage(int playerId, string text = "", int fromId = 0)
+        {
+            var player = FindPC(playerId);
+
+            if (player != null)
+            {
+                var packet = new Packet()
+                {
+                    ActionType = ActionType.Text,
+                    TargetID = fromId,
+                    Text = text,
+                };
+
+                WritePacket(player.Conn, packet);
+            }
+        }
+
+        public void SendPlayerStatus(int playerId, string text = "", 
+            bool hexDescription = false)
+        {
+            var player = FindPC(playerId);
 
             if (player != null)
             {
                 var hex = Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1];
 
-                var npcs = new Dictionary<int, Stats>();
+                var npcs = new Dictionary<string, Stats>();
                 foreach (var npc in hex.NPCs)
                 {
-                    if (npc.State != StateType.Dead)
+                    if (npc.State != StateType.Invisible)
                     {
-                        npcs.Add(npc.ID,
-                        new Stats()
-                        {
-                            ID = npc.ID,
-                            ImageName = npc.ImageName,
-                            Name = npc.Name,
-                            Facing = npc.Facing,
-                            HPs = npc.HitPoints,
-                            MaxHPs = npc.MaxHitPoints,
-                            MPs = npc.ManaPoints,
-                            MaxMPs = npc.MaxManaPoints
-                        });
+                        npcs.Add(npc.ID.ToString(), npc.GetStats());
                     }
                 }
 
-                var players = new Dictionary<int, Stats>();
+                var players = new Dictionary<string, Stats>();
                 foreach (var pc in hex.PCs)
                 {
-                    players.Add(pc.ID,
-                        new Stats()
-                        {
-                            ID = pc.ID,
-                            Name = pc.FullName,
-                            ImageName = pc.ImageName,
-                            Facing = pc.Facing,
-                            Age = pc.Age,
-                            Level = pc.Level,
-                            Experience = pc.Experience,
-                            Gold = pc.Gold,
-                            HPs = pc.HitPoints,
-                            MaxHPs = pc.MaxHitPoints,
-                            MPs = pc.ManaPoints,
-                            MaxMPs = pc.MaxManaPoints
-                        });
+                    if (pc.State != StateType.Invisible)
+                    {
+                        players.Add(pc.ID.ToString(), pc.GetStats());
+                    }
                 }
 
-                var items = new Dictionary<int, string>();
-                foreach (var p in hex.Items)
+                var items = new Dictionary<string, Stats>();
+                foreach (var i in hex.Items)
                 {
-                    if (!items.Keys.Contains(p.ID))
-                    {
-                        items.Add(p.ID, p.Name);
-                    }
+                    items.Add(i.ID.ToString(), i.GetStats());
                 }
 
                 var packet = new Packet()
                 {
                     ActionType = ActionType.Status,
-                    Health = new Stats()
-                    {
-                        ID = player.ID,
-                        Name = player.Name,
-                        Facing = player.Facing,
-                        Age = player.Age,
-                        Level = player.Level,
-                        Experience = player.Experience,
-                        Gold = player.Gold,
-                        HPs = player.HitPoints,
-                        MaxHPs = player.MaxHitPoints,
-                        MPs = player.ManaPoints,
-                        MaxMPs = player.MaxManaPoints,
-                    },
-
+                    Health = player.GetStats(),
                     Tile = hex.Tile,
                     NPCs = npcs,
                     PCs = players,
                     Items = items,
                 };
 
-                if (includeDescription)
+                if (hexDescription)
                 {
-                    packet.Text = hex.GetDescription(playerId);
+                    packet.Text = Areas[player.Loc.AreaID].Title + " - "  + 
+                        hex.GetDescription(playerId) + text;
                 }
                 else
                 {
@@ -592,8 +882,6 @@ namespace Game.Realm
 
                 AddEntity(player);
 
-                SendPlayerStatus(player.ID, "Welcome", true);
-
                 return player;
             }
             catch//(Exception ex) 
@@ -633,8 +921,9 @@ namespace Game.Realm
                                 var player = (PC)hex.PCs[i];
 
                                 if (player.Conn != null)
+                                {
                                     player.Conn.Disconnect();
-
+                                }
                                 hex.PCs.RemoveAt(i);
                             }
                         }
@@ -643,9 +932,14 @@ namespace Game.Realm
             }
         }
 
-        public void Move(Entity entity, string direction, int areaId = -1, int hexId = -1)
+        public bool Move(Entity entity, string direction, int areaId = -1, int hexId = -1)
         {
             bool moved = false;
+
+            if (entity.State == StateType.Stunned)
+            {
+                return moved;
+            }
 
             var hex = Areas[entity.Loc.AreaID].Hexes[entity.Loc.HexID - 1];
 
@@ -658,7 +952,7 @@ namespace Game.Realm
             else
             {
                 if (areaId == -1)
-                    areaId = 0;
+                    areaId = entity.Loc.AreaID;
 
                 switch (direction.ToLower())
                 {
@@ -695,57 +989,35 @@ namespace Game.Realm
                         }
                         break;
                     case "up":
-                        if (hex.Tile.Up > 0)
+                        if (hex.Tile.Up != null)
                         {
-                            hexId = hex.Tile.Up;
+                            areaId = hex.Tile.Up.AreaID;
+                            hexId = hex.Tile.Up.HexID;
                             md = MoveDirection.Up;
                             moved = true;
                         }
-                        else if (hex.Tile.Up < 0)
-                        {
-                            var status = entity.FullName + " has left the realm.";
-
-                            BroadcastMessage(status);
-
-                            WritePacket(FindPlayer(entity.ID).Conn, new Packet()
-                            {
-                                ActionType = ActionType.Exit,
-                                ID = entity.ID,
-                                Text = status,
-                            });
-
-                            RemovePC(entity.ID);
-                        }
                         break;
                     case "down":
-                        if (hex.Tile.Down > 0)
+                        if (hex.Tile.Down != null)
                         {
-                            hexId = hex.Tile.Down;
+                            areaId = hex.Tile.Down.AreaID;
+                            hexId = hex.Tile.Down.HexID;
                             md = MoveDirection.Down;
                             moved = true;
                         }
-                        else if (hex.Tile.Down < 0)
-                        {
-                            var status = entity.FullName + " has left the realm.";
-
-                            BroadcastMessage(status);
-
-                            WritePacket(FindPlayer(entity.ID).Conn, new Packet()
-                            {
-                                ActionType = ActionType.Exit,
-                                ID = entity.ID,
-                                Text = status,
-                            });
-
-                            RemovePC(entity.ID);
-                        }
                         break;
+                }
+
+                if (!moved)
+                {
+                    SendPlayerMessage(entity.ID, "That does not lead anywhere.");
                 }
             }
 
             if (moved)
             {
-                string leaving = entity.FullName + " moves " + direction.ToString() + ".";
+                string leaving = entity.FullName + " moves " + 
+                    direction.ToString() + ".";
 
                 var packet =
                     new Packet()
@@ -756,50 +1028,47 @@ namespace Game.Realm
                         Text = leaving,
                     };
 
-                if (entity is PC)
+                if (entity != null && entity is PC)
                 {
                     var player = entity as PC;
 
-                    lock (hex.PCs)
+                    if (player != null)
                     {
-                        var playerIndex =
-                            hex.PCs.FindIndex(p => p.ID == entity.ID);
-
-                        hex.PCs.RemoveAt(playerIndex);
-
-                        foreach (var p in hex.PCs)
+                        lock (hex.PCs)
                         {
-                            WritePacket(p.Conn, packet);
-                        }
-                    }
+                            var playerIndex =
+                                hex.PCs.FindIndex(p => p.ID == entity.ID);
 
-                    var newHex = Areas[areaId].Hexes[hexId - 1];
-
-                    string arriving = player.FullName + " enters the area.";
-
-                    lock (newHex.PCs)
-                    {
-                        foreach (var p in newHex.PCs)
-                        {
-                            WritePacket(p.Conn,
-                                new Packet()
-                                {
-                                    ID = player.ID,
-                                    ActionType = ActionType.Movement,
-                                    MoveDirection = md,
-                                    Text = arriving
-                                });
+                            if (playerIndex >= 0)
+                            {
+                                hex.PCs.RemoveAt(playerIndex);
+                            }
                         }
 
-                        newHex.PCs.Add(player);
-                        player.Loc.HexID = newHex.ID;
+                        if (player.State != StateType.Invisible)
+                        {
+                            SendPlayerStatusToHex(player.Loc, leaving, false, player.ID);
+                        }
+
+                        var newHex = Areas[areaId].Hexes[hexId - 1];
+
+                        lock (newHex.PCs)
+                        {
+                            newHex.PCs.Add(player);
+                            player.Loc.AreaID = areaId;
+                            player.Loc.HexID = newHex.ID;
+                        }
+
+                        if (player.State != StateType.Invisible)
+                        {
+                            string arriving = player.Name + " enters the area.";
+                            SendPlayerStatusToHex(player.Loc, arriving, false, player.ID);
+                        }
+
+                        SendPlayerStatus(player.ID);
                     }
 
-                    //for(int i= 0; i< hex.NPCs.Count; i++)
-                    //{
-                    //    hex.NPCs[i].SendPacket(this, packet, player);
-                    //}
-                    //TODO: Debug
+                    // Notify npcs of pc movement
                     try
                     {
                         foreach (var npc in hex.NPCs)
@@ -808,8 +1077,6 @@ namespace Game.Realm
                         }
                     }
                     catch { }
-
-                    SendPlayerStatus(entity.ID, arriving, true);
                 }
 
                 if (entity is NPC)
@@ -833,7 +1100,7 @@ namespace Game.Realm
                         npc.Loc.HexID = newHex.ID;
                     }
 
-                    string arriving = npc.FullName + " enters the area.";
+                    string arriving = npc.Name + " enters the area.";
 
                     lock (newHex.PCs)
                     {
@@ -851,6 +1118,8 @@ namespace Game.Realm
                     }
                 }
             }
+
+            return moved;
         }
 
         public List<NPC> GetEncounterNPCs(EncounterType type, int maximum = 99, int npcId = 0)
@@ -865,15 +1134,15 @@ namespace Game.Realm
             {
                 var group = NPCs.Where(npc => npc.EncounterClass == type).Take(maximum);
 
-                foreach (NPC monster in group.ToList())
+                foreach (NPC npc in group.ToList())
                 {
-                    var guy = monster.Clone();
+                    //var guy = npc.Clone();
                     //lock (EntityCount)
                     {
-                        guy.ID = EntityCount++;
+                        //guy.ID = EntityCount++;
                     }
 
-                    encounter.Add(monster.Clone());
+                    encounter.Add(npc.Clone());
                 }
             }
 
@@ -886,7 +1155,7 @@ namespace Game.Realm
 
         public void BroadcastMessage(string message)
         {
-            PublishGameEvent(new Packet()
+            BroadcastGameEvent(new Packet()
             {
                 ActionType = ActionType.Broadcast,
                 Text = message
@@ -920,7 +1189,7 @@ namespace Game.Realm
             }
         }
 
-        private void PublishGameEvent(Packet packet)
+        private void BroadcastGameEvent(Packet packet)
         {
             foreach (Area area in Areas)
             {

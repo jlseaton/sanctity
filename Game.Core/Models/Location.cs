@@ -1,6 +1,6 @@
 ﻿namespace Game.Core
 {
-    public class Location
+    public class Loc
     {
         public int RealmID { get; set; }
         public int AreaID { get; set; }

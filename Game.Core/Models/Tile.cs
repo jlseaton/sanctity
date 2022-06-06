@@ -21,8 +21,8 @@
         public int South { get; set; }
         public int East { get; set; }
         public int West { get; set; }
-        public int Up { get; set; }
-        public int Down { get; set; }
+        public Loc Up { get; set; }
+        public Loc Down { get; set; }
 
 
         public int NorthTileID { get; set; }
@@ -50,9 +50,9 @@
                 exits += ", East";
             if (West > 0)
                 exits += ", West";
-            if (Up > 0 || Up == -1)
+            if (Up != null)
                 exits += ", Up";
-            if (Down > 0 || Down == -1)
+            if (Down != null)
                 exits += ", Down";
 
             if (String.IsNullOrEmpty(exits))

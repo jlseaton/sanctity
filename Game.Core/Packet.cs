@@ -26,9 +26,9 @@ namespace Game.Core
 
         public MoveDirection MoveDirection { get; set; }
 
-        public Dictionary<int, Stats> NPCs { get; set; }
-        public Dictionary<int, Stats> PCs { get; set; }
-        public Dictionary<int, string> Items { get; set; }
+        public Dictionary<string, Stats> NPCs { get; set; }
+        public Dictionary<string, Stats> PCs { get; set; }
+        public Dictionary<string, Stats> Items { get; set; }
 
         public Packet()
         {

@@ -16,11 +16,17 @@ namespace Game.Client
         private Connection? Conn;
         private RealmManager Realm;
 
-        private Tile[] Tiles { get; set; }
-        private Stats Stats { get; set; }
         private List<PC> PCs = new List<PC>();
+        private Stats MyStats { get; set; }
+        private List<Stats> PCStats = new List<Stats>();
+        private List<Stats> NPCStats = new List<Stats>();
+        private List<Stats> ItemStats = new List<Stats>();
 
-        private string[] 
+        private Tile[] Tiles { get; set; }
+
+        private string LastSentCommand = String.Empty;
+
+        private string[]
             MusicFilenames, SoundFilenames, ImageFilenames;
 
         #endregion
@@ -38,7 +44,7 @@ namespace Game.Client
             var assembly =
                 System.Reflection.Assembly.GetExecutingAssembly();
 
-            #pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             this.Text += " - v" + assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
                 assembly.GetName().Version.Build.ToString() + "." +
@@ -46,14 +52,14 @@ namespace Game.Client
 
             Realm = new RealmManager(1, "Lords of Chaos");
 
-            #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
-            Realm.GameEvents += HandlePacket;
-            PCs = Realm.Data.LoadPCs();
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+            Realm.GameEvents += ReceivePacket;
 
-            foreach(var pc in PCs)
+            PCs = Realm.Data.LoadPCs();
+            foreach (var pc in PCs)
             {
-                this.listBoxPCs.Items.Add(pc.Name + ", the " + pc.Race + " " +
-                    " Level " + pc.Level.ToString() + " " + pc.Class);
+                this.listBoxPCs.Items.Add(pc.Name + " " + pc.Surname + " - " +
+                    " Level " + pc.Level.ToString() + ", " + pc.Race + " " + pc.Class);
             }
 
             Config = new Config().LoadConfig("config.xml");
@@ -65,9 +71,12 @@ namespace Game.Client
 
             this.listBoxPCs.SelectedIndex = 0;
 
-            this.BackgroundImage = ShowImage("skin");
-            this.pictureBoxStatus.BackgroundImage = ShowImage("hourglass");
-            this.pictureBoxPC.BackgroundImage = ShowImage("stars1");
+            this.BackgroundImage = GetIndexedImage("skin");
+            this.panelView.BackgroundImage = GetIndexedImage("stars1");
+            this.panelPCs.BackgroundImage = GetIndexedImage("stars1");
+            this.panelNPCs.BackgroundImage = GetIndexedImage("stars1");
+            this.pictureBoxPC.BackgroundImage = GetIndexedImage("castlewallwitharches1");
+            this.pictureBoxStatus.BackgroundImage = GetIndexedImage("hourglass");
 
             PlayMusic("ambient1");
         }
@@ -79,24 +88,34 @@ namespace Game.Client
                 this.textBoxSend.Focus();
                 return true;
             }
-            else if (keyData == Keys.Up)
+            else if (keyData == Keys.Up && !this.textBoxSend.Focused)
             {
                 buttonNorth_Click(this, null);
+                this.buttonNorth.Focus();
                 return true;
             }
-            else if (keyData == Keys.Down)
+            else if (keyData == Keys.Down && !this.textBoxSend.Focused)
             {
                 buttonSouth_Click(this, null);
+                this.buttonSouth.Focus();
                 return true;
             }
-            else if (keyData == Keys.Right)
+            else if (keyData == Keys.Right && !this.textBoxSend.Focused)
             {
                 buttonEast_Click(this, null);
+                this.buttonEast.Focus();
                 return true;
             }
-            else if (keyData == Keys.Left)
+            else if (keyData == Keys.Left && !this.textBoxSend.Focused)
             {
                 buttonWest_Click(this, null);
+                this.buttonWest.Focus();
+                return true;
+            }
+            else if (keyData == Keys.Oem5)
+            {
+                this.textBoxSend.Text = LastSentCommand;
+                this.textBoxSend.Focus();
                 return true;
             }
 
@@ -105,14 +124,48 @@ namespace Game.Client
 
         private void MainForm_Shown(object sender, EventArgs e)
         {
+            UpdateConnectionStatus();
+
             if (Config.AutoStart)
             {
                 this.buttonStart_Click(this, null);
             }
         }
 
+        private void MainForm_Load(object sender, EventArgs e)
+        {
+            var s = new Size();
+            s.Width = Config.WindowWidth;
+            s.Height = Config.WindowHeight;
+            this.Size = s;
+
+            var p = new Point();
+            p.X = Config.WindowLocationX;
+            p.Y = Config.WindowLocationY;
+            this.Location = p;
+
+            this.WindowState = (FormWindowState)Config.WindowState;
+        }
+
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (Conn != null && Conn.Connected)
+            {
+                Conn.SendPacket(new Packet() { ActionType = ActionType.Exit });
+                Conn.Disconnect();
+
+                if (!Config.ServerMode)
+                {
+                    Realm.Stop();
+                }
+            }
+
+            // Save app location, size, and other settings
+            Config.WindowLocationX = this.Location.X;
+            Config.WindowLocationY = this.Location.Y;
+            Config.WindowHeight = this.Size.Height;
+            Config.WindowWidth = this.Size.Width;
+            Config.WindowState = (int)this.WindowState;
             Config.SaveConfig("config.xml", Config);
 
             if (AudioEngine.Instance != null)
@@ -120,12 +173,12 @@ namespace Game.Client
                 AudioEngine.Instance.Dispose();
             }
         }
-        
+
         private void MainForm_SizeChanged(object sender, EventArgs e)
         {
             if (Conn != null && Conn.Connected && this.Tiles != null)
             {
-                RefreshView(this.Tiles);
+                UpdateView(this.Tiles);
             }
         }
 
@@ -167,7 +220,7 @@ namespace Game.Client
                     {
                         foreach (var packet in packets)
                         {
-                            HandlePacket(this, packet);
+                            ReceivePacket(this, packet);
                         }
                     }
                 }
@@ -184,8 +237,7 @@ namespace Game.Client
             }
 
             Conn.Disconnect();
-
-            RefreshStatus();
+            UpdateConnectionStatus();
         }
 
         private void PlayerWriteThread(object context)
@@ -210,272 +262,6 @@ namespace Game.Client
             }
         }
 
-        private bool SendPacket(Packet packet)
-        {
-            bool result = false;
-
-            try
-            {
-                if (Config.ServerMode)
-                {
-                    Conn.BufferPacket(packet);
-                }
-                else
-                {
-                    Realm.HandlePacket(packet, this.listBoxPCs.SelectedIndex + 1);
-                }
-
-                result = true;
-            }
-            catch (Exception ex)
-            {
-                ProcessException(ex);
-                result = false;
-            }
-
-            return result;
-        }
-
-        #endregion
-
-        #region Game Control
-
-        public void HandlePacket(object sender, Packet packet)
-        {
-            try
-            {
-                if (this.InvokeRequired)
-                {
-                    this.Invoke((Action)(() => HandlePacket(sender, packet)));
-                }
-                else
-                {
-                    if (!String.IsNullOrEmpty(packet.Text))
-                    {
-                        string formattedText = packet.Text + "\r\n";
-
-                        lock (this.textBoxEvents)
-                        {
-                            this.textBoxEvents.AppendText(formattedText);
-                            this.textBoxEvents.SelectionStart = textBoxEvents.Text.Length;
-                            this.textBoxEvents.ScrollToCaret();
-                        }
-
-                        if (packet.Text.Contains("You have died"))
-                        {
-                            Music.Stop();
-                            PlayMusic("death1");
-                        }
-                    }
-
-                    if (packet.ActionType == ActionType.Exit)
-                    {
-                        buttonStart_Click(this, null);
-                    }
-                    else if (packet.ActionType == ActionType.Status && packet.Tile != null)
-                    {
-                        var tileFileName = String.Empty;
-                        var tileFiles = new List<string>();
-
-                        if (packet.Tile.Tile1ID != null)
-                        {
-                            tileFileName = GetIndexedFileName(this.ImageFilenames, packet.Tile.Tile1ID);
-                            if (!String.IsNullOrEmpty(tileFileName))
-                            {
-                                tileFiles.Add(tileFileName);
-                            }
-                        }
-                        if (packet.Tile.Tile2ID != null)
-                        {
-                            tileFileName = GetIndexedFileName(this.ImageFilenames, packet.Tile.Tile2ID);
-                            if (!String.IsNullOrEmpty(tileFileName))
-                            {
-                                tileFiles.Add(tileFileName);
-                            }
-                        }
-                        if (Stats != null && !String.IsNullOrEmpty(Stats.ImageName))
-                        {
-                            tileFileName = this.GetIndexedFileName(this.ImageFilenames, Stats.ImageName);
-                            if (!String.IsNullOrEmpty(tileFileName))
-                            {
-                                tileFiles.Add(tileFileName);
-                            }
-                        }
-                        this.pictureBoxNPC1.Image = null;
-                        this.pictureBoxNPC2.Image = null;
-                        this.pictureBoxNPC3.Image = null;
-                        this.pictureBoxNPC4.Image = null;
-                        this.pictureBoxNPC5.Image = null;
-                        this.pictureBoxNPC6.Image = null;
-                        this.pictureBoxNPC7.Image = null;
-                        this.pictureBoxNPC8.Image = null;
-                        this.pictureBoxNPC9.Image = null;
-                        this.pictureBoxNPC10.Image = null;
-                        if (packet.NPCs.Any())
-                        {
-                            int npcCount = 1;
-                            foreach(var npc in packet.NPCs)
-                            {
-                                tileFileName = this.GetIndexedFileName(this.ImageFilenames, npc.Value.Name);
-                                if (!String.IsNullOrEmpty(tileFileName))
-                                {
-                                    foreach(Control c in this.panelNPCs.Controls)
-                                    {
-                                        if (c.Name == "pictureBoxNPC" + npcCount.ToString())
-                                        {
-                                            var p = (PictureBox)c;
-                                            p.Image = ShowImage(npc.Value.Name);
-                                        }
-                                    }
-                                }
-
-                                npcCount++;
-
-                                if (npcCount > 9)
-                                    break;
-                            }
-                        }
-                        this.pictureBoxPC1.Image = null;
-                        this.pictureBoxPC2.Image = null;
-                        this.pictureBoxPC3.Image = null;
-                        this.pictureBoxPC4.Image = null;
-                        this.pictureBoxPC5.Image = null;
-                        this.pictureBoxPC6.Image = null;
-                        this.pictureBoxPC7.Image = null;
-                        this.pictureBoxPC8.Image = null;
-                        this.pictureBoxPC9.Image = null;
-                        this.pictureBoxPC10.Image = null;
-                        if (packet.PCs.Any())
-                        {
-                            int npcCount = 1;
-                            foreach (var pc in packet.PCs)
-                            {
-                                tileFileName = this.GetIndexedFileName(this.ImageFilenames, pc.Value.ImageName);
-                                if (!String.IsNullOrEmpty(tileFileName))
-                                {
-                                    foreach (Control c in this.panelPCs.Controls)
-                                    {
-                                        if (c.Name == "pictureBoxPC" + npcCount.ToString())
-                                        {
-                                            var p = (PictureBox)c;
-                                            p.Image = ShowImage(pc.Value.ImageName);
-                                        }
-                                    }
-                                }
-
-                                npcCount++;
-
-                                if (npcCount > 9)
-                                    break;
-                            }
-                        }
-                        if (tileFiles.Any())
-                        {
-                            this.pictureBoxTilesMain.Image = CombineBitmap(tileFiles);
-                        }
-
-                        //this.Tiles = packet.Tile;
-
-                        //this.pictureBoxTile0.Image = null;
-
-                        //if (Tiles.Up > 0 || Tiles.Up < 0)
-                        //{
-                        //    ShowCenterImage(pictureBoxTile0.Image, "stairsup.bmp");
-                        //}
-
-                        //if (Tiles.Down > 0 || Tiles.Down < 0)
-                        //{
-                        //    ShowCenterImage(pictureBoxTile0.Image, "stairsdown.bmp");
-                        //}
-
-                        //RefreshView(packet.Tile);
-
-                        if (packet.Health != null)
-                        {
-                            // TODO: Play a hurt sound (messes up packet timing for some reason)
-                            //if (Stats.HPs > packet.Health.HPs)
-                            //{
-                            //    var sound = Randomizer.Next(3);
-                            //    if (sound == 0)
-                            //        PlaySound(@"attack1.wav");
-                            //    else if (sound == 1)
-                            //        PlaySound(@"attack2.wav");
-                            //    else
-                            //        PlaySound(@"caiti_hit1.mp3");
-                            //}
-
-                            Stats = packet.Health;
-                            this.labelPCName.Text = Stats.Name;
-                            this.labelAge.Text = "Age: " + Stats.Age.ToString();
-                            this.labelLevel.Text = "Level: " + Stats.Level.ToString();
-                            this.labelExperience.Text = "Exp: " + Stats.Experience.ToString();
-                            this.labelGold.Text = "Gold: " + Stats.Gold.ToString();
-
-                            this.labelHPs.Text =
-                                "HPs: " + packet.Health.HPs.ToString() +
-                                " / " + packet.Health.MaxHPs.ToString();
-
-                            this.labelMPs.Text =
-                                "MPs: " + packet.Health.MPs.ToString() +
-                                " / " + packet.Health.MaxMPs.ToString();
-
-                            RefreshStatus();
-                        }
-
-                        if (packet.NPCs != null && packet.NPCs.Any())
-                        {
-                            int selected = this.listBoxEntities.SelectedIndex;
-                            this.listBoxEntities.Items.Clear();
-
-                            foreach (var npc in packet.NPCs)
-                            {
-                                //var parsedNpc = npc.Value
-                                //AddNPC(npc);
-                                //ShowImage(npc.Value.Name, this.pictureBoxTile0.Image);
-                                this.listBoxEntities.Items.Add(npc.Value.Name.ToLower().Trim() +
-                                    " (" + npc.Value.HPs.ToString() + "/" + npc.Value.MaxHPs.ToString() + ")");
-                            }
-
-                            this.listBoxEntities.SelectedIndex = selected;
-                        }
-                        else
-                        {
-                            this.listBoxEntities.Items.Clear();
-                        }
-
-                        if (packet.PCs != null && packet.PCs.Any())
-                        {
-                            int selected = this.listBoxItems.SelectedIndex;
-                            this.listBoxItems.Items.Clear();
-
-                            foreach (var s in packet.PCs)
-                            {
-                                this.listBoxItems.Items.Add(s.Value.Name.Trim());
-                            }
-
-                            if (packet.Items != null && packet.Items.Any())
-                            {
-                                foreach (var i in packet.Items)
-                                {
-                                    this.listBoxItems.Items.Add(i.Value.Trim());
-                                }
-                            }
-
-                            this.listBoxItems.SelectedIndex = selected;
-                        }
-                        else
-                        {
-                            this.listBoxItems.Items.Clear();
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ProcessException(ex);
-            }
-        }
-
         private async void ToggleConnect()
         {
             if (Conn != null && Conn.Connected)
@@ -489,9 +275,8 @@ namespace Game.Client
 
                 Conn.SendPacket(packet);
                 Conn.Disconnect();
-                Music.Stop();
                 PlayMusic("ambient1");
-                RefreshStatus();
+                UpdateStatus(packet);
 
                 if (!Config.ServerMode)
                 {
@@ -502,10 +287,8 @@ namespace Game.Client
             {
                 try
                 {
-                    Conn = new Connection(!Config.ServerMode, 
+                    Conn = new Connection(!Config.ServerMode,
                         Config.ServerHost, Config.ServerPort);
-                    
-                    Conn.Connect();
 
                     if (Config.ServerMode)
                     {
@@ -514,6 +297,7 @@ namespace Game.Client
 
                         // Connect to remote gaming server
                         await Conn.Client.ConnectAsync(Config.ServerHost, Config.ServerPort);
+                        Conn.Connect();
 
                         // Start player read and write threads
                         ThreadPool.QueueUserWorkItem(PlayerReadThread, this);
@@ -525,6 +309,7 @@ namespace Game.Client
                             Config.ServerPort.ToString() + " ...");
 
                         // Start a local realm server and events thread
+                        Conn.Connect();
                         Realm.Start();
                         ThreadPool.QueueUserWorkItem(EventsThread, this);
                     }
@@ -537,11 +322,11 @@ namespace Game.Client
 
                     if (SendPacket(join))
                     {
-                        Music.Stop();
-                        PlayMusic("entrance1");
+                        //PlaySound("tavernnoise1");
+                        //PlayMusic("loc1");
                     }
 
-                    RefreshStatus();
+                    UpdateStatus(new Packet() { ActionType = ActionType.Exit });
                 }
                 catch (Exception ex)
                 {
@@ -559,68 +344,382 @@ namespace Game.Client
             }
         }
 
-        private void AddNPC(NPC npc)
+        private bool SendPacket(Packet packet)
         {
+            bool result = false;
 
+            try
+            {
+                if (Conn != null)
+                {
+                    if (Config.ServerMode)
+                    {
+                        Conn.BufferPacket(packet);
+                    }
+                    else
+                    {
+                        Realm.HandlePacket(packet, this.listBoxPCs.SelectedIndex + 1);
+                    }
+
+                    result = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+                result = false;
+            }
+
+            return result;
+        }
+
+        public void ReceivePacket(object sender, Packet packet)
+        {
+            try
+            {
+                if (this.InvokeRequired)
+                {
+                    this.Invoke((Action)(() => ReceivePacket(sender, packet)));
+                }
+                else
+                {
+                    if (!String.IsNullOrEmpty(packet.Text))
+                    {
+                        string formattedText = packet.Text + "\r\n";
+
+                        lock (this.textBoxEvents)
+                        {
+                            this.textBoxEvents.AppendText(formattedText);
+                            this.textBoxEvents.SelectionStart = textBoxEvents.Text.Length;
+                            this.textBoxEvents.ScrollToCaret();
+                        }
+                    }
+
+                    if (packet.ActionType == ActionType.Exit && Conn.Connected)
+                    {
+                        MessageBox.Show(packet.Text);
+                        Conn.Disconnect();
+                        UpdateConnectionStatus();
+                    }
+                    else if (packet.ActionType == ActionType.Death)
+                    {
+                        PlayMusic("death1");
+                    }
+                    else if (packet.ActionType == ActionType.Status)// ||
+                                                                    //packet.ActionType == ActionType.Movement)
+                    {
+                        UpdateTiles(packet);
+                        UpdateStatus(packet);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ProcessException(ex);
+            }
         }
 
         #endregion
 
         #region UI
 
-        private void RefreshStatus()
+        private void UpdateStatus(Packet packet)
         {
             if (this.InvokeRequired)
             {
-                this.Invoke((Action)(() => RefreshStatus()));
+                this.Invoke((Action)(() => UpdateStatus(packet)));
             }
             else
             {
-                var pc =
-                    PCs.Find(pc => pc.ID == this.listBoxPCs.SelectedIndex + 1);
-
-                if (pc != null)
+                if (packet.Health != null)
                 {
-                    this.pictureBoxPC.Image = ShowImage(pc.ImageName);
-                }
+                    // Maintain character profile
+                    MyStats = packet.Health;
 
-                if (Conn != null && Conn.Connected)
-                {
-                    this.buttonStart.Text = "&Quit";
-                    this.panelChat.Visible = true;
-                    this.panelMovement.Visible = true;
-                    this.panelStats.Visible = true;
-                    this.panelNPCs.Visible = true;
-                    this.panelTiles.Visible = true;
-                    this.panelPCs.Visible = true;
-                    this.listBoxPCs.Enabled = false;
-                    panelView.BackgroundImage = null;
+                    this.labelPCName.Text = MyStats.Name;
+                    this.labelAge.Text = "Age: " + MyStats.Age.ToString();
+                    this.labelLevel.Text = "Level: " + MyStats.Level.ToString();
+                    this.labelExperience.Text = "Exp: " + MyStats.Experience.ToString();
+                    this.labelGold.Text = "Gold: " + MyStats.Gold.ToString();
 
-                    if (Stats != null && Stats.HPs <= 0)
+                    this.labelHPs.Text =
+                        "HPs: " + packet.Health.HPs.ToString() +
+                        " / " + packet.Health.MaxHPs.ToString();
+
+                    this.labelMPs.Text =
+                        "MPs: " + packet.Health.MPs.ToString() +
+                        " / " + packet.Health.MaxMPs.ToString();
+
+                    // Play death or a hurt sound
+                    if (MyStats != null && MyStats.HPs <= 0)
                     {
-                        this.panelObjects.Visible = false;
+                        PlayMusic("death1");
                     }
-                    else
-                    {
-                        this.panelObjects.Visible = true;
-                    }
+                    //else if (MyStats.HPs > packet.Health.HPs)
+                    //{
+                    //    var sound = Randomizer.Next(3);
+                    //    if (sound == 0)
+                    //        PlaySound(@"c_kana_hit3");
+                    //    else if (sound == 1)
+                    //        PlaySound(@"caiti_hit1");
+                    //    else if (sound == 2)
+                    //        PlaySound(@"caiti_hit3");
+                    //    else
+                    //        PlaySound(@"c_kana_hit1");
+                    //}
                 }
-                else
+
+                // Save any selected entities
+                string selected = "";
+                if (!String.IsNullOrEmpty((string)this.listBoxEntities.SelectedItem))
                 {
-                    this.buttonStart.Text = "&Join";
-                    this.panelChat.Visible = false;
-                    this.panelMovement.Visible = false;
-                    this.panelStats.Visible = false;
-                    this.panelObjects.Visible = false;
-                    this.panelNPCs.Visible = false;
-                    this.panelTiles.Visible = false;
-                    this.panelPCs.Visible = false;
-                    this.listBoxPCs.Enabled = true;
-                    panelView.BackgroundImage = ShowImage("loctitle");
+                    selected = (string)this.listBoxEntities.SelectedItem;
+                    selected = selected.Split('(')[0].Trim();
                 }
+
+                this.listBoxEntities.Items.Clear();
+                this.listBoxItems.Items.Clear();
+
+                this.NPCStats.Clear();
+                this.PCStats.Clear();
+                this.ItemStats.Clear();
+
+                if (packet.NPCs != null && packet.NPCs.Any())
+                {
+                    foreach (var npc in packet.NPCs)
+                    {
+                        this.NPCStats.Add(npc.Value);
+                        var parsedNpc = npc.Value;
+                        this.listBoxEntities.Items.Add(npc.Value.Name.Trim() +
+                            " (" + npc.Value.HPs.ToString() + "/" + npc.Value.MaxHPs.ToString() + ")");
+                    }
+                }
+
+                if (packet.PCs != null && packet.PCs.Any())
+                {
+                    foreach (var p in packet.PCs)
+                    {
+                        if (p.Value.Name != this.labelPCName.Text)
+                        {
+                            this.PCStats.Add(p.Value);
+                            this.listBoxEntities.Items.Add(p.Value.Name.Trim() +
+                                " (" + p.Value.HPs.ToString() + "/" + p.Value.MaxHPs.ToString() + ")");
+                        }
+                    }
+                }
+
+                if (packet.Items != null && packet.Items.Any())
+                {
+                    foreach (var i in packet.Items)
+                    {
+                        this.ItemStats.Add(i.Value);
+                        this.listBoxItems.Items.Add(i.Value.Name.Trim());
+                    }
+                }
+
+                // Reselect any entities that were selected before refresh
+                if (!String.IsNullOrEmpty(selected))
+                {
+                    foreach (var i in this.listBoxEntities.Items)
+                    {
+                        if ((string)i.ToString().Split('(')[0].Trim()
+                            == selected)
+                        {
+                            this.listBoxEntities.SelectedItem = i;
+                        }
+                    }
+                }
+
+                UpdateConnectionStatus();
             }
         }
 
+        private void UpdateTiles(Packet packet)
+        {
+            var tileFileName = String.Empty;
+            var tileFiles = new List<string>();
+
+            if (packet.Tile != null && packet.Tile.Tile1ID != null)
+            {
+                tileFileName = GetIndexedFileName(this.ImageFilenames, packet.Tile.Tile1ID);
+                if (!String.IsNullOrEmpty(tileFileName))
+                {
+                    tileFiles.Add(tileFileName);
+                }
+            }
+
+            if (packet.Tile != null && packet.Tile.Tile2ID != null)
+            {
+                tileFileName = GetIndexedFileName(this.ImageFilenames, packet.Tile.Tile2ID);
+                if (!String.IsNullOrEmpty(tileFileName))
+                {
+                    tileFiles.Add(tileFileName);
+                }
+            }
+
+            if (packet.Tile != null && packet.Tile.SoundID != null)
+            {
+                PlaySound(packet.Tile.SoundID);
+            }
+
+            if (packet.Tile != null && packet.Tile.MusicID != null)
+            {
+                PlayMusic(packet.Tile.MusicID);
+            }
+
+            // Clear out all existing PC and NPC images
+            for (int i = 1; i < 11; i++)
+            {
+                foreach (Control c in this.panelPCs.Controls)
+                {
+                    if (c.Name == "pictureBoxPC" + i.ToString())
+                    {
+                        var p = (PictureBox)c;
+                        p.Image = null;
+                        p.Tag = null;
+                        p.MouseClick += this.pictureBoxPCs_Click;
+                    }
+                }
+
+                foreach (Control c in this.panelNPCs.Controls)
+                {
+                    if (c.Name == "pictureBoxNPC" + i.ToString())
+                    {
+                        var p = (PictureBox)c;
+                        p.Image = null;
+                        p.Tag = null;
+                        p.MouseClick += this.pictureBoxNPCs_Click;
+                    }
+                }
+            }
+
+            // Update PC images
+            if (packet.PCs != null && packet.PCs.Any())
+            {
+                int npcCount = 1;
+                foreach (var pc in packet.PCs)
+                {
+                    tileFileName =
+                        this.GetIndexedFileName(this.ImageFilenames, pc.Value.ImageName);
+
+                    if (!String.IsNullOrEmpty(tileFileName))
+                    {
+                        foreach (Control c in this.panelPCs.Controls)
+                        {
+                            if (c.Name == "pictureBoxPC" + npcCount.ToString())
+                            {
+                                var p = (PictureBox)c;
+                                p.Image = GetIndexedImage(pc.Value.ImageName);
+                                p.Tag = pc.Value;
+                                //var tt = new ToolTip();
+                                //tt.SetToolTip(p, pc.Value.Name);
+                            }
+                        }
+                    }
+
+                    npcCount++;
+
+                    if (npcCount > 9)
+                        break;
+                }
+            }
+
+            // Update NPC images
+            if (packet.NPCs != null && packet.NPCs.Any())
+            {
+                int npcCount = 1;
+                foreach (var npc in packet.NPCs)
+                {
+                    tileFileName =
+                        this.GetIndexedFileName(this.ImageFilenames, npc.Value.ImageName);
+
+                    if (!String.IsNullOrEmpty(tileFileName))
+                    {
+                        foreach (Control c in this.panelNPCs.Controls)
+                        {
+                            if (c.Name == "pictureBoxNPC" + npcCount.ToString())
+                            {
+                                var p = (PictureBox)c;
+                                p.Image = GetIndexedImage(npc.Value.ImageName);
+                                p.Tag = npc.Value;
+                                //var tt = new ToolTip();
+                                //tt.SetToolTip(p, npc.Value.Name);
+                            }
+                        }
+                    }
+
+                    npcCount++;
+
+                    if (npcCount > 9)
+                        break;
+                }
+            }
+
+            // Update current Hex images
+            if (tileFiles.Any())
+            {
+                this.pictureBoxTilesMain.Image = CombineBitmap(tileFiles);
+            }
+        }
+
+        private void P_MouseClick(object? sender, MouseEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void UpdateConnectionStatus()
+        {
+            try
+            { 
+                if (this.InvokeRequired)
+                {
+                    this.Invoke((Action)(() => UpdateConnectionStatus()));
+                }
+                else
+                {
+                    if (Conn != null && Conn.Connected)
+                    {
+                        this.buttonStart.Text = "&Quit";
+                        this.panelChat.Enabled = true;
+                        this.panelMovement.Visible = true;
+                        this.panelStats.Visible = true;
+                        this.panelNPCs.Visible = true;
+                        this.panelTiles.Visible = true;
+                        this.panelPCs.Visible = true;
+                        this.listBoxPCs.Enabled = false;
+                        panelView.BackgroundImage = null;
+
+                        if (MyStats != null && MyStats.HPs <= 0)
+                        {
+                            this.panelObjects.Visible = false;
+                        }
+                        else
+                        {
+                            this.panelObjects.Visible = true;
+                        }
+                    }
+                    else
+                    {
+                        this.buttonStart.Text = "&Join";
+                        this.panelChat.Enabled = false;
+                        this.panelMovement.Visible = false;
+                        this.panelStats.Visible = false;
+                        this.panelObjects.Visible = false;
+                        this.panelNPCs.Visible = false;
+                        this.panelTiles.Visible = false;
+                        this.panelPCs.Visible = false;
+                        this.listBoxPCs.Enabled = true;
+                        panelView.BackgroundImage = GetIndexedImage("loctitle");
+                        this.pictureBoxPC.Image =
+                            GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                ProcessException(ex);
+            }
+        }
         private string GetIndexedFileName(string[] list, string name)
         {
             foreach (string s in list)
@@ -634,10 +733,12 @@ namespace Game.Client
             return String.Empty;
         }
 
-        private Image ShowImage(string imageName)
+        private Image GetIndexedImage(string imageName)
         {
             if (!Config.Images)
+            {
                 return null;
+            }
 
             return Image.FromFile(GetIndexedFileName(this.ImageFilenames, imageName));
         }
@@ -713,7 +814,7 @@ namespace Game.Client
             }
         }
 
-        public void RefreshView(Tile[] tiles)
+        public void UpdateView(Tile[] tiles)
         {
             var g = this.panelView.CreateGraphics();
             g.Clear(Color.Black);
@@ -751,7 +852,7 @@ namespace Game.Client
 
         #endregion
 
-        #region Commands
+        #region UI Events
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
@@ -804,6 +905,7 @@ namespace Game.Client
                         Text = this.textBoxSend.Text
                     });
 
+                    LastSentCommand = this.textBoxSend.Text;
                     this.textBoxSend.Text = "";
                 }
             }
@@ -811,9 +913,9 @@ namespace Game.Client
 
         private void listBoxPCs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RefreshStatus();
+            this.pictureBoxPC.Image = 
+                GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
         }
-
 
         private void buttonYell_Click(object sender, EventArgs e)
         {
@@ -866,12 +968,51 @@ namespace Game.Client
 
         private void buttonInspect_Click(object sender, EventArgs e)
         {
-            SendPacket(new Packet() { ActionType = ActionType.Command, Text = "inspect" });
+            if (this.listBoxEntities.SelectedItem != null)
+            {
+                SendPacket(new Packet() { 
+                    ActionType = ActionType.Command, Text = "inspect " + 
+                    this.listBoxEntities.SelectedItem.ToString(),
+                });
+            }
+            else
+            {
+                SendPacket(new Packet() { ActionType = ActionType.Command, Text = "inspect" });
+            }
         }
+
+        private void buttonGet_Click(object sender, EventArgs e)
+        {
+            if (this.listBoxItems.SelectedItem != null)
+            {
+                SendPacket(new Packet()
+                {
+                    ActionType = ActionType.Command,
+                    Text = "get " + this.listBoxItems.SelectedItem.ToString(),
+                });
+            }
+            else
+            {
+                SendPacket(new Packet() { ActionType = ActionType.Command, Text = "get" });
+            }
+        }
+
 
         private void buttonRevive_Click(object sender, EventArgs e)
         {
-            SendPacket(new Packet() { ActionType = ActionType.Command, Text = "revive" });
+            if (this.listBoxEntities.SelectedItem != null)
+            {
+                SendPacket(new Packet()
+                {
+                    ActionType = ActionType.Command,
+                    Text = "revive " +
+                    this.listBoxEntities.SelectedItem.ToString(),
+                });
+            }
+            else
+            {
+                SendPacket(new Packet() { ActionType = ActionType.Command, Text = "revive" });
+            }
         }
 
         private void buttonAttack_Click(object sender, EventArgs e)
@@ -880,26 +1021,29 @@ namespace Game.Client
 
             if (this.listBoxEntities.SelectedItem != null)
             {
-                var sound = Randomizer.Next(3);
+                PlayMusic("combat1", true, false);
+
+                var sound = Randomizer.Next(4);
                 if (sound == 0)
                 {
-                    PlaySound("sword1");
-                    //PlayMusic("combat1");
+                    PlaySound("attack1");
                 }
                 else if (sound == 1)
                 {
-                    PlaySound("sword2");
-                    //PlayMusic("combat1");
+                    PlaySound("attack2");
+                }
+                else if (sound == 2)
+                {
+                    PlaySound("arrow1");
                 }
                 else
                 {
-                    PlaySound("arrow1");
-                    //PlayMusic("combat1");
+                    PlaySound("swordmiss1");
                 }
 
                 string npcName = this.listBoxEntities.SelectedItem.ToString();
                 int found = npcName.IndexOf("(");
-                npcName = npcName.Substring(0, found).ToLower().Trim();
+                npcName = npcName.Substring(0, found).Trim();
 
                 SendPacket(new Packet()
                 {
@@ -913,11 +1057,81 @@ namespace Game.Client
             this.buttonAttack.Enabled = true;
         }
 
+        private void pictureBoxPC_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pictureBoxPCs_Click(object sender, MouseEventArgs e)
+        {
+            var pb = (PictureBox)sender;
+            var stats = (Stats)pb.Tag;
+
+            if (stats != null)
+            {
+                if (((MouseEventArgs)e).Button == MouseButtons.Left)
+                {
+                    this.pictureBoxPC.Image = GetIndexedImage(stats.ImageName);
+                }
+                else if (((MouseEventArgs)e).Button == MouseButtons.Right)
+                {
+                    this.pictureBoxPC.Image = GetIndexedImage(stats.ImageName);
+                }
+
+                if (stats.Name == this.labelPCName.Text)
+                {
+                    this.listBoxEntities.ClearSelected();
+                }
+                object selected = null;
+                foreach (var i in this.listBoxEntities.Items)
+                {
+                    if (i.ToString().StartsWith(stats.Name))
+                    {
+                        selected = i;
+                    }
+                }
+                if (selected != null)
+                {
+                    this.listBoxEntities.SelectedItem = selected;
+                }
+            }
+        }
+
+        private void pictureBoxNPCs_Click(object sender, MouseEventArgs e)
+        {
+            var pb = (PictureBox)sender;
+            var stats = (Stats)pb.Tag;
+
+            if (stats != null)
+            {
+                if (((MouseEventArgs)e).Button == MouseButtons.Left)
+                {
+                    this.pictureBoxPC.Image = GetIndexedImage(stats.ImageName);
+                }
+                else if (((MouseEventArgs)e).Button == MouseButtons.Right)
+                {
+                    this.pictureBoxPC.Image = GetIndexedImage(stats.ImageName);
+                }
+                object selected = null;
+                foreach (var i in this.listBoxEntities.Items)
+                {
+                    if (i.ToString().StartsWith(stats.Name))
+                    {
+                        selected = i;
+                    }
+                }
+                if (selected != null)
+                {
+                    this.listBoxEntities.SelectedItem = selected;
+                }
+            }
+        }
+
         #endregion
 
         #region Sound
 
-        private void PlayMusic(string name, bool loop = false)
+        private void PlayMusic(string name, bool loop = false, bool stopCurrent = true)
         {
             if (Config.Music)
             {
@@ -925,22 +1139,29 @@ namespace Game.Client
                 {
                     var fileName = GetIndexedFileName(MusicFilenames, name);
 
-                    Music.Stop();
-                    Music.Volume = 0.1F;
+                    if (!String.IsNullOrEmpty(fileName))
+                    {
+                        Music.Volume = 0.1F;
+                        
+                        if (stopCurrent)
+                        {
+                            Music.Stop();
+                        }
 
-                    if (loop)
-                    {
-                        var r = new Mp3FileReader(fileName);
-                        var loopStream = new LoopStream(r);
-                        Music.Init(loopStream);
-                        Music.Play();
-                        //var wave = new WaveOut();
-                        //wave.Init(loopStream);
-                        //wave.Play();
-                    }
-                    else
-                    {
-                        AudioEngine.Instance.PlaySound(fileName);
+                        if (loop)
+                        {
+                            var r = new Mp3FileReader(fileName);
+                            var loopStream = new LoopStream(r);
+                            Music.Init(loopStream);
+                            Music.Play();
+                            //var wave = new WaveOut();
+                            //wave.Init(loopStream);
+                            //wave.Play();
+                        }
+                        else
+                        {
+                            AudioEngine.Instance.PlaySound(fileName);
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -956,11 +1177,11 @@ namespace Game.Client
             {
                 try
                 {
-                    var fileName = GetIndexedFileName(MusicFilenames, name);
+                    var fileName = GetIndexedFileName(SoundFilenames, name);
 
                     var r = new Mp3FileReader(fileName);
                     Sounds.Init(r);
-                    Sounds.Play();
+                    //Sounds.Play();
                     AudioEngine.Instance.PlaySound(fileName);
                     //if (Sounds.PlaybackState == PlaybackState.Playing)
                     //    Sounds.Stop();
@@ -983,7 +1204,7 @@ namespace Game.Client
         {
             if (!String.IsNullOrEmpty(entry))
             {
-                HandlePacket(this, new Packet() { Text = entry });
+                ReceivePacket(this, new Packet() { Text = entry });
             }
         }
 

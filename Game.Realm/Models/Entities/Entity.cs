@@ -1,12 +1,11 @@
 ﻿using Game.Core;
+using System.Text;
 
 namespace Game.Realm
 {
     public class Entity : Thing
     {
-        public int UID { get; set; }
-
-        public Location Loc { get; set; }
+        public Loc Loc { get; set; }
         public MoveDirection Facing { get; set; }
 
         public string Surname { get; set; }
@@ -14,15 +13,26 @@ namespace Game.Realm
         public string Origin { get; set; }
         public string Bio { get; set; }
         public string Diety { get; set; }
-        public string ImageName { get; set; }
         public string Description
         {
             get
             {
-                return "You see " + Name + ", " + Article + " " + Race + " " + Class + "\r\n" + Bio;
+                StringBuilder sb = new StringBuilder("You see " + this.FullName);
+                if (!String.IsNullOrEmpty(Surname))
+                    sb.Append(" " + Surname);
+                sb.Append(", level " + Level.ToString());
+                if (!String.IsNullOrEmpty(Race.ToString()))
+                    sb.Append(" " + Race);
+                if (!String.IsNullOrEmpty(Class.ToString()))
+                    sb.Append(" " + Class);
+                if (!String.IsNullOrEmpty(Bio))
+                    sb.Append("\r\n" + Bio);
+
+                return sb.ToString();
             }
         }
 
+        public bool Attackable { get; set; }
         public int LastAttackerID { get; set; }
         public int LastTargetID { get; set; }
         public long LastActionRound { get; set; }
@@ -58,6 +68,7 @@ namespace Game.Realm
         public int Intelligence { get; set; }
         public int Wisdom { get; set; }
         public int Luck { get; set; }
+        public int AttackDelay { get; set; }
 
         public int AlignmentCount { get; set; }
         public AlignmentType Alignment { get; set; }
@@ -68,10 +79,10 @@ namespace Game.Realm
 
         public Stats Stats { get; set; }
 
-        public int HitPoints { get; set; }
-        public int MaxHitPoints { get; set; }
-        public int ManaPoints { get; set; }
-        public int MaxManaPoints { get; set; }
+        public int HPs { get; set; }
+        public int MaxHPs { get; set; }
+        public int MPs { get; set; }
+        public int MaxMPs { get; set; }
 
         public int MinDamage { get; set; }
         public int MaxDamage { get; set; }
@@ -113,20 +124,33 @@ namespace Game.Realm
 
         public Entity(int areaId = 0, int hexId = 1)
         {
-            // Base damage
-            MinDamage = 1;
-            MaxDamage = 3;
+            Attackable = true;
 
-            Loc = new Location() { AreaID = areaId, HexID = hexId };
+            // Base damage for all entities
+            MinDamage = 1;
+            MaxDamage = 2;
+
+            Loc = new Loc() { AreaID = areaId, HexID = hexId };
             Stats = new Stats() { Name = Name };
 
-            Languages = new List<int> { 0 }; // Everyone knows the common language
+            Languages = new List<int> { 0 }; // Everyone sentient knows the common language
         }
 
         public virtual void Die()
         {
             State = StateType.Dead;
+            if (HPs > 0)
+            {
+                HPs = 0;
+            }
             DeathTime = DateTime.Now;
+        }
+
+        public virtual void Revive()
+        {
+            State = StateType.Normal;
+            HPs = MaxHPs;
+            MPs = MaxMPs;
         }
 
         public void EquipWeapon(Item weapon, bool offhand = false)
@@ -159,6 +183,26 @@ namespace Game.Realm
             }
 
             return false;
+        }
+        public Stats GetStats()
+        {
+            return new Stats()
+            {
+                ID = base.ID,
+                Name = Name,
+                ImageName = ImageName,
+                HPs = HPs,
+                MaxHPs = MaxHPs,
+                MPs = MPs,
+                MaxMPs = MaxMPs,
+                Age = Age,
+                Level = Level,
+                Experience = Experience,
+                Gold = Gold,
+                AttackDelay = AttackDelay,
+                State = State,
+                Facing = Facing,
+            };
         }
 
         public Entity Clone()

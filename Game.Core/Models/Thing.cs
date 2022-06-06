@@ -7,8 +7,8 @@
         public int TileID { get; set; }
         public int QuestID { get; set; }
 
-        public string Article { get; set; }
-        public string Name { get; set; }
+        public string? Article { get; set; }
+        public string? Name { get; set; }
         public string FullName
         {
             get
@@ -21,5 +21,6 @@
                 return Name;
             }
         }
+        public string? ImageName { get; set; }
     }
 }

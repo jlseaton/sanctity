@@ -17,6 +17,13 @@
         public static readonly string PCDefaultSecret = "loc";
     }
 
+    public enum AccountType
+    {
+        Regular,
+        Premium,
+        DungeonMaster,
+    }
+
     public enum MoveDirection
     {
         North,
@@ -36,6 +43,7 @@
         Status,
         Join,
         Exit,
+        Death,
         Command,
         Text,
         Broadcast,
@@ -68,7 +76,7 @@
         Demigod,
         LesserGod,
         GreaterGod,
-        DM,
+        DungeonMaster,
     };
 
     public enum StateType
@@ -116,7 +124,9 @@
         Aquatic,
         Insect,
         Reptillian,
+        Undead,
         Demonic,
+        Dragon,
         Planar,
     };
 
@@ -181,6 +191,8 @@
         Rare,
         VeryRare,
         Animal,
+        Aquatic,
+        AquaticRare,
         RareAnimal,
         Insect,
         RareInsect,

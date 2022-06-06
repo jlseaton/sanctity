@@ -36,7 +36,9 @@
             this.buttonWest = new System.Windows.Forms.Button();
             this.buttonEast = new System.Windows.Forms.Button();
             this.panelStats = new System.Windows.Forms.Panel();
+            this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
             this.labelPCName = new System.Windows.Forms.Label();
+            this.buttonRevive = new System.Windows.Forms.Button();
             this.labelAge = new System.Windows.Forms.Label();
             this.labelGold = new System.Windows.Forms.Label();
             this.labelExperience = new System.Windows.Forms.Label();
@@ -52,10 +54,7 @@
             this.textBoxSend = new System.Windows.Forms.TextBox();
             this.buttonSettings = new System.Windows.Forms.Button();
             this.panelChat = new System.Windows.Forms.Panel();
-            this.buttonYell = new System.Windows.Forms.Button();
-            this.pictureBoxStatus = new System.Windows.Forms.PictureBox();
             this.buttonHide = new System.Windows.Forms.Button();
-            this.buttonRevive = new System.Windows.Forms.Button();
             this.panelView = new System.Windows.Forms.Panel();
             this.panelTiles = new System.Windows.Forms.Panel();
             this.pictureBoxTilesMain = new System.Windows.Forms.PictureBox();
@@ -90,9 +89,9 @@
             this.listBoxPCs = new System.Windows.Forms.ListBox();
             this.panelMovement = new System.Windows.Forms.Panel();
             this.panelStats.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPC)).BeginInit();
             this.panelChat.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).BeginInit();
             this.panelView.SuspendLayout();
             this.panelTiles.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTilesMain)).BeginInit();
@@ -126,10 +125,10 @@
             // buttonStart
             // 
             this.buttonStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonStart.Location = new System.Drawing.Point(500, 815);
-            this.buttonStart.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonStart.Location = new System.Drawing.Point(305, 1);
+            this.buttonStart.Margin = new System.Windows.Forms.Padding(4);
             this.buttonStart.Name = "buttonStart";
-            this.buttonStart.Size = new System.Drawing.Size(84, 35);
+            this.buttonStart.Size = new System.Drawing.Size(58, 25);
             this.buttonStart.TabIndex = 1;
             this.buttonStart.Text = "&Join";
             this.buttonStart.UseVisualStyleBackColor = true;
@@ -139,21 +138,21 @@
             // 
             this.textBoxEvents.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxEvents.Location = new System.Drawing.Point(6, 5);
-            this.textBoxEvents.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxEvents.Location = new System.Drawing.Point(5, 4);
+            this.textBoxEvents.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxEvents.Multiline = true;
             this.textBoxEvents.Name = "textBoxEvents";
             this.textBoxEvents.ReadOnly = true;
             this.textBoxEvents.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxEvents.Size = new System.Drawing.Size(563, 142);
+            this.textBoxEvents.Size = new System.Drawing.Size(358, 111);
             this.textBoxEvents.TabIndex = 1;
             // 
             // buttonNorth
             // 
-            this.buttonNorth.Location = new System.Drawing.Point(55, 7);
-            this.buttonNorth.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonNorth.Location = new System.Drawing.Point(48, 5);
+            this.buttonNorth.Margin = new System.Windows.Forms.Padding(4);
             this.buttonNorth.Name = "buttonNorth";
-            this.buttonNorth.Size = new System.Drawing.Size(69, 40);
+            this.buttonNorth.Size = new System.Drawing.Size(60, 30);
             this.buttonNorth.TabIndex = 4;
             this.buttonNorth.Text = "&North";
             this.buttonNorth.UseVisualStyleBackColor = true;
@@ -161,10 +160,10 @@
             // 
             // buttonSouth
             // 
-            this.buttonSouth.Location = new System.Drawing.Point(55, 96);
-            this.buttonSouth.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonSouth.Location = new System.Drawing.Point(48, 72);
+            this.buttonSouth.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSouth.Name = "buttonSouth";
-            this.buttonSouth.Size = new System.Drawing.Size(69, 35);
+            this.buttonSouth.Size = new System.Drawing.Size(60, 26);
             this.buttonSouth.TabIndex = 5;
             this.buttonSouth.Text = "S&outh";
             this.buttonSouth.UseVisualStyleBackColor = true;
@@ -172,10 +171,10 @@
             // 
             // buttonWest
             // 
-            this.buttonWest.Location = new System.Drawing.Point(14, 53);
-            this.buttonWest.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonWest.Location = new System.Drawing.Point(12, 40);
+            this.buttonWest.Margin = new System.Windows.Forms.Padding(4);
             this.buttonWest.Name = "buttonWest";
-            this.buttonWest.Size = new System.Drawing.Size(68, 35);
+            this.buttonWest.Size = new System.Drawing.Size(60, 26);
             this.buttonWest.TabIndex = 6;
             this.buttonWest.Text = "&West";
             this.buttonWest.UseVisualStyleBackColor = true;
@@ -183,10 +182,10 @@
             // 
             // buttonEast
             // 
-            this.buttonEast.Location = new System.Drawing.Point(90, 53);
-            this.buttonEast.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonEast.Location = new System.Drawing.Point(79, 40);
+            this.buttonEast.Margin = new System.Windows.Forms.Padding(4);
             this.buttonEast.Name = "buttonEast";
-            this.buttonEast.Size = new System.Drawing.Size(69, 35);
+            this.buttonEast.Size = new System.Drawing.Size(60, 26);
             this.buttonEast.TabIndex = 7;
             this.buttonEast.Text = "&East";
             this.buttonEast.UseVisualStyleBackColor = true;
@@ -196,39 +195,65 @@
             // 
             this.panelStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelStats.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelStats.Controls.Add(this.pictureBoxStatus);
             this.panelStats.Controls.Add(this.labelPCName);
+            this.panelStats.Controls.Add(this.buttonRevive);
             this.panelStats.Controls.Add(this.labelAge);
             this.panelStats.Controls.Add(this.labelGold);
             this.panelStats.Controls.Add(this.labelExperience);
             this.panelStats.Controls.Add(this.labelLevel);
             this.panelStats.Controls.Add(this.labelMPs);
             this.panelStats.Controls.Add(this.labelHPs);
-            this.panelStats.Location = new System.Drawing.Point(600, 702);
-            this.panelStats.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panelStats.Location = new System.Drawing.Point(585, 610);
+            this.panelStats.Margin = new System.Windows.Forms.Padding(4);
             this.panelStats.Name = "panelStats";
-            this.panelStats.Size = new System.Drawing.Size(170, 151);
+            this.panelStats.Size = new System.Drawing.Size(149, 114);
             this.panelStats.TabIndex = 8;
             this.panelStats.Visible = false;
+            // 
+            // pictureBoxStatus
+            // 
+            this.pictureBoxStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxStatus.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBoxStatus.Location = new System.Drawing.Point(100, 33);
+            this.pictureBoxStatus.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBoxStatus.Name = "pictureBoxStatus";
+            this.pictureBoxStatus.Size = new System.Drawing.Size(41, 49);
+            this.pictureBoxStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.pictureBoxStatus.TabIndex = 21;
+            this.pictureBoxStatus.TabStop = false;
             // 
             // labelPCName
             // 
             this.labelPCName.AutoSize = true;
             this.labelPCName.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point);
-            this.labelPCName.Location = new System.Drawing.Point(5, 2);
+            this.labelPCName.Location = new System.Drawing.Point(4, 2);
             this.labelPCName.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelPCName.Name = "labelPCName";
-            this.labelPCName.Size = new System.Drawing.Size(73, 20);
+            this.labelPCName.Size = new System.Drawing.Size(57, 15);
             this.labelPCName.TabIndex = 16;
             this.labelPCName.Text = "PC Name";
+            // 
+            // buttonRevive
+            // 
+            this.buttonRevive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonRevive.Location = new System.Drawing.Point(82, 83);
+            this.buttonRevive.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonRevive.Name = "buttonRevive";
+            this.buttonRevive.Size = new System.Drawing.Size(60, 26);
+            this.buttonRevive.TabIndex = 14;
+            this.buttonRevive.Text = "&Revive";
+            this.buttonRevive.UseVisualStyleBackColor = true;
+            this.buttonRevive.Click += new System.EventHandler(this.buttonRevive_Click);
             // 
             // labelAge
             // 
             this.labelAge.AutoSize = true;
             this.labelAge.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.labelAge.Location = new System.Drawing.Point(14, 65);
+            this.labelAge.Location = new System.Drawing.Point(6, 48);
             this.labelAge.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelAge.Name = "labelAge";
-            this.labelAge.Size = new System.Drawing.Size(38, 17);
+            this.labelAge.Size = new System.Drawing.Size(33, 13);
             this.labelAge.TabIndex = 15;
             this.labelAge.Text = "Age: ";
             // 
@@ -237,10 +262,10 @@
             this.labelGold.AutoSize = true;
             this.labelGold.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.labelGold.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.labelGold.Location = new System.Drawing.Point(9, 123);
+            this.labelGold.Location = new System.Drawing.Point(1, 94);
             this.labelGold.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelGold.Name = "labelGold";
-            this.labelGold.Size = new System.Drawing.Size(43, 17);
+            this.labelGold.Size = new System.Drawing.Size(38, 13);
             this.labelGold.TabIndex = 14;
             this.labelGold.Text = "Gold: ";
             // 
@@ -248,10 +273,10 @@
             // 
             this.labelExperience.AutoSize = true;
             this.labelExperience.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.labelExperience.Location = new System.Drawing.Point(15, 100);
+            this.labelExperience.Location = new System.Drawing.Point(7, 78);
             this.labelExperience.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelExperience.Name = "labelExperience";
-            this.labelExperience.Size = new System.Drawing.Size(40, 17);
+            this.labelExperience.Size = new System.Drawing.Size(34, 13);
             this.labelExperience.TabIndex = 13;
             this.labelExperience.Text = "Exp:  ";
             // 
@@ -259,10 +284,10 @@
             // 
             this.labelLevel.AutoSize = true;
             this.labelLevel.Font = new System.Drawing.Font("Segoe UI", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.labelLevel.Location = new System.Drawing.Point(8, 83);
+            this.labelLevel.Location = new System.Drawing.Point(1, 63);
             this.labelLevel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelLevel.Name = "labelLevel";
-            this.labelLevel.Size = new System.Drawing.Size(44, 17);
+            this.labelLevel.Size = new System.Drawing.Size(38, 13);
             this.labelLevel.TabIndex = 12;
             this.labelLevel.Text = "Level: ";
             // 
@@ -270,10 +295,10 @@
             // 
             this.labelMPs.AutoSize = true;
             this.labelMPs.ForeColor = System.Drawing.Color.Blue;
-            this.labelMPs.Location = new System.Drawing.Point(10, 41);
+            this.labelMPs.Location = new System.Drawing.Point(3, 32);
             this.labelMPs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelMPs.Name = "labelMPs";
-            this.labelMPs.Size = new System.Drawing.Size(39, 20);
+            this.labelMPs.Size = new System.Drawing.Size(33, 15);
             this.labelMPs.TabIndex = 11;
             this.labelMPs.Text = "MPs:";
             // 
@@ -281,19 +306,19 @@
             // 
             this.labelHPs.AutoSize = true;
             this.labelHPs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelHPs.Location = new System.Drawing.Point(11, 21);
+            this.labelHPs.Location = new System.Drawing.Point(5, 17);
             this.labelHPs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.labelHPs.Name = "labelHPs";
-            this.labelHPs.Size = new System.Drawing.Size(41, 20);
+            this.labelHPs.Size = new System.Drawing.Size(34, 15);
             this.labelHPs.TabIndex = 10;
             this.labelHPs.Text = "HPs: ";
             // 
             // buttonDown
             // 
-            this.buttonDown.Location = new System.Drawing.Point(90, 148);
-            this.buttonDown.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonDown.Location = new System.Drawing.Point(79, 111);
+            this.buttonDown.Margin = new System.Windows.Forms.Padding(4);
             this.buttonDown.Name = "buttonDown";
-            this.buttonDown.Size = new System.Drawing.Size(69, 35);
+            this.buttonDown.Size = new System.Drawing.Size(60, 26);
             this.buttonDown.TabIndex = 9;
             this.buttonDown.Text = "&Down";
             this.buttonDown.UseVisualStyleBackColor = true;
@@ -301,10 +326,10 @@
             // 
             // buttonUp
             // 
-            this.buttonUp.Location = new System.Drawing.Point(13, 148);
-            this.buttonUp.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonUp.Location = new System.Drawing.Point(11, 111);
+            this.buttonUp.Margin = new System.Windows.Forms.Padding(4);
             this.buttonUp.Name = "buttonUp";
-            this.buttonUp.Size = new System.Drawing.Size(69, 35);
+            this.buttonUp.Size = new System.Drawing.Size(60, 26);
             this.buttonUp.TabIndex = 8;
             this.buttonUp.Text = "&Up";
             this.buttonUp.UseVisualStyleBackColor = true;
@@ -313,20 +338,23 @@
             // pictureBoxPC
             // 
             this.pictureBoxPC.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC.Location = new System.Drawing.Point(367, 1);
-            this.pictureBoxPC.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBoxPC.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictureBoxPC.Location = new System.Drawing.Point(385, 466);
+            this.pictureBoxPC.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC.Name = "pictureBoxPC";
-            this.pictureBoxPC.Size = new System.Drawing.Size(99, 144);
+            this.pictureBoxPC.Size = new System.Drawing.Size(197, 261);
             this.pictureBoxPC.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC.TabIndex = 1;
             this.pictureBoxPC.TabStop = false;
+            this.pictureBoxPC.Click += new System.EventHandler(this.pictureBoxPC_Click);
             // 
             // buttonAttack
             // 
-            this.buttonAttack.Location = new System.Drawing.Point(14, 148);
-            this.buttonAttack.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonAttack.Location = new System.Drawing.Point(11, 112);
+            this.buttonAttack.Margin = new System.Windows.Forms.Padding(4);
             this.buttonAttack.Name = "buttonAttack";
-            this.buttonAttack.Size = new System.Drawing.Size(69, 35);
+            this.buttonAttack.Size = new System.Drawing.Size(60, 26);
             this.buttonAttack.TabIndex = 15;
             this.buttonAttack.Text = "&Attack";
             this.buttonAttack.UseVisualStyleBackColor = true;
@@ -335,10 +363,10 @@
             // buttonLook
             // 
             this.buttonLook.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonLook.Location = new System.Drawing.Point(92, 148);
-            this.buttonLook.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonLook.Location = new System.Drawing.Point(81, 145);
+            this.buttonLook.Margin = new System.Windows.Forms.Padding(4);
             this.buttonLook.Name = "buttonLook";
-            this.buttonLook.Size = new System.Drawing.Size(70, 35);
+            this.buttonLook.Size = new System.Drawing.Size(61, 26);
             this.buttonLook.TabIndex = 13;
             this.buttonLook.Text = "&Look";
             this.buttonLook.UseVisualStyleBackColor = true;
@@ -347,12 +375,12 @@
             // buttonSend
             // 
             this.buttonSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSend.Location = new System.Drawing.Point(386, 148);
-            this.buttonSend.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonSend.Location = new System.Drawing.Point(305, 116);
+            this.buttonSend.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSend.Name = "buttonSend";
-            this.buttonSend.Size = new System.Drawing.Size(84, 35);
+            this.buttonSend.Size = new System.Drawing.Size(58, 26);
             this.buttonSend.TabIndex = 12;
-            this.buttonSend.Text = "&Say";
+            this.buttonSend.Text = "&Send";
             this.buttonSend.UseVisualStyleBackColor = true;
             this.buttonSend.Click += new System.EventHandler(this.buttonSend_Click);
             // 
@@ -360,10 +388,10 @@
             // 
             this.textBoxSend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.textBoxSend.Location = new System.Drawing.Point(7, 154);
-            this.textBoxSend.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.textBoxSend.Location = new System.Drawing.Point(5, 118);
+            this.textBoxSend.Margin = new System.Windows.Forms.Padding(4);
             this.textBoxSend.Name = "textBoxSend";
-            this.textBoxSend.Size = new System.Drawing.Size(353, 27);
+            this.textBoxSend.Size = new System.Drawing.Size(297, 23);
             this.textBoxSend.TabIndex = 0;
             this.textBoxSend.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBoxSend_KeyPress);
             this.textBoxSend.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBoxSend_KeyUp);
@@ -371,10 +399,10 @@
             // buttonSettings
             // 
             this.buttonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSettings.Location = new System.Drawing.Point(500, 778);
-            this.buttonSettings.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonSettings.Location = new System.Drawing.Point(305, 28);
+            this.buttonSettings.Margin = new System.Windows.Forms.Padding(4);
             this.buttonSettings.Name = "buttonSettings";
-            this.buttonSettings.Size = new System.Drawing.Size(84, 35);
+            this.buttonSettings.Size = new System.Drawing.Size(58, 25);
             this.buttonSettings.TabIndex = 12;
             this.buttonSettings.Text = "Se&ttings";
             this.buttonSettings.UseVisualStyleBackColor = true;
@@ -385,87 +413,54 @@
             this.panelChat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelChat.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.panelChat.Controls.Add(this.buttonYell);
             this.panelChat.Controls.Add(this.textBoxSend);
             this.panelChat.Controls.Add(this.buttonSend);
             this.panelChat.Controls.Add(this.textBoxEvents);
-            this.panelChat.Location = new System.Drawing.Point(13, 509);
-            this.panelChat.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panelChat.Location = new System.Drawing.Point(11, 466);
+            this.panelChat.Margin = new System.Windows.Forms.Padding(4);
             this.panelChat.Name = "panelChat";
-            this.panelChat.Size = new System.Drawing.Size(579, 188);
+            this.panelChat.Size = new System.Drawing.Size(371, 146);
             this.panelChat.TabIndex = 13;
-            this.panelChat.Visible = false;
-            // 
-            // buttonYell
-            // 
-            this.buttonYell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonYell.Location = new System.Drawing.Point(485, 148);
-            this.buttonYell.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.buttonYell.Name = "buttonYell";
-            this.buttonYell.Size = new System.Drawing.Size(84, 35);
-            this.buttonYell.TabIndex = 13;
-            this.buttonYell.Text = "&Yell";
-            this.buttonYell.UseVisualStyleBackColor = true;
-            this.buttonYell.Click += new System.EventHandler(this.buttonYell_Click);
-            // 
-            // pictureBoxStatus
-            // 
-            this.pictureBoxStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxStatus.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.pictureBoxStatus.Location = new System.Drawing.Point(500, 705);
-            this.pictureBoxStatus.Name = "pictureBoxStatus";
-            this.pictureBoxStatus.Size = new System.Drawing.Size(84, 65);
-            this.pictureBoxStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBoxStatus.TabIndex = 21;
-            this.pictureBoxStatus.TabStop = false;
             // 
             // buttonHide
             // 
             this.buttonHide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonHide.Location = new System.Drawing.Point(92, 193);
-            this.buttonHide.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonHide.Location = new System.Drawing.Point(149, 145);
+            this.buttonHide.Margin = new System.Windows.Forms.Padding(4);
             this.buttonHide.Name = "buttonHide";
-            this.buttonHide.Size = new System.Drawing.Size(70, 35);
+            this.buttonHide.Size = new System.Drawing.Size(61, 26);
             this.buttonHide.TabIndex = 15;
             this.buttonHide.Text = "&Hide";
             this.buttonHide.UseVisualStyleBackColor = true;
             this.buttonHide.Click += new System.EventHandler(this.buttonHide_Click);
-            // 
-            // buttonRevive
-            // 
-            this.buttonRevive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonRevive.Location = new System.Drawing.Point(170, 193);
-            this.buttonRevive.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.buttonRevive.Name = "buttonRevive";
-            this.buttonRevive.Size = new System.Drawing.Size(68, 35);
-            this.buttonRevive.TabIndex = 14;
-            this.buttonRevive.Text = "&Revive";
-            this.buttonRevive.UseVisualStyleBackColor = true;
-            this.buttonRevive.Click += new System.EventHandler(this.buttonRevive_Click);
             // 
             // panelView
             // 
             this.panelView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelView.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.panelView.BackColor = System.Drawing.Color.Black;
             this.panelView.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.panelView.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelView.Controls.Add(this.panelTiles);
             this.panelView.Controls.Add(this.panelNPCs);
             this.panelView.Controls.Add(this.panelPCs);
             this.panelView.Location = new System.Drawing.Point(0, 0);
-            this.panelView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panelView.Margin = new System.Windows.Forms.Padding(4);
             this.panelView.Name = "panelView";
-            this.panelView.Size = new System.Drawing.Size(1048, 499);
+            this.panelView.Size = new System.Drawing.Size(976, 460);
             this.panelView.TabIndex = 15;
             // 
             // panelTiles
             // 
+            this.panelTiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelTiles.Controls.Add(this.pictureBoxTilesMain);
-            this.panelTiles.Location = new System.Drawing.Point(266, 0);
+            this.panelTiles.Location = new System.Drawing.Point(233, 0);
+            this.panelTiles.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelTiles.Name = "panelTiles";
-            this.panelTiles.Size = new System.Drawing.Size(525, 490);
+            this.panelTiles.Size = new System.Drawing.Size(518, 454);
             this.panelTiles.TabIndex = 10;
             // 
             // pictureBoxTilesMain
@@ -473,9 +468,11 @@
             this.pictureBoxTilesMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxTilesMain.Location = new System.Drawing.Point(241, 203);
+            this.pictureBoxTilesMain.Location = new System.Drawing.Point(1, 2);
+            this.pictureBoxTilesMain.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBoxTilesMain.Name = "pictureBoxTilesMain";
-            this.pictureBoxTilesMain.Size = new System.Drawing.Size(75, 70);
+            this.pictureBoxTilesMain.Size = new System.Drawing.Size(514, 450);
+            this.pictureBoxTilesMain.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBoxTilesMain.TabIndex = 0;
             this.pictureBoxTilesMain.TabStop = false;
             // 
@@ -494,129 +491,115 @@
             this.panelNPCs.Controls.Add(this.pictureBoxNPC7);
             this.panelNPCs.Controls.Add(this.pictureBoxNPC2);
             this.panelNPCs.Controls.Add(this.pictureBoxNPC6);
-            this.panelNPCs.Location = new System.Drawing.Point(797, 3);
+            this.panelNPCs.Location = new System.Drawing.Point(757, 2);
+            this.panelNPCs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelNPCs.Name = "panelNPCs";
-            this.panelNPCs.Size = new System.Drawing.Size(245, 486);
+            this.panelNPCs.Size = new System.Drawing.Size(215, 453);
             this.panelNPCs.TabIndex = 9;
             this.panelNPCs.Visible = false;
             // 
             // pictureBoxNPC10
             // 
-            this.pictureBoxNPC10.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC10.Location = new System.Drawing.Point(142, 418);
-            this.pictureBoxNPC10.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxNPC10.Location = new System.Drawing.Point(110, 354);
+            this.pictureBoxNPC10.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC10.Name = "pictureBoxNPC10";
-            this.pictureBoxNPC10.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC10.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC10.TabIndex = 10;
             this.pictureBoxNPC10.TabStop = false;
             // 
             // pictureBoxNPC9
             // 
-            this.pictureBoxNPC9.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC9.Location = new System.Drawing.Point(30, 418);
-            this.pictureBoxNPC9.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC9.Location = new System.Drawing.Point(14, 354);
+            this.pictureBoxNPC9.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC9.Name = "pictureBoxNPC9";
-            this.pictureBoxNPC9.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC9.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC9.TabIndex = 9;
             this.pictureBoxNPC9.TabStop = false;
             // 
             // pictureBoxNPC8
             // 
-            this.pictureBoxNPC8.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC8.Location = new System.Drawing.Point(142, 324);
-            this.pictureBoxNPC8.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxNPC8.Location = new System.Drawing.Point(110, 266);
+            this.pictureBoxNPC8.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC8.Name = "pictureBoxNPC8";
-            this.pictureBoxNPC8.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC8.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC8.TabIndex = 8;
             this.pictureBoxNPC8.TabStop = false;
             // 
             // pictureBoxNPC4
             // 
-            this.pictureBoxNPC4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC4.Location = new System.Drawing.Point(30, 324);
-            this.pictureBoxNPC4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC4.Location = new System.Drawing.Point(14, 266);
+            this.pictureBoxNPC4.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC4.Name = "pictureBoxNPC4";
-            this.pictureBoxNPC4.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC4.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC4.TabIndex = 4;
             this.pictureBoxNPC4.TabStop = false;
             // 
             // pictureBoxNPC1
             // 
-            this.pictureBoxNPC1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC1.Location = new System.Drawing.Point(30, 31);
-            this.pictureBoxNPC1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC1.Location = new System.Drawing.Point(14, 4);
+            this.pictureBoxNPC1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC1.Name = "pictureBoxNPC1";
-            this.pictureBoxNPC1.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC1.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC1.TabIndex = 1;
             this.pictureBoxNPC1.TabStop = false;
             // 
             // pictureBoxNPC3
             // 
-            this.pictureBoxNPC3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC3.Location = new System.Drawing.Point(30, 228);
-            this.pictureBoxNPC3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC3.Location = new System.Drawing.Point(14, 177);
+            this.pictureBoxNPC3.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC3.Name = "pictureBoxNPC3";
-            this.pictureBoxNPC3.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC3.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC3.TabIndex = 3;
             this.pictureBoxNPC3.TabStop = false;
             // 
             // pictureBoxNPC5
             // 
-            this.pictureBoxNPC5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC5.Location = new System.Drawing.Point(142, 31);
-            this.pictureBoxNPC5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxNPC5.Location = new System.Drawing.Point(110, 4);
+            this.pictureBoxNPC5.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC5.Name = "pictureBoxNPC5";
-            this.pictureBoxNPC5.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC5.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC5.TabIndex = 5;
             this.pictureBoxNPC5.TabStop = false;
             // 
             // pictureBoxNPC7
             // 
-            this.pictureBoxNPC7.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC7.Location = new System.Drawing.Point(142, 228);
-            this.pictureBoxNPC7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxNPC7.Location = new System.Drawing.Point(110, 177);
+            this.pictureBoxNPC7.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC7.Name = "pictureBoxNPC7";
-            this.pictureBoxNPC7.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC7.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC7.TabIndex = 7;
             this.pictureBoxNPC7.TabStop = false;
             // 
             // pictureBoxNPC2
             // 
-            this.pictureBoxNPC2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC2.Location = new System.Drawing.Point(30, 128);
-            this.pictureBoxNPC2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC2.Location = new System.Drawing.Point(14, 92);
+            this.pictureBoxNPC2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC2.Name = "pictureBoxNPC2";
-            this.pictureBoxNPC2.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC2.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC2.TabIndex = 2;
             this.pictureBoxNPC2.TabStop = false;
             // 
             // pictureBoxNPC6
             // 
-            this.pictureBoxNPC6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC6.Location = new System.Drawing.Point(142, 128);
-            this.pictureBoxNPC6.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxNPC6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxNPC6.Location = new System.Drawing.Point(110, 90);
+            this.pictureBoxNPC6.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxNPC6.Name = "pictureBoxNPC6";
-            this.pictureBoxNPC6.Size = new System.Drawing.Size(71, 62);
+            this.pictureBoxNPC6.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxNPC6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxNPC6.TabIndex = 6;
             this.pictureBoxNPC6.TabStop = false;
             // 
@@ -635,163 +618,150 @@
             this.panelPCs.Controls.Add(this.pictureBoxPC7);
             this.panelPCs.Controls.Add(this.pictureBoxPC2);
             this.panelPCs.Controls.Add(this.pictureBoxPC6);
-            this.panelPCs.Location = new System.Drawing.Point(3, 3);
+            this.panelPCs.Location = new System.Drawing.Point(3, 2);
+            this.panelPCs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panelPCs.Name = "panelPCs";
-            this.panelPCs.Size = new System.Drawing.Size(261, 486);
+            this.panelPCs.Size = new System.Drawing.Size(229, 453);
             this.panelPCs.TabIndex = 7;
             this.panelPCs.Visible = false;
             // 
             // pictureBoxPC10
             // 
-            this.pictureBoxPC10.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC10.Location = new System.Drawing.Point(142, 418);
-            this.pictureBoxPC10.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxPC10.Location = new System.Drawing.Point(123, 354);
+            this.pictureBoxPC10.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC10.Name = "pictureBoxPC10";
-            this.pictureBoxPC10.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC10.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC10.TabIndex = 10;
             this.pictureBoxPC10.TabStop = false;
             // 
             // pictureBoxPC9
             // 
-            this.pictureBoxPC9.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC9.Location = new System.Drawing.Point(35, 418);
-            this.pictureBoxPC9.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC9.Location = new System.Drawing.Point(12, 354);
+            this.pictureBoxPC9.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC9.Name = "pictureBoxPC9";
-            this.pictureBoxPC9.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC9.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC9.TabIndex = 9;
             this.pictureBoxPC9.TabStop = false;
             // 
             // pictureBoxPC8
             // 
-            this.pictureBoxPC8.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC8.Location = new System.Drawing.Point(142, 324);
-            this.pictureBoxPC8.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxPC8.Location = new System.Drawing.Point(123, 266);
+            this.pictureBoxPC8.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC8.Name = "pictureBoxPC8";
-            this.pictureBoxPC8.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC8.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC8.TabIndex = 8;
             this.pictureBoxPC8.TabStop = false;
             // 
             // pictureBoxPC4
             // 
-            this.pictureBoxPC4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC4.Location = new System.Drawing.Point(35, 324);
-            this.pictureBoxPC4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC4.Location = new System.Drawing.Point(12, 266);
+            this.pictureBoxPC4.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC4.Name = "pictureBoxPC4";
-            this.pictureBoxPC4.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC4.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC4.TabIndex = 4;
             this.pictureBoxPC4.TabStop = false;
             // 
             // pictureBoxPC1
             // 
-            this.pictureBoxPC1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC1.Location = new System.Drawing.Point(35, 31);
-            this.pictureBoxPC1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC1.Location = new System.Drawing.Point(12, 4);
+            this.pictureBoxPC1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC1.Name = "pictureBoxPC1";
-            this.pictureBoxPC1.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC1.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC1.TabIndex = 1;
             this.pictureBoxPC1.TabStop = false;
             // 
             // pictureBoxPC3
             // 
-            this.pictureBoxPC3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC3.Location = new System.Drawing.Point(35, 228);
-            this.pictureBoxPC3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC3.Location = new System.Drawing.Point(12, 178);
+            this.pictureBoxPC3.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC3.Name = "pictureBoxPC3";
-            this.pictureBoxPC3.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC3.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC3.TabIndex = 3;
             this.pictureBoxPC3.TabStop = false;
             // 
             // pictureBoxPC5
             // 
-            this.pictureBoxPC5.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC5.Location = new System.Drawing.Point(142, 31);
-            this.pictureBoxPC5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxPC5.Location = new System.Drawing.Point(123, 4);
+            this.pictureBoxPC5.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC5.Name = "pictureBoxPC5";
-            this.pictureBoxPC5.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC5.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC5.TabIndex = 5;
             this.pictureBoxPC5.TabStop = false;
             // 
             // pictureBoxPC7
             // 
-            this.pictureBoxPC7.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC7.Location = new System.Drawing.Point(142, 228);
-            this.pictureBoxPC7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxPC7.Location = new System.Drawing.Point(123, 177);
+            this.pictureBoxPC7.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC7.Name = "pictureBoxPC7";
-            this.pictureBoxPC7.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC7.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC7.TabIndex = 7;
             this.pictureBoxPC7.TabStop = false;
             // 
             // pictureBoxPC2
             // 
-            this.pictureBoxPC2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC2.Location = new System.Drawing.Point(35, 128);
-            this.pictureBoxPC2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC2.Location = new System.Drawing.Point(12, 90);
+            this.pictureBoxPC2.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC2.Name = "pictureBoxPC2";
-            this.pictureBoxPC2.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC2.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC2.TabIndex = 2;
             this.pictureBoxPC2.TabStop = false;
             // 
             // pictureBoxPC6
             // 
-            this.pictureBoxPC6.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC6.Location = new System.Drawing.Point(142, 128);
-            this.pictureBoxPC6.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pictureBoxPC6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBoxPC6.Location = new System.Drawing.Point(123, 90);
+            this.pictureBoxPC6.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBoxPC6.Name = "pictureBoxPC6";
-            this.pictureBoxPC6.Size = new System.Drawing.Size(82, 62);
+            this.pictureBoxPC6.Size = new System.Drawing.Size(90, 80);
+            this.pictureBoxPC6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxPC6.TabIndex = 6;
             this.pictureBoxPC6.TabStop = false;
             // 
             // buttonGet
             // 
             this.buttonGet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonGet.Location = new System.Drawing.Point(13, 193);
-            this.buttonGet.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonGet.Location = new System.Drawing.Point(11, 145);
+            this.buttonGet.Margin = new System.Windows.Forms.Padding(4);
             this.buttonGet.Name = "buttonGet";
-            this.buttonGet.Size = new System.Drawing.Size(69, 35);
+            this.buttonGet.Size = new System.Drawing.Size(60, 26);
             this.buttonGet.TabIndex = 16;
             this.buttonGet.Text = "&Get";
             this.buttonGet.UseVisualStyleBackColor = true;
+            this.buttonGet.Click += new System.EventHandler(this.buttonGet_Click);
             // 
             // listBoxEntities
             // 
             this.listBoxEntities.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxEntities.FormattingEnabled = true;
-            this.listBoxEntities.ItemHeight = 20;
-            this.listBoxEntities.Location = new System.Drawing.Point(3, 3);
-            this.listBoxEntities.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.listBoxEntities.ItemHeight = 15;
+            this.listBoxEntities.Location = new System.Drawing.Point(3, 2);
+            this.listBoxEntities.Margin = new System.Windows.Forms.Padding(4);
             this.listBoxEntities.Name = "listBoxEntities";
-            this.listBoxEntities.Size = new System.Drawing.Size(250, 144);
+            this.listBoxEntities.Size = new System.Drawing.Size(219, 109);
             this.listBoxEntities.TabIndex = 18;
             // 
             // listBoxItems
             // 
             this.listBoxItems.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxItems.FormattingEnabled = true;
-            this.listBoxItems.ItemHeight = 20;
-            this.listBoxItems.Location = new System.Drawing.Point(4, 232);
-            this.listBoxItems.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.listBoxItems.ItemHeight = 15;
+            this.listBoxItems.Location = new System.Drawing.Point(4, 174);
+            this.listBoxItems.Margin = new System.Windows.Forms.Padding(4);
             this.listBoxItems.Name = "listBoxItems";
-            this.listBoxItems.Size = new System.Drawing.Size(250, 104);
+            this.listBoxItems.Size = new System.Drawing.Size(219, 79);
             this.listBoxItems.TabIndex = 19;
             // 
             // panelObjects
@@ -799,27 +769,26 @@
             this.panelObjects.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.panelObjects.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelObjects.Controls.Add(this.buttonInspect);
-            this.panelObjects.Controls.Add(this.buttonRevive);
             this.panelObjects.Controls.Add(this.listBoxEntities);
             this.panelObjects.Controls.Add(this.listBoxItems);
             this.panelObjects.Controls.Add(this.buttonAttack);
             this.panelObjects.Controls.Add(this.buttonGet);
             this.panelObjects.Controls.Add(this.buttonHide);
             this.panelObjects.Controls.Add(this.buttonLook);
-            this.panelObjects.Location = new System.Drawing.Point(774, 509);
-            this.panelObjects.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panelObjects.Location = new System.Drawing.Point(737, 466);
+            this.panelObjects.Margin = new System.Windows.Forms.Padding(4);
             this.panelObjects.Name = "panelObjects";
-            this.panelObjects.Size = new System.Drawing.Size(258, 344);
+            this.panelObjects.Size = new System.Drawing.Size(226, 259);
             this.panelObjects.TabIndex = 20;
             this.panelObjects.Visible = false;
             // 
             // buttonInspect
             // 
             this.buttonInspect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.buttonInspect.Location = new System.Drawing.Point(170, 148);
-            this.buttonInspect.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.buttonInspect.Location = new System.Drawing.Point(81, 112);
+            this.buttonInspect.Margin = new System.Windows.Forms.Padding(4);
             this.buttonInspect.Name = "buttonInspect";
-            this.buttonInspect.Size = new System.Drawing.Size(68, 35);
+            this.buttonInspect.Size = new System.Drawing.Size(60, 26);
             this.buttonInspect.TabIndex = 16;
             this.buttonInspect.Text = "&Inspect";
             this.buttonInspect.UseVisualStyleBackColor = true;
@@ -831,11 +800,12 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelAccount.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panelAccount.Controls.Add(this.listBoxPCs);
-            this.panelAccount.Controls.Add(this.pictureBoxPC);
-            this.panelAccount.Location = new System.Drawing.Point(13, 702);
-            this.panelAccount.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panelAccount.Controls.Add(this.buttonSettings);
+            this.panelAccount.Controls.Add(this.buttonStart);
+            this.panelAccount.Location = new System.Drawing.Point(11, 614);
+            this.panelAccount.Margin = new System.Windows.Forms.Padding(4);
             this.panelAccount.Name = "panelAccount";
-            this.panelAccount.Size = new System.Drawing.Size(472, 151);
+            this.panelAccount.Size = new System.Drawing.Size(371, 114);
             this.panelAccount.TabIndex = 16;
             // 
             // listBoxPCs
@@ -843,12 +813,13 @@
             this.listBoxPCs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBoxPCs.Font = new System.Drawing.Font("Segoe Script", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.listBoxPCs.Font = new System.Drawing.Font("Segoe UI Historic", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.listBoxPCs.FormattingEnabled = true;
-            this.listBoxPCs.ItemHeight = 20;
-            this.listBoxPCs.Location = new System.Drawing.Point(7, 2);
+            this.listBoxPCs.ItemHeight = 12;
+            this.listBoxPCs.Location = new System.Drawing.Point(6, 2);
+            this.listBoxPCs.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.listBoxPCs.Name = "listBoxPCs";
-            this.listBoxPCs.Size = new System.Drawing.Size(353, 144);
+            this.listBoxPCs.Size = new System.Drawing.Size(296, 100);
             this.listBoxPCs.TabIndex = 15;
             this.listBoxPCs.SelectedIndexChanged += new System.EventHandler(this.listBoxPCs_SelectedIndexChanged);
             // 
@@ -862,40 +833,39 @@
             this.panelMovement.Controls.Add(this.buttonSouth);
             this.panelMovement.Controls.Add(this.buttonUp);
             this.panelMovement.Controls.Add(this.buttonDown);
-            this.panelMovement.Location = new System.Drawing.Point(600, 509);
-            this.panelMovement.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.panelMovement.Location = new System.Drawing.Point(585, 466);
+            this.panelMovement.Margin = new System.Windows.Forms.Padding(4);
             this.panelMovement.Name = "panelMovement";
-            this.panelMovement.Size = new System.Drawing.Size(170, 188);
+            this.panelMovement.Size = new System.Drawing.Size(149, 142);
             this.panelMovement.TabIndex = 15;
             this.panelMovement.Visible = false;
             // 
             // MainForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1045, 863);
-            this.Controls.Add(this.pictureBoxStatus);
-            this.Controls.Add(this.buttonSettings);
+            this.ClientSize = new System.Drawing.Size(974, 731);
+            this.Controls.Add(this.pictureBoxPC);
             this.Controls.Add(this.panelMovement);
             this.Controls.Add(this.panelAccount);
             this.Controls.Add(this.panelStats);
             this.Controls.Add(this.panelObjects);
-            this.Controls.Add(this.buttonStart);
             this.Controls.Add(this.panelChat);
             this.Controls.Add(this.panelView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
             this.Text = "Lords of Chaos: Sanctity\'s Edge";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
             this.SizeChanged += new System.EventHandler(this.MainForm_SizeChanged);
             this.panelStats.ResumeLayout(false);
             this.panelStats.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPC)).EndInit();
             this.panelChat.ResumeLayout(false);
             this.panelChat.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxStatus)).EndInit();
             this.panelView.ResumeLayout(false);
             this.panelTiles.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxTilesMain)).EndInit();
@@ -944,7 +914,6 @@
         private System.Windows.Forms.Button buttonDown;
         private System.Windows.Forms.Button buttonUp;
         private System.Windows.Forms.Button buttonLook;
-        private System.Windows.Forms.Button buttonYell;
         private System.Windows.Forms.Button buttonAttack;
         private System.Windows.Forms.Label labelMPs;
         private System.Windows.Forms.Label labelHPs;

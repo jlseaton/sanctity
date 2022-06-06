@@ -4,10 +4,12 @@ namespace Game.Realm
 {
     public class PC : Entity
     {
-        public int UserID { get; set; }
-        public string Token { get; private set; }
-        public string Secret { get; private set; }
+        public uint UserID { get; set; }
+        public string? Token { get; private set; }
+        public string? Secret { get; private set; }
         public bool Authenticated { get; private set; }
+        public AccountType AccountType { get; set; }
+        public bool PVP { get; set; }
         public new string FullName
         {
             get
@@ -26,10 +28,11 @@ namespace Game.Realm
             }
         }
 
-        public Connection Conn { get; set; }
+        public Connection? Conn { get; set; }
 
         public PC() : base()
         {
+            PVP = true;
             Type = EntityType.PC;
             Gender = GenderType.Male;
             Secret = Constants.PCDefaultSecret;

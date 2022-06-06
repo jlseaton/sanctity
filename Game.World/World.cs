@@ -104,35 +104,63 @@ namespace Game.World
 
                     Conn.Client = client;
 
-                    PC? PC = Realm.FindPlayer(packet.ID);
+                    PC? player = Realm.FindPC(packet.ID);
 
-                    if (PC != null)
+                    // If a joining player is found to be already logged in
+                    if (player != null)
                     {
+                        var result = player.FullName + " attempted to login again. The existing player will be removed. Please try again.";
+
+                        Realm.SendPlayerMessage(player.ID, result);
+
                         // Use SendPacket since the write thread is not running yet
                         Conn.SendPacket(new Packet()
                         {
                             ID = packet.ID,
                             ActionType = ActionType.Exit,
-                            Text = "That PC account is already adventuring in the realm. Please choose another.",
+                            Text = result,
                         });
 
-                        LogEntry(PC.FullName + " attempted to login again.");
+                        LogEntry(result);
 
                         if (Conn.Client.Connected)
                         {
                             Conn.Disconnect();
                         }
+
+                        if (player.Conn.Connected)
+                        {
+                            player.Conn.Disconnect();
+                        }
+
+                        Realm.RemovePC(player.ID);
                     }
                     else
                     {
-                        PC = Realm.AddPlayer(packet.ID, 1, packet.Text, Conn);
+                        player = Realm.AddPlayer(packet.ID, 1, packet.Text, Conn);
 
-                        if (PC != null)
+                        if (player != null)
                         {
-                            LogEntry(PC.FullName + " has joined the realm.");
+                            Realm.SendPlayerStatus(player.ID, "\r\nWelcome to the Realm! Type /help for a list of commands.", true);
+                            Realm.BroadcastMessage(player.FullName + " has joined the realm.");
 
-                            ThreadPool.QueueUserWorkItem(PCReadThread, PC);
-                            ThreadPool.QueueUserWorkItem(PCWriteThread, PC);
+                            var hex =
+                                Realm.Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1];
+
+                            Realm.SendPlayerStatusToHex(player.Loc);
+
+                            ThreadPool.QueueUserWorkItem(PCReadThread, player);
+                            ThreadPool.QueueUserWorkItem(PCWriteThread, player);
+                        }
+                        else
+                        {
+                            // Use SendPacket since the write thread is not running yet
+                            Conn.SendPacket(new Packet()
+                            {
+                                ID = packet.ID,
+                                ActionType = ActionType.Exit,
+                                Text = "You are unable to join the realm at this time. Please try again later.",
+                            });
                         }
                     }
                 }
@@ -161,17 +189,12 @@ namespace Game.World
                         {
                             foreach (var packet in packets)
                             {
+                                Realm.HandlePacket(packet, PC.ID);
+
                                 if (packet.ActionType == ActionType.Exit)
                                 {
-                                    SavePC(PC);
-
-                                    Realm.RemovePC(PC.ID);
                                     threadRunning = false;
                                     break;
-                                }
-                                else
-                                {
-                                    Realm.HandlePacket(packet, PC.ID);
                                 }
                             }
                         }
@@ -194,8 +217,6 @@ namespace Game.World
             {
                 PC.Conn.Disconnect();
             }
-
-            Realm.BroadcastMessage(PC.FullName + " has left the realm.");
         }
 
         private void PCWriteThread(object context)
@@ -361,9 +382,8 @@ namespace Game.World
                 {
                     try
                     {
-                        Console.WriteLine(message);
-
-                        //string entry = DateTime.Now + "," + message;
+                        string entry = DateTime.Now + "," + message;
+                        Console.WriteLine(entry);
 
                         //if (log != null)
                         //{

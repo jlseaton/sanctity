@@ -35,6 +35,7 @@ namespace Game.Core
             LastConnected = DateTime.Now;
             LastActive = DateTime.Now;
             OfflineMode = offlineMode;
+            Client = new TcpClient();
         }
 
         public void Connect()
@@ -45,7 +46,7 @@ namespace Game.Core
             }
             else
             {
-                Client = new TcpClient();
+                //Client = new TcpClient();
                 Connected = true;
             }
         }

@@ -4,6 +4,12 @@ namespace Game.Client
 {
     public class Config
     {
+        public int WindowLocationX { get; set; }
+        public int WindowLocationY { get; set; }
+        public int WindowHeight { get; set; }
+        public int WindowWidth { get; set; }
+        public int WindowState { get; set; }
+
         public bool Images { get; set; }
         public bool Sounds { get; set; }
         public bool Music { get; set; }
@@ -14,6 +20,11 @@ namespace Game.Client
 
         public Config()
         {
+            WindowLocationX = 0;
+            WindowLocationY = 0;
+            WindowHeight = 686;
+            WindowWidth = 930;
+            WindowState = 2;
             Images = true;
             Sounds = true;
             Music = false;
@@ -35,6 +46,11 @@ namespace Game.Client
 
                 .Select(cfg => new
                 {
+                    WindowLocationX = int.Parse(cfg.Attribute("WindowLocationX").Value),
+                    WindowLocationY = int.Parse(cfg.Attribute("WindowLocationY").Value),
+                    WindowHeight = int.Parse(cfg.Attribute("WindowHeight").Value),
+                    WindowWidth = int.Parse(cfg.Attribute("WindowWidth").Value),
+                    WindowState = int.Parse(cfg.Attribute("WindowState").Value),
                     Images = (cfg.Attribute("Images").Value)
                         .ToLower() == "true" ? true : false,
                     Sounds = (cfg.Attribute("Sounds").Value)
@@ -49,6 +65,11 @@ namespace Game.Client
                     ServerPort = int.Parse(cfg.Attribute("ServerPort").Value),
                 }).SingleOrDefault();
 
+            config.WindowLocationX = appConfig.WindowLocationX;
+            config.WindowLocationY = appConfig.WindowLocationY;
+            config.WindowHeight = appConfig.WindowHeight;
+            config.WindowWidth = appConfig.WindowWidth;
+            config.WindowState = appConfig.WindowState;
             config.Images = appConfig.Images;
             config.Sounds = appConfig.Sounds;
             config.Music = appConfig.Music;
@@ -64,6 +85,11 @@ namespace Game.Client
         {
             var doc = XDocument.Load(fileName);
             var root = doc.Root;
+            root.SetAttributeValue("WindowLocationX", config.WindowLocationX.ToString());
+            root.SetAttributeValue("WindowLocationY", config.WindowLocationY.ToString());
+            root.SetAttributeValue("WindowHeight", config.WindowHeight.ToString());
+            root.SetAttributeValue("WindowWidth", config.WindowWidth.ToString());
+            root.SetAttributeValue("WindowState", config.WindowState.ToString());
             root.SetAttributeValue("Images", config.Images.ToString());
             root.SetAttributeValue("SoundEnabled", config.Sounds.ToString());
             root.SetAttributeValue("MusicEnabled", config.Music.ToString());

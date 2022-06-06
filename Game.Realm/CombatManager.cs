@@ -42,9 +42,9 @@ namespace Game.Realm
 
             // NPC skill procs first
             if (attacker.Type == EntityType.NPC
-                && attacker.Skills != null && attacker.Skills.Any())
+                && attacker.Skills?.Any() == true)
             {
-                var skill = attacker.Skills[Randomizer.Next(1, attacker.Skills.Count)];
+                var skill = attacker.Skills[Randomizer.Next(0, attacker.Skills.Count)];
 
                 var effects = Realm.Effects.Where(e => e.ID == skill);
                 if (effects.Any())
@@ -136,11 +136,11 @@ namespace Game.Realm
                 }
             }
 
-            target.HitPoints -= damage;
+            target.HPs -= damage;
             target.LastAttackerID = attacker.ID;
             target.State = StateType.Combat;
 
-            if (target.HitPoints <= 0)
+            if (target.HPs <= 0)
             {
                 target.Die();
 
@@ -181,25 +181,20 @@ namespace Game.Realm
                 }
 
                 result += "\r\n" + target.FullName + " has been killed by "
-                    + attacker.FullName;
-
-                Realm.SayMessage(result, target.Loc.AreaID, target.Loc.HexID);
+                    + attacker.FullName + ".";
 
                 if (target is PC)
                 {
                     Realm.SendPlayerStatus(target.ID, "You have died.");
-                    Realm.BroadcastMessage(target.FullName + " has died.");
+                    Realm.BroadcastMessage(result);
                 }
-                else
-                {
-                    Realm.SendPlayerStatus(attacker.ID, rewards);
-                    Realm.BroadcastMessage(target.FullName + " was killed by "
-                        + attacker.FullName + ".");
-                }
+
+                Realm.SendPlayerStatusToHex(target.Loc, result);
+                Realm.SendPlayerStatus(attacker.ID, rewards);
             }
             else
             {
-                Realm.SayMessage(result, target.Loc.AreaID, target.Loc.HexID);
+                Realm.SendPlayerStatusToHex(target.Loc, result);
 
                 if (target is NPC)
                 {
@@ -207,10 +202,10 @@ namespace Game.Realm
                     npc.Mood = MoodType.Aggressive;
                 }
 
-                if (target is PC)
-                {
-                    Realm.SendPlayerStatus(target.ID);
-                }
+                //if (target is PC)
+                //{
+                //    Realm.SendPlayerStatus(target.ID);
+                //}
             }
 
             return result;

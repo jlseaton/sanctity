@@ -39,5 +39,15 @@ namespace Game.Realm
         {
             return (Item)this.MemberwiseClone();
         }
+
+        public Stats GetStats()
+        {
+            return new Stats()
+            {
+                ID = ID,
+                Name = Name,
+                ImageName = ImageName,
+            };
+        }
     }
 }

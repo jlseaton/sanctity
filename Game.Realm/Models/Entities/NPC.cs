@@ -7,7 +7,7 @@ namespace Game.Realm
         public int UID { get; set; }
 
         public int Difficulty { get; set; }
-        public Dictionary<int, long> Aggression { get; set; }
+        public Dictionary<int, long>? Aggression { get; set; }
     }
 
     public class NPC : Entity
@@ -25,6 +25,7 @@ namespace Game.Realm
         {
             Type = EntityType.NPC;
             ImageName = Name;
+            Loc.AreaID = 1;
         }
 
         public new NPC Clone()
@@ -37,11 +38,12 @@ namespace Game.Realm
             lock (this)
             {
                 if (packet.ActionType == ActionType.Movement && Follows > 0 &&
-                    State != StateType.Dead && State != StateType.Stunned && player.State != StateType.Invisible)
+                    State != StateType.Dead && State != StateType.Stunned && 
+                    player.State != StateType.Invisible)
                 {
                     if (packet.ID == LastAttackerID)
                     {
-                        if (Randomizer.Next(100) > 25)
+                        if (Randomizer.Next(100) <= this.Follows)
                         {
                             if (Followed++ < Follows)
                             {
