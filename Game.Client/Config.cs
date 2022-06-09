@@ -91,8 +91,8 @@ namespace Game.Client
             root.SetAttributeValue("WindowWidth", config.WindowWidth.ToString());
             root.SetAttributeValue("WindowState", config.WindowState.ToString());
             root.SetAttributeValue("Images", config.Images.ToString());
-            root.SetAttributeValue("SoundEnabled", config.Sounds.ToString());
-            root.SetAttributeValue("MusicEnabled", config.Music.ToString());
+            root.SetAttributeValue("Sounds", config.Sounds.ToString());
+            root.SetAttributeValue("Music", config.Music.ToString());
             root.SetAttributeValue("AutoStart", config.AutoStart.ToString());
             root.SetAttributeValue("ServerMode", config.ServerMode.ToString());
             root.SetAttributeValue("ServerHost", config.ServerHost.ToString());

@@ -1,5 +1,6 @@
 ﻿using Game.Core;
 using Game.Realm;
+using Game.World;
 using log4net;
 using log4net.Config;
 using System.Data;
@@ -19,11 +20,10 @@ namespace Game.Server
         private bool Running { get; set; }
 
         private Config Config { get; set; }
-        private TcpServer Server { get; set; }
 
         private RealmManager Realm;
 
-        private TcpListener Listener;
+        private World.World World;
 
         public ILog log = null;
 
@@ -38,13 +38,15 @@ namespace Game.Server
 
             InitializeComponent();
 
+            World = new World.World();
+            World.Initialize(false);
+            World.Realm.GameEvents += HandleGameEvent;
+            World.Startup(false);
+            Realm = World.Realm;
+
             Application.ThreadException += Application_ThreadException;
 
             Config = new Config().LoadConfig("realmconfig.xml");
-
-            Realm = new RealmManager(Config.RealmID, "Sanctity");
-
-            Realm.GameEvents += HandleGameEvent;
 
             timerEvents.Tick += TimerEvents_Tick;
             timerEvents.Enabled = false;
@@ -89,187 +91,6 @@ namespace Game.Server
 
         #endregion
 
-        #region Communications
-
-        #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        /// <summary>
-        /// Listener thread that sets up clients from async incoming connections
-        /// </summary>
-        private async void StartTcpListenerThread()
-        {
-            Thread tcpListenerThread = new Thread(async () =>
-            {
-                while (Running)
-                {
-                    try
-                    {
-                        var client = await GetTcpClientAsync();
-                        PCConnectionReceived(client);
-                    }
-                    catch (Exception ex)
-                    {
-                        ProcessException(ex);
-                    }
-                }
-            });
-            tcpListenerThread.Start();
-        }
-
-        private async Task<TcpClient> GetTcpClientAsync()
-        {
-            return await Listener.AcceptTcpClientAsync();
-        }
-
-        /// <summary>
-        /// Processes an incoming PC connection and sets up their read/write threads
-        /// </summary>
-        /// <param name="client">The connected Tcp Client</param>
-        private void PCConnectionReceived(TcpClient client)
-        {
-            try
-            {
-                byte[] inStream = new byte[Constants.PacketBufferSize];
-
-                var read = client.Client.Receive(inStream, 0,
-                    Constants.PacketBufferSize, SocketFlags.None);
-                var data = Encoding.UTF8.GetString(inStream, 0, read);
-
-                if (Constants.PacketCompression)
-                {
-                    data = data.Substring(0, data.Length - 3);
-                }
-
-                var packet = Packet.Deserialize(data);
-
-                if (packet.ActionType == ActionType.Join)
-                {
-                    var Conn = new Connection(false);
-
-                    Conn.Client = client;
-
-                    PC? PC = Realm.FindPC(packet.ID);
-
-                    if (PC != null)
-                    {
-                        // Use SendPacket since the write thread is not running yet
-                        Conn.SendPacket(new Packet()
-                        {
-                            ID = packet.ID,
-                            ActionType = ActionType.Exit,
-                            Text = "That PC account is already adventuring in the realm. Please choose another.",
-                        });
-
-                        LogEntry(PC.FullName + " attempted to login again.");
-
-                        if (Conn.Client.Connected)
-                        {
-                            Conn.Disconnect();
-                        }
-                    }
-                    else
-                    {
-                        PC = Realm.AddPlayer(packet.ID, 1, packet.Text, Conn);
-
-                        if (PC != null)
-                        {
-                            LogEntry(PC.FullName + " has joined the realm.");
-
-                            ThreadPool.QueueUserWorkItem(PCReadThread, PC);
-                            ThreadPool.QueueUserWorkItem(PCWriteThread, PC);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ProcessException(ex);
-            }
-        }
-
-        private void PCReadThread(object context)
-        {
-            var PC = (PC)context;
-
-            bool threadRunning = true;
-
-            while (threadRunning && PC.Conn.Client.Connected)
-            {
-                try
-                {
-                    if (PC.Conn.Client.Available > 0)
-                    {
-                        var packets = PC.Conn.ReadPackets();
-
-                        if (packets.Any())
-                        {
-                            foreach (var packet in packets)
-                            {
-                                if (packet.ActionType == ActionType.Exit)
-                                {
-                                    SavePC(PC);
-
-                                    Realm.RemovePC(PC.ID);
-                                    threadRunning = false;
-                                    break;
-                                }
-                                else
-                                {
-                                    Realm.HandlePacket(packet, PC.ID);
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (IOException ioex)
-                {
-                    ProcessException(ioex);
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    ProcessException(ex);
-                }
-
-                Thread.Sleep(Config.NetworkReadDelay);
-            }
-
-            if (PC.Conn.Client.Connected)
-            {
-                PC.Conn.Disconnect();
-            }
-
-            Realm.BroadcastMessage(PC.FullName + " has left the realm.");
-        }
-
-        private void PCWriteThread(object context)
-        {
-            var PC = (PC)context;
-            var client = (TcpClient)PC.Conn.Client;
-
-            bool threadRunning = true;
-
-            while (threadRunning && client.Connected)
-            {
-                try
-                {
-                    PC.Conn.WritePackets();
-                }
-                catch (IOException ioex)
-                {
-                    ProcessException(ioex);
-                    break;
-                }
-                catch (Exception ex)
-                {
-                    ProcessException(ex);
-                }
-
-                Thread.Sleep(Config.NetworkWriteDelay);
-            }
-        }
-
-        #endregion
-
         #region Game Control
 
         private void buttonStart_Click(object sender, EventArgs e)
@@ -280,8 +101,6 @@ namespace Game.Server
             {
                 buttonStart.Enabled = false;
                 LogEntry("Stopping Game Server...");
-                cancellation.Token.Register(() => Listener.Stop());
-                Listener.Stop();
                 timerEvents.Enabled = false;
                 Realm.Stop();
                 Running = false;
@@ -298,9 +117,6 @@ namespace Game.Server
                 Realm.Start();
                 LoadPCs();
                 timerEvents.Enabled = true;
-                Listener = new TcpListener(IPAddress.Any, Config.ServerPort);
-                Listener.Start();
-                StartTcpListenerThread();
                 Running = true;
                 LogEntry("Game Server Started and listening for connections on port " + Config.ServerPort.ToString());
                 buttonStart.Text = "&Stop";
@@ -519,7 +335,7 @@ namespace Game.Server
                 {
                     try
                     {
-                        string entry = DateTime.Now + "," + message;
+                        string entry = DateTime.Now + "," + message + "\r\n";
 
                         if (log != null)
                         {
@@ -553,7 +369,7 @@ namespace Game.Server
                 }
                 else
                 {
-                    string formattedText = DateTime.Now.ToString() + ", " + message;
+                    string formattedText = DateTime.Now.ToString() + ", " + message + "\r\n";
 
                     lock (textBoxEvents)
                     {

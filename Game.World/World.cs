@@ -14,7 +14,7 @@ namespace Game.World
         private bool Logging { get; set; }
         private bool Running { get; set; }
         private Config Config { get; set; }
-        private RealmManager Realm;
+        public RealmManager Realm;
         private TcpListener Listener;
         //public ILog log = null;
 
@@ -28,13 +28,17 @@ namespace Game.World
             //log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
         }
 
-        public void Initialize()
+        public void Initialize(bool startListening = true)
         {
             Config = new Config().LoadConfig("config_world.xml");
             Realm = new RealmManager(Config.WorldID, "Myrnn");
             Realm.GameEvents += HandleGameEvent;
             Logging = true;
-            Startup();
+
+            if (startListening)
+            {
+                Startup();
+            }
         }
 
         private void ProcessException(Exception ex, bool showMessage = false,
@@ -250,7 +254,7 @@ namespace Game.World
 
         #region Game Control
 
-        private void Startup()
+        public void Startup(bool processEvents = true)
         {
             Listener = new TcpListener(IPAddress.Any, Config.ServerPort);
             Listener.Start();
@@ -259,16 +263,19 @@ namespace Game.World
             Running = true;
             LogEntry("Game Server Started and listening for connections on port " + Config.ServerPort.ToString());
 
-            while (Running)
+            if (processEvents)
             {
-                try
+                while (Running)
                 {
-                    Realm.ProcessEvents();
-                    Thread.Sleep(Constants.RoundInterval);
-                }
-                catch (Exception ex)
-                {
-                    ProcessException(ex);
+                    try
+                    {
+                        Realm.ProcessEvents();
+                        Thread.Sleep(Constants.RoundInterval);
+                    }
+                    catch (Exception ex)
+                    {
+                        ProcessException(ex);
+                    }
                 }
             }
         }

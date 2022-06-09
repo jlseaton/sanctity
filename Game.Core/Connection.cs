@@ -121,6 +121,7 @@ namespace Game.Core
         {
             if (!OfflineMode)
             {
+                //TODO: Throttle sending speed
                 string message = Packet.Serialize(packet);
 
                 var stream = Client.GetStream();

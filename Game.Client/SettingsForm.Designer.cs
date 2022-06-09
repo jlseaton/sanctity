@@ -40,12 +40,13 @@
             this.checkBoxMusic = new System.Windows.Forms.CheckBox();
             this.checkBoxSplash = new System.Windows.Forms.CheckBox();
             this.comboBoxServerURL = new System.Windows.Forms.ComboBox();
+            this.labelChangeMessage = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownServerPort)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonOk
             // 
-            this.buttonOk.Location = new System.Drawing.Point(159, 318);
+            this.buttonOk.Location = new System.Drawing.Point(161, 336);
             this.buttonOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size(100, 35);
@@ -56,7 +57,7 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(267, 318);
+            this.buttonCancel.Location = new System.Drawing.Point(269, 336);
             this.buttonCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(100, 35);
@@ -67,7 +68,7 @@
             // 
             // numericUpDownServerPort
             // 
-            this.numericUpDownServerPort.Location = new System.Drawing.Point(150, 180);
+            this.numericUpDownServerPort.Location = new System.Drawing.Point(124, 194);
             this.numericUpDownServerPort.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.numericUpDownServerPort.Maximum = new decimal(new int[] {
             32767,
@@ -91,7 +92,7 @@
             // checkBoxAutoStart
             // 
             this.checkBoxAutoStart.AutoSize = true;
-            this.checkBoxAutoStart.Location = new System.Drawing.Point(150, 224);
+            this.checkBoxAutoStart.Location = new System.Drawing.Point(124, 238);
             this.checkBoxAutoStart.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxAutoStart.Name = "checkBoxAutoStart";
             this.checkBoxAutoStart.Size = new System.Drawing.Size(250, 24);
@@ -104,7 +105,7 @@
             this.checkBoxServerMode.AutoSize = true;
             this.checkBoxServerMode.Checked = true;
             this.checkBoxServerMode.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxServerMode.Location = new System.Drawing.Point(152, 105);
+            this.checkBoxServerMode.Location = new System.Drawing.Point(126, 119);
             this.checkBoxServerMode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxServerMode.Name = "checkBoxServerMode";
             this.checkBoxServerMode.Size = new System.Drawing.Size(105, 24);
@@ -116,7 +117,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(54, 138);
+            this.label1.Location = new System.Drawing.Point(28, 152);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(83, 20);
@@ -126,7 +127,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(54, 182);
+            this.label2.Location = new System.Drawing.Point(28, 196);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(83, 20);
@@ -138,7 +139,7 @@
             this.checkBoxSounds.AutoSize = true;
             this.checkBoxSounds.Checked = true;
             this.checkBoxSounds.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSounds.Location = new System.Drawing.Point(246, 44);
+            this.checkBoxSounds.Location = new System.Drawing.Point(224, 51);
             this.checkBoxSounds.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxSounds.Name = "checkBoxSounds";
             this.checkBoxSounds.Size = new System.Drawing.Size(121, 24);
@@ -151,7 +152,7 @@
             this.checkBoxMusic.AutoSize = true;
             this.checkBoxMusic.Checked = true;
             this.checkBoxMusic.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMusic.Location = new System.Drawing.Point(375, 44);
+            this.checkBoxMusic.Location = new System.Drawing.Point(353, 51);
             this.checkBoxMusic.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxMusic.Name = "checkBoxMusic";
             this.checkBoxMusic.Size = new System.Drawing.Size(69, 24);
@@ -164,7 +165,7 @@
             this.checkBoxSplash.AutoSize = true;
             this.checkBoxSplash.Checked = true;
             this.checkBoxSplash.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSplash.Location = new System.Drawing.Point(152, 44);
+            this.checkBoxSplash.Location = new System.Drawing.Point(124, 51);
             this.checkBoxSplash.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.checkBoxSplash.Name = "checkBoxSplash";
             this.checkBoxSplash.Size = new System.Drawing.Size(79, 24);
@@ -176,15 +177,27 @@
             // 
             this.comboBoxServerURL.FormattingEnabled = true;
             this.comboBoxServerURL.Items.AddRange(new object[] {
-            "sol",
+            "dev.appnicity.com",
             "localhost",
-            "dev.appnicity.com"});
-            this.comboBoxServerURL.Location = new System.Drawing.Point(150, 134);
+            "loc.appnicity.com",
+            "sol"});
+            this.comboBoxServerURL.Location = new System.Drawing.Point(124, 148);
             this.comboBoxServerURL.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.comboBoxServerURL.Name = "comboBoxServerURL";
             this.comboBoxServerURL.Size = new System.Drawing.Size(289, 28);
             this.comboBoxServerURL.TabIndex = 9;
-            this.comboBoxServerURL.Text = "sol";
+            this.comboBoxServerURL.Text = "dev.appnicity.com";
+            // 
+            // labelChangeMessage
+            // 
+            this.labelChangeMessage.AutoSize = true;
+            this.labelChangeMessage.Font = new System.Drawing.Font("Segoe UI", 9F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point);
+            this.labelChangeMessage.Location = new System.Drawing.Point(124, 95);
+            this.labelChangeMessage.Name = "labelChangeMessage";
+            this.labelChangeMessage.Size = new System.Drawing.Size(364, 20);
+            this.labelChangeMessage.TabIndex = 10;
+            this.labelChangeMessage.Text = "These can only can be changed when not in game:";
+            this.labelChangeMessage.Visible = false;
             // 
             // SettingsForm
             // 
@@ -192,6 +205,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(512, 402);
+            this.Controls.Add(this.labelChangeMessage);
             this.Controls.Add(this.comboBoxServerURL);
             this.Controls.Add(this.checkBoxSplash);
             this.Controls.Add(this.checkBoxMusic);
@@ -210,6 +224,7 @@
             this.Name = "SettingsForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Settings";
+            this.Shown += new System.EventHandler(this.SettingsForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownServerPort)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -229,5 +244,6 @@
         private System.Windows.Forms.CheckBox checkBoxMusic;
         private System.Windows.Forms.CheckBox checkBoxSplash;
         private System.Windows.Forms.ComboBox comboBoxServerURL;
+        private Label labelChangeMessage;
     }
 }

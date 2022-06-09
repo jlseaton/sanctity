@@ -4,9 +4,35 @@ namespace Game.Realm
 {
     public class DataManager
     {
+        public Dictionary<int, int> LevelLookup = new Dictionary<int, int>();
+
         public DataManager()
         {
+            LoadLevelLookup();
+        }
 
+        private void LoadLevelLookup()
+        {
+            int level = 1;
+            LevelLookup.Add(level++,300);
+            LevelLookup.Add(level++, 900);
+            LevelLookup.Add(level++, 2700);
+            LevelLookup.Add(level++, 6500);
+            LevelLookup.Add(level++, 4000);
+            LevelLookup.Add(level++, 23000);
+            LevelLookup.Add(level++, 34000);
+            LevelLookup.Add(level++, 48000);
+            LevelLookup.Add(level++, 64000);
+            LevelLookup.Add(level++, 85000);
+            LevelLookup.Add(level++, 00000);
+            LevelLookup.Add(level++, 20000);
+            LevelLookup.Add(level++, 40000);
+            LevelLookup.Add(level++, 65000);
+            LevelLookup.Add(level++, 95000);
+            LevelLookup.Add(level++, 225000);
+            LevelLookup.Add(level++, 265000);
+            LevelLookup.Add(level++, 305000);
+            LevelLookup.Add(level++, 355000);
         }
 
         public List<Area> LoadAreas()
@@ -35,7 +61,7 @@ namespace Game.Realm
                     Tile = new Tile()
                     {
                         Name = "Birch Tree",
-                        Tile2ID = "birchtree",
+                        Tile2ID = "redmushrooms",
                         East = 3,
                         West = 1,
                     },
@@ -48,8 +74,8 @@ namespace Game.Realm
                     ID = 3,
                     Tile = new Tile()
                     {
-                        Name = "Grassy Knoll",
-                        Tile2ID = "grasstuft",
+                        Name = "Cemetary Gate",
+                        Tile2ID = "metalgate",
                         South = 7,
                         East = 4,
                         West = 2,
@@ -65,7 +91,7 @@ namespace Game.Realm
                     {
                         Name = "Undead Tomb",
                         Text = "You are standing in a dank tomb. Before you lies a mysterious gate.",
-                        Tile2ID = "dungeongate",
+                        Tile2ID = "stoneportal",
                         West = 3,
                     },
                     RandomNPCsMax = 5,
@@ -92,7 +118,7 @@ namespace Game.Realm
                     Tile = new Tile()
                     {
                         Name = "Gray Stone",
-                        Tile2ID = "knightstatue",
+                        Tile2ID = "stonebridge",
                         South = 10,
                         East = 7,
                         West = 5,
@@ -124,7 +150,7 @@ namespace Game.Realm
                     Tile = new Tile()
                     {
                         Name = "Animal Kingdom",
-                        Tile2ID = "redmushrooms",
+                        Tile2ID = "birchtree",
                         SoundID = "birds1",
                         South = 12,
                         West = 7,
@@ -143,7 +169,7 @@ namespace Game.Realm
                     {
                         Name = "Demogorgon's Lair",
                         Text = "You are standing in the presence of pure evil itself.",
-                        Tile2ID = "brownchest2",
+                        Tile2ID = "knightstatue",
                         East = 10,
                     },
                     PermanentNPCs = new List<int>() { 1 },
@@ -282,13 +308,14 @@ namespace Game.Realm
                 ArmorClass = 10,
                 LootClass = LootType.None,
                 MainHandID = 1,
-                ImageName = "barbarian",
+                ImageName = "malehumanbarbarianhero",
                 Bio = "An extremely powerful character primarily used for testing dungeons.",
             });
 
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Gender = GenderType.Female,
                 Race = RaceType.HalfElf,
@@ -313,17 +340,18 @@ namespace Game.Realm
                 Stealth = 25,
                 LootClass = LootType.None,
                 MainHandID = 4,
-                ImageName = "pinkprincess",
+                ImageName = "femaleelfredhead",
                 Bio = "Lexanna has a strangely other wordly look about her.",
             });
 
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Gender = GenderType.Female,
                 Race = RaceType.HalfElf,
-                Class = ClassType.Thief,
+                Class = ClassType.Rogue,
                 Alignment = AlignmentType.LawfulGood,
                 Name = "Caitlanna",
                 Surname = "the Surly",
@@ -344,15 +372,16 @@ namespace Game.Realm
                 Stealth = 40,
                 LootClass = LootType.None,
                 MainHandID = 3,
-                ImageName = "druidess",
+                ImageName = "femalehumandruid",
                 Bio = "Caitlanna fights for the weak and loves her Bella.",
             });
 
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
-                Race = RaceType.HalfOrc,
+                Race = RaceType.Dwarven,
                 Class = ClassType.Fighter,
                 Alignment = AlignmentType.Neutral,
                 Name = "Owlshonor",
@@ -372,13 +401,14 @@ namespace Game.Realm
                 Stealth = 15,
                 LootClass = LootType.None,
                 MainHandID = 5,
-                ImageName = "fighter",
+                ImageName = "maledwarffighter",
                 Bio = "Me big and strong.",
             });
 
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Race = RaceType.Halfling,
                 Class = ClassType.Druid,
@@ -402,13 +432,14 @@ namespace Game.Realm
                 Stealth = 33,
                 LootClass = LootType.None,
                 MainHandID = 2,
-                ImageName = "halfelf",
+                ImageName = "malehumandruid",
                 Bio = "Josh the Wasp.",
             });
 
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Race = RaceType.Elf,
                 Class = ClassType.Sorcerer,
@@ -432,13 +463,14 @@ namespace Game.Realm
                 Stealth = 25,
                 LootClass = LootType.None,
                 MainHandID = 2,
-                ImageName = "sorcereress",
+                ImageName = "femalehumanblond",
                 Bio = "She can defeat you with just a look.",
             });
 
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Race = RaceType.Human,
                 Class = ClassType.Wizard,
@@ -462,13 +494,14 @@ namespace Game.Realm
                 Stealth = 20,
                 LootClass = LootType.None,
                 MainHandID = 4,
-                ImageName = "wizard",
+                ImageName = "malehumanwizard",
                 Bio = "He has crispy furious fingers.",
             });
 
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Gender = GenderType.Male,
                 Race = RaceType.Elf,
@@ -493,7 +526,7 @@ namespace Game.Realm
                 Stealth = 33,
                 LootClass = LootType.None,
                 MainHandID = 7,
-                ImageName = "rangermale",
+                ImageName = "malehumanranger",
                 Bio = "Hunting in the woods is what he does best.",
             });
 
@@ -521,7 +554,7 @@ namespace Game.Realm
                 Stealth = 10,
                 LootClass = LootType.None,
                 MainHandID = 6,
-                ImageName = "whiteknight",
+                ImageName = "whiteknightpaladin",
                 Bio = "Always ready to fight with passion.",
             });
 
@@ -616,14 +649,15 @@ namespace Game.Realm
                 Attackable = false,
                 Type = EntityType.NPC,
                 Race = RaceType.Elf,
+                Gender = GenderType.Female,
                 Size = SizeType.Medium,
                 Speed = 80,
                 Level = 18,
                 Alignment = AlignmentType.LawfulGood,
                 ArmorClass = 50,
                 Article = "a",
-                Name = "seer",
-                ImageName = "elfwoman",
+                Name = "elfqueen",
+                ImageName = "elfqueen",
                 HPs = 120,
                 MaxHPs = 120,
                 MPs = 50,
@@ -636,29 +670,70 @@ namespace Game.Realm
                 EncounterClass = EncounterType.Unique,
                 LootClass = LootType.Unique,
                 Skills = new List<int>() { 1 },
-                Bio = "A sense of overwhelming calm and peacefulness comes over you as approach this being.",
+                Bio = "A sense of overwhelming calm and peacefulness comes over you as gaze upon this being.",
             });
 
             NPCs.Add(new NPC()
             {
                 ID = id++,
+                QuestID = 1,
+                Origin = "Valinor",
+                Attackable = false,
                 Type = EntityType.NPC,
-                Level = 2,
-                Race = RaceType.Aquatic,
-                Alignment = AlignmentType.Neutral,
-                ArmorClass = 2,
+                Race = RaceType.Elf,
+                Gender = GenderType.Male,
+                Size = SizeType.Medium,
+                Speed = 80,
+                Level = 18,
+                Alignment = AlignmentType.LawfulGood,
+                ArmorClass = 50,
                 Article = "a",
-                Name = "siren",
-                ImageName = "siren",
-                HPs = 15,
-                MaxHPs = 15,
-                MinDamage = 3,
-                MaxDamage = 8,
-                Experience = 25,
-                Gold = 0,
-                WanderRange = 5,
-                EncounterClass = EncounterType.VeryRare,
-                LootClass = LootType.Animal
+                Name = "humanking",
+                ImageName = "humanking",
+                HPs = 120,
+                MaxHPs = 120,
+                MPs = 50,
+                MaxMPs = 50,
+                MinDamage = 12,
+                MaxDamage = 72,
+                Experience = 5000,
+                Gold = 500,
+                Mood = MoodType.Normal,
+                EncounterClass = EncounterType.Unique,
+                LootClass = LootType.Unique,
+                Skills = new List<int>() { 1 },
+                Bio = "Although out of shape now, you can tell this king was once a formidable warrior.",
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                QuestID = 1,
+                Origin = "Valinor",
+                Attackable = false,
+                Type = EntityType.NPC,
+                Race = RaceType.Elf,
+                Size = SizeType.Medium,
+                Speed = 80,
+                Level = 18,
+                Alignment = AlignmentType.LawfulGood,
+                ArmorClass = 50,
+                Article = "a",
+                Name = "pinkprincess",
+                ImageName = "pinkprincess",
+                HPs = 120,
+                MaxHPs = 120,
+                MPs = 50,
+                MaxMPs = 50,
+                MinDamage = 12,
+                MaxDamage = 72,
+                Experience = 5000,
+                Gold = 500,
+                Mood = MoodType.Normal,
+                EncounterClass = EncounterType.Unique,
+                LootClass = LootType.Unique,
+                Skills = new List<int>() { 1 },
+                Bio = "This is the strangest person you have ever seen, princess or not.",
             });
 
             NPCs.Add(new NPC()
@@ -786,6 +861,52 @@ namespace Game.Realm
                 Alignment = AlignmentType.ChaoticEvil,
                 ArmorClass = 3,
                 Article = "a",
+                Name = "malezombie",
+                ImageName = "malezombie",
+                HPs = 10,
+                MaxHPs = 10,
+                MinDamage = 1,
+                MaxDamage = 6,
+                Experience = 10,
+                Gold = 5,
+                WanderRange = 5,
+                Follows = 20,
+                EncounterClass = EncounterType.Undead,
+                LootClass = LootType.Common,
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                Type = EntityType.NPC,
+                Level = 3,
+                Race = RaceType.Undead,
+                Alignment = AlignmentType.ChaoticEvil,
+                ArmorClass = 2,
+                Article = "a",
+                Name = "femalezombie",
+                ImageName = "femalezombie",
+                HPs = 8,
+                MaxHPs = 8,
+                MinDamage = 1,
+                MaxDamage = 4,
+                Experience = 8,
+                Gold = 5,
+                WanderRange = 5,
+                Follows = 20,
+                EncounterClass = EncounterType.Undead,
+                LootClass = LootType.Common,
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                Type = EntityType.NPC,
+                Level = 3,
+                Race = RaceType.Undead,
+                Alignment = AlignmentType.ChaoticEvil,
+                ArmorClass = 3,
+                Article = "a",
                 Name = "skeletonpirate",
                 ImageName = "skeletonpirate",
                 HPs = 10,
@@ -809,13 +930,36 @@ namespace Game.Realm
                 Alignment = AlignmentType.Neutral,
                 ArmorClass = 1,
                 Article = "a",
-                Name = "graywolf",
-                ImageName = "graywolf",
+                Name = "deer",
+                ImageName = "deer",
                 HPs = 5,
                 MaxHPs = 5,
                 MinDamage = 1,
                 MaxDamage = 4,
                 Experience = 8,
+                Gold = 0,
+                WanderRange = 2,
+                Follows = 20,
+                EncounterClass = EncounterType.Animal,
+                LootClass = LootType.Animal,
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                Type = EntityType.NPC,
+                Level = 1,
+                Race = RaceType.Animal,
+                Alignment = AlignmentType.Neutral,
+                ArmorClass = 1,
+                Article = "a",
+                Name = "graywolf",
+                ImageName = "graywolf",
+                HPs = 15,
+                MaxHPs = 15,
+                MinDamage = 1,
+                MaxDamage = 6,
+                Experience = 15,
                 Gold = 0,
                 WanderRange = 2,
                 Follows = 20,
@@ -981,13 +1125,13 @@ namespace Game.Realm
             {
                 ID = id++,
                 Type = EntityType.NPC,
-                Level = 2,
-                Race = RaceType.Demonic,
+                Level = 7,
+                Race = RaceType.Human,
                 Alignment = AlignmentType.ChaoticEvil,
                 ArmorClass = 2,
                 Article = "a",
-                Name = "wyvern",
-                ImageName = "wyvern",
+                Name = "necromancer",
+                ImageName = "necromancer",
                 HPs = 45,
                 MaxHPs = 45,
                 MinDamage = 2,
@@ -1004,21 +1148,21 @@ namespace Game.Realm
             {
                 ID = id++,
                 Type = EntityType.NPC,
-                Race = RaceType.Demonic,
-                Level = 2,
+                Level = 6,
+                Race = RaceType.Human,
                 Alignment = AlignmentType.ChaoticEvil,
                 ArmorClass = 2,
                 Article = "a",
-                Name = "griffon",
-                ImageName = "griffon",
-                HPs = 45,
-                MaxHPs = 45,
+                Name = "sorceress",
+                ImageName = "sorceress",
+                HPs = 40,
+                MaxHPs = 40,
                 MinDamage = 2,
                 MaxDamage = 8,
-                Experience = 640,
-                Gold = 250,
-                WanderRange = 5,
-                Follows = 30,
+                Experience = 540,
+                Gold = 150,
+                WanderRange = 3,
+                Follows = 20,
                 EncounterClass = EncounterType.VeryRare,
                 LootClass = LootType.VeryRare
             });
@@ -1028,12 +1172,12 @@ namespace Game.Realm
                 ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
-                Race = RaceType.Demonic,
+                Race = RaceType.Planar,
                 Alignment = AlignmentType.ChaoticEvil,
                 ArmorClass = 2,
                 Article = "a",
-                Name = "hellhound",
-                ImageName = "hellhound",
+                Name = "voidfiend",
+                ImageName = "voidfiend",
                 HPs = 45,
                 MaxHPs = 45,
                 MinDamage = 2,
@@ -1143,7 +1287,7 @@ namespace Game.Realm
                 ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.HalfOrc,
-                Level = 7,
+                Level = 5,
                 Alignment = AlignmentType.ChaoticEvil,
                 ArmorClass = 8,
                 Article = "a",
@@ -1166,7 +1310,7 @@ namespace Game.Realm
                 ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.HalfOrc,
-                Level = 11,
+                Level = 9,
                 Alignment = AlignmentType.Neutral,
                 ArmorClass = 8,
                 Article = "a",
@@ -1182,6 +1326,75 @@ namespace Game.Realm
                 Follows = 10,
                 EncounterClass = EncounterType.Common,
                 LootClass = LootType.Common
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                Type = EntityType.NPC,
+                Race = RaceType.Goblin,
+                Level = 3,
+                Alignment = AlignmentType.ChaoticEvil,
+                ArmorClass = 5,
+                Article = "a",
+                Name = "goblin",
+                ImageName = "goblin",
+                HPs = 8,
+                MaxHPs = 8,
+                MinDamage = 2,
+                MaxDamage = 4,
+                Experience = 20,
+                Gold = 3,
+                WanderRange = 2,
+                Follows = 15,
+                EncounterClass = EncounterType.Common,
+                LootClass = LootType.Common,
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                Type = EntityType.NPC,
+                Race = RaceType.Goblin,
+                Level = 3,
+                Alignment = AlignmentType.ChaoticEvil,
+                ArmorClass = 5,
+                Article = "a",
+                Name = "goblinworker",
+                ImageName = "goblinworker",
+                HPs = 8,
+                MaxHPs = 8,
+                MinDamage = 2,
+                MaxDamage = 4,
+                Experience = 20,
+                Gold = 3,
+                WanderRange = 2,
+                Follows = 15,
+                EncounterClass = EncounterType.Common,
+                LootClass = LootType.Common,
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                Type = EntityType.NPC,
+                Race = RaceType.Goblin,
+                Level = 4,
+                Alignment = AlignmentType.ChaoticEvil,
+                ArmorClass = 6,
+                Article = "a",
+                Name = "goblinleader",
+                ImageName = "goblinleader",
+                HPs = 12,
+                MaxHPs = 12,
+                MinDamage = 2,
+                MaxDamage = 6,
+                Experience = 30,
+                Gold = 5,
+                WanderRange = 2,
+                Follows = 25,
+                EncounterClass = EncounterType.Common,
+                LootClass = LootType.Common,
             });
 
             NPCs.Add(new NPC()
@@ -1314,7 +1527,7 @@ namespace Game.Realm
                 QuestID = 1,
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "Vorpal Sword",
+                Name = "vorpalsword",
                 Value = 5000,
                 ToHitBonus = 3,
                 DamageBonus = 2,
@@ -1372,7 +1585,7 @@ namespace Game.Realm
                 ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "two-handed sword",
+                Name = "twohandedsword",
                 Value = 15,
                 MinDamage = 3,
                 MaxDamage = 18,
@@ -1383,7 +1596,7 @@ namespace Game.Realm
                 ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "long bow",
+                Name = "longbow",
                 Value = 25,
                 MinDamage = 4,
                 MaxDamage = 8,
@@ -1513,8 +1726,8 @@ namespace Game.Realm
             {
                 ID = id++,
                 Name = "Sanctity's Edge",
-                Description = "Main quest line.",
-                RewardText = "You have completed the game.",
+                Description = "A new beginning.",
+                RewardText = "You have completed your first quest.",
                 Experience = 10000,
                 Gold = 10000,
                 LootClass = LootType.Unique,

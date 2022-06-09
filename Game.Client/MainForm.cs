@@ -24,6 +24,7 @@ namespace Game.Client
 
         private Tile[] Tiles { get; set; }
 
+        private int CommandDelayInterval = 1000;
         private string LastSentCommand = String.Empty;
 
         private string[]
@@ -112,10 +113,16 @@ namespace Game.Client
                 this.buttonWest.Focus();
                 return true;
             }
+            else if (keyData == Keys.OemQuestion && !this.textBoxSend.Focused)
+            {
+                this.textBoxSend.Focus();
+            }
             else if (keyData == Keys.Oem5)
             {
                 this.textBoxSend.Text = LastSentCommand;
                 this.textBoxSend.Focus();
+                this.textBoxSend.SelectionStart = 0;
+                this.textBoxSend.SelectionLength = this.textBoxSend.Text.Length;
                 return true;
             }
 
@@ -191,17 +198,11 @@ namespace Game.Client
             string errorMessage = "")
         {
             string message = String.IsNullOrEmpty(errorMessage) ? ex.Message : errorMessage;
-#if DEBUG
+
             if (showMessage)
             {
-                MessageBox.Show(ex.ToString());
+                LogEntry(ex.Message);
             }
-#else
-            if (showMessage)
-            {
-                MessageBox.Show(message);
-            }
-#endif
         }
 
         #endregion
@@ -292,8 +293,7 @@ namespace Game.Client
 
                     if (Config.ServerMode)
                     {
-                        LogEntry("Connecting to multiplayer game server " + Config.ServerHost + ":" +
-                            Config.ServerPort.ToString() + " ...");
+                        LogEntry("Connecting to multiplayer game server " + Config.ServerHost);
 
                         // Connect to remote gaming server
                         await Conn.Client.ConnectAsync(Config.ServerHost, Config.ServerPort);
@@ -305,8 +305,7 @@ namespace Game.Client
                     }
                     else
                     {
-                        LogEntry("Connecting to single player game server " + Config.ServerHost + ":" +
-                            Config.ServerPort.ToString() + " ...");
+                        LogEntry("Connecting to single player game server locally");
 
                         // Start a local realm server and events thread
                         Conn.Connect();
@@ -397,9 +396,13 @@ namespace Game.Client
 
                     if (packet.ActionType == ActionType.Exit && Conn.Connected)
                     {
-                        MessageBox.Show(packet.Text);
                         Conn.Disconnect();
                         UpdateConnectionStatus();
+
+                        if (!Config.ServerMode)
+                        {
+                            Realm.Stop();
+                        }
                     }
                     else if (packet.ActionType == ActionType.Death)
                     {
@@ -568,7 +571,7 @@ namespace Game.Client
             }
 
             // Clear out all existing PC and NPC images
-            for (int i = 1; i < 11; i++)
+            for (int i = 1; i <= 11; i++)
             {
                 foreach (Control c in this.panelPCs.Controls)
                 {
@@ -619,7 +622,7 @@ namespace Game.Client
 
                     npcCount++;
 
-                    if (npcCount > 9)
+                    if (npcCount > 10)
                         break;
                 }
             }
@@ -650,13 +653,13 @@ namespace Game.Client
 
                     npcCount++;
 
-                    if (npcCount > 9)
+                    if (npcCount > 10)
                         break;
                 }
             }
 
             // Update current Hex images
-            if (tileFiles.Any())
+            if (Config.Images && tileFiles.Any())
             {
                 this.pictureBoxTilesMain.Image = CombineBitmap(tileFiles);
             }
@@ -724,12 +727,13 @@ namespace Game.Client
         {
             foreach (string s in list)
             {
-                if (name == 
+                if (name ==
                     Path.GetFileNameWithoutExtension(s).ToLower())
                 {
                     return s.ToLower();
                 }
             }
+
             return String.Empty;
         }
 
@@ -740,7 +744,8 @@ namespace Game.Client
                 return null;
             }
 
-            return Image.FromFile(GetIndexedFileName(this.ImageFilenames, imageName));
+            var img = Image.FromFile(GetIndexedFileName(this.ImageFilenames, imageName));
+            return img;
         }
 
         private void ShowCenterImage(Image image, string fileName)
@@ -757,7 +762,7 @@ namespace Game.Client
 
         public static Bitmap CombineBitmap(IEnumerable<string> files)
         {
-            //read all images into memory
+            // Read all images into memory
             List<Bitmap> images = new List<Bitmap>();
             Bitmap finalImage = null;
 
@@ -861,7 +866,12 @@ namespace Game.Client
 
         private void buttonSettings_Click(object sender, EventArgs e)
         {
-            SettingsForm form = new SettingsForm(Config);
+            bool allowNetworkChanges = false;
+            if (Conn != null && Conn.Connected)
+            {
+                allowNetworkChanges = true;
+            }
+            SettingsForm form = new SettingsForm(Config, allowNetworkChanges);
 
             if (form.ShowDialog() == DialogResult.OK)
             {
@@ -874,12 +884,15 @@ namespace Game.Client
         {
             if (!String.IsNullOrEmpty(this.textBoxSend.Text))
             {
+                this.buttonSend.Enabled = false;
                 SendPacket(new Packet()
                 {
                     ActionType = ActionType.Say,
                     Text = this.textBoxSend.Text
                 });
                 this.textBoxSend.Text = "";
+                Thread.Sleep(CommandDelayInterval/2);
+                this.buttonSend.Enabled = true;
             }
         }
 
@@ -899,6 +912,7 @@ namespace Game.Client
 
                 if (!String.IsNullOrEmpty(this.textBoxSend.Text))
                 {
+                    this.buttonSend.Enabled = false;
                     SendPacket(new Packet()
                     {
                         ActionType = ActionType.Say,
@@ -907,6 +921,8 @@ namespace Game.Client
 
                     LastSentCommand = this.textBoxSend.Text;
                     this.textBoxSend.Text = "";
+                    Thread.Sleep(CommandDelayInterval/2);
+                    this.buttonSend.Enabled = true;
                 }
             }
         }
@@ -915,15 +931,6 @@ namespace Game.Client
         {
             this.pictureBoxPC.Image = 
                 GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
-        }
-
-        private void buttonYell_Click(object sender, EventArgs e)
-        {
-            if (!String.IsNullOrEmpty(this.textBoxSend.Text))
-            {
-                SendPacket(new Packet() { ActionType = ActionType.Yell, Text = this.textBoxSend.Text });
-                this.textBoxSend.Text = "";
-            }
         }
 
         private void buttonNorth_Click(object sender, EventArgs e)
@@ -958,16 +965,23 @@ namespace Game.Client
 
         private void buttonLook_Click(object sender, EventArgs e)
         {
+            this.buttonLook.Enabled = false;
             SendPacket(new Packet() { ActionType = ActionType.Command, Text = "look" });
+            Thread.Sleep(CommandDelayInterval);
+            this.buttonLook.Enabled = true;
         }
 
         private void buttonHide_Click(object sender, EventArgs e)
         {
+            this.buttonHide.Enabled = false;
             SendPacket(new Packet() { ActionType = ActionType.Command, Text = "hide" });
+            Thread.Sleep(CommandDelayInterval);
+            this.buttonHide.Enabled = true;
         }
 
         private void buttonInspect_Click(object sender, EventArgs e)
         {
+            this.buttonInspect.Enabled = false;
             if (this.listBoxEntities.SelectedItem != null)
             {
                 SendPacket(new Packet() { 
@@ -979,10 +993,13 @@ namespace Game.Client
             {
                 SendPacket(new Packet() { ActionType = ActionType.Command, Text = "inspect" });
             }
+            Thread.Sleep(CommandDelayInterval);
+            this.buttonInspect.Enabled = true;
         }
 
         private void buttonGet_Click(object sender, EventArgs e)
         {
+            this.buttonGet.Enabled = false;
             if (this.listBoxItems.SelectedItem != null)
             {
                 SendPacket(new Packet()
@@ -995,11 +1012,14 @@ namespace Game.Client
             {
                 SendPacket(new Packet() { ActionType = ActionType.Command, Text = "get" });
             }
+            Thread.Sleep(CommandDelayInterval);
+            this.buttonGet.Enabled = true;
         }
 
 
         private void buttonRevive_Click(object sender, EventArgs e)
         {
+            this.buttonRevive.Enabled = false;
             if (this.listBoxEntities.SelectedItem != null)
             {
                 SendPacket(new Packet()
@@ -1013,6 +1033,8 @@ namespace Game.Client
             {
                 SendPacket(new Packet() { ActionType = ActionType.Command, Text = "revive" });
             }
+            Thread.Sleep(CommandDelayInterval);
+            this.buttonRevive.Enabled = true;
         }
 
         private void buttonAttack_Click(object sender, EventArgs e)
@@ -1051,7 +1073,7 @@ namespace Game.Client
                     Text = npcName,
                 });
 
-                Thread.Sleep(1000); // Simulate a delay in attacking, TODO: Use player attack speed
+                Thread.Sleep(CommandDelayInterval); // Simulate a delay in attacking, TODO: Use player attack speed
             }
 
             this.buttonAttack.Enabled = true;

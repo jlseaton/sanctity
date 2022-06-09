@@ -10,10 +10,11 @@
         public static readonly int RoundInterval = 2000;
         public static readonly int VisibleTiles = 49; // Default visible grid is 7 X 7 tiles
 
-        public static readonly int MaxLevel = 50;
+        public static readonly int MaxLevel = 20;
         public static readonly int MaxGroupSize = 6;
         public static readonly int NPCCorpseDecay = 30;
         public static readonly int PlayerCorpseDecay = 30;
+        public static readonly int PCInactivityTimeout = 0; //TODO: Debug lock race condition when inactivity timeout is used
         public static readonly string PCDefaultSecret = "loc";
     }
 
@@ -21,6 +22,7 @@
     {
         Regular,
         Premium,
+        Hero,
         DungeonMaster,
     }
 
@@ -50,6 +52,7 @@
         Yell,
         Say,
         Tell,
+        LevelUp,
         Sound,
         Movement,
         Damage,
@@ -117,32 +120,35 @@
         Elf,
         HalfElf,
         HalfOrc,
-        Dwarf,
+        Orc,
+        Goblin,
+        Dwarven,
         Gnome,
         Humanoid,
         Animal,
         Aquatic,
         Insect,
-        Reptillian,
-        Undead,
         Demonic,
         Dragon,
         Planar,
+        Reptillian,
+        Undead,
     };
 
     public enum ClassType
     {
         Unknown,
-        Fighter,
         Barbarian,
-        Paladin,
-        Cleric,
-        Wizard,
-        Sorcerer,
         Bard,
+        Cleric,
         Druid,
+        Fighter,
+        Monk,
+        Paladin,
         Ranger,
-        Thief,
+        Rogue,
+        Sorcerer,
+        Wizard,
     };
 
     public enum AlignmentType

@@ -13,25 +13,6 @@ namespace Game.Realm
         public string Origin { get; set; }
         public string Bio { get; set; }
         public string Diety { get; set; }
-        public string Description
-        {
-            get
-            {
-                StringBuilder sb = new StringBuilder("You see " + this.FullName);
-                if (!String.IsNullOrEmpty(Surname))
-                    sb.Append(" " + Surname);
-                sb.Append(", level " + Level.ToString());
-                if (!String.IsNullOrEmpty(Race.ToString()))
-                    sb.Append(" " + Race);
-                if (!String.IsNullOrEmpty(Class.ToString()))
-                    sb.Append(" " + Class);
-                if (!String.IsNullOrEmpty(Bio))
-                    sb.Append("\r\n" + Bio);
-
-                return sb.ToString();
-            }
-        }
-
         public bool Attackable { get; set; }
         public int LastAttackerID { get; set; }
         public int LastTargetID { get; set; }
@@ -83,6 +64,8 @@ namespace Game.Realm
         public int MaxHPs { get; set; }
         public int MPs { get; set; }
         public int MaxMPs { get; set; }
+        public int HPRegen { get; set; }
+        public int MPRegen { get; set; }
 
         public int MinDamage { get; set; }
         public int MaxDamage { get; set; }
@@ -126,14 +109,40 @@ namespace Game.Realm
         {
             Attackable = true;
 
-            // Base damage for all entities
+            // Base damage and regeneration for all entities
             MinDamage = 1;
             MaxDamage = 2;
+            HPRegen = 1;
+            MPRegen = 1;
 
             Loc = new Loc() { AreaID = areaId, HexID = hexId };
             Stats = new Stats() { Name = Name };
 
             Languages = new List<int> { 0 }; // Everyone sentient knows the common language
+        }
+
+        public string GetDescription(bool includeBio = true, bool includeLoc = false)
+        {
+            StringBuilder sb = new StringBuilder(this.FullName);
+            if (!String.IsNullOrEmpty(Surname))
+                sb.Append(" " + Surname);
+            sb.Append(", level " + Level.ToString());
+            if (!String.IsNullOrEmpty(Race.ToString()))
+                sb.Append(" " + Race);
+            if (!String.IsNullOrEmpty(Class.ToString()))
+                sb.Append(" " + Class);
+            sb.Append(" (State: " + State.ToString() + ")");
+            if (includeBio)
+            {
+                if (!String.IsNullOrEmpty(Bio))
+                    sb.Append("\r\n" + Bio);
+            }
+            if (includeLoc)
+            {
+                sb.Append(" at Area:" + Loc.AreaID.ToString() + 
+                    "-Hex:" + Loc.HexID.ToString());
+            }
+            return sb.ToString();
         }
 
         public virtual void Die()
@@ -144,6 +153,38 @@ namespace Game.Realm
                 HPs = 0;
             }
             DeathTime = DateTime.Now;
+        }
+
+        public virtual bool Regen()
+        {
+            bool regen = false;
+
+            if (State == StateType.Dead)
+                return false;
+
+            if (HPs < MaxHPs)
+            {
+                regen = true;
+                HPs += HPRegen;
+
+                if (HPs > MaxHPs)
+                {
+                    HPs = MaxHPs;
+                }
+            }
+
+            if (MPs < MaxMPs)
+            {
+                regen = true;
+                MPs += MPRegen;
+
+                if (MPs > MaxMPs)
+                {
+                    MPs = MaxMPs;
+                }
+            }
+
+            return regen;
         }
 
         public virtual void Revive()
@@ -203,6 +244,16 @@ namespace Game.Realm
                 State = State,
                 Facing = Facing,
             };
+        }
+
+        public void LevelUp()
+        {
+            Level++;
+            MaxHPs += Randomizer.Next(1, 8) + Constitution;
+            if (MaxMPs > 0)
+            {
+                MaxMPs += Randomizer.Next(1, 8) + Constitution;
+            }
         }
 
         public Entity Clone()

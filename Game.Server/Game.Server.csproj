@@ -20,18 +20,20 @@
   <ItemGroup>
     <ProjectReference Include="..\Game.Core\Game.Core.csproj" />
     <ProjectReference Include="..\Game.Realm\Game.Realm.csproj" />
+    <ProjectReference Include="..\Game.World\Game.World.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="config_world.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="realmconfig.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
     <ItemGroup>
-	    <FrameworkReference
-	    Update="Microsoft.WindowsDesktop.App;Microsoft.WindowsDesktop.App.WPF;Microsoft.WindowsDesktop.App.WindowsForms"
-	    TargetingPackVersion="6.0.0" />
+	    <FrameworkReference Update="Microsoft.WindowsDesktop.App;Microsoft.WindowsDesktop.App.WPF;Microsoft.WindowsDesktop.App.WindowsForms" TargetingPackVersion="6.0.0" />
     </ItemGroup>
 	
 </Project>

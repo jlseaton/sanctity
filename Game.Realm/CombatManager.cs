@@ -1,4 +1,5 @@
 ﻿using Game.Core;
+using System.Text;
 
 namespace Game.Realm
 {
@@ -147,20 +148,22 @@ namespace Game.Realm
                 attacker.LastAttackerID = 0;
                 attacker.State = StateType.Normal;
 
-                string rewards = String.Empty;
+                StringBuilder rewards = new StringBuilder();
 
                 if (target.Experience > 0)
                 {
                     attacker.Experience += target.Experience;
-                    rewards += "You earned " + target.Experience.ToString()
-                        + " experience points.";
+                    rewards.Append("You earned " + target.Experience.ToString()
+                        + " experience points.");
+                    rewards.Append(CheckForLevelUp(attacker));
                 }
 
                 if (target.Gold > 0)
                 {
+                    target.Gold -= target.Gold;
                     attacker.Gold += target.Gold;
-                    rewards += "\r\nYou found " + target.Gold.ToString()
-                        + " gold pieces.";
+                    rewards.Append("\r\nYou found " + target.Gold.ToString()
+                        + " gold pieces.");
                 }
 
                 if (target.Inventory != null && target.Inventory.Any())
@@ -169,13 +172,13 @@ namespace Game.Realm
                     {
                         if (target.Inventory[i] != null)
                         {
-                            rewards += "\r\n" + target.FullName + " drops a "
-                                + target.Inventory[i].FullName + ".";
+                            rewards.Append("\r\n" + target.FullName + " drops a "
+                                + target.Inventory[i].FullName + ".");
 
-                            lock (hex.Items)
-                            {
-                                hex.Items.Add(target.Inventory[i]);
-                            }
+                            //lock (hex.Items)
+                            //{
+                            //    hex.Items.Add(target.Inventory[i]);
+                            //}
                         }
                     }
                 }
@@ -190,7 +193,7 @@ namespace Game.Realm
                 }
 
                 Realm.SendPlayerStatusToHex(target.Loc, result);
-                Realm.SendPlayerStatus(attacker.ID, rewards);
+                Realm.SendPlayerStatus(attacker.ID, rewards.ToString());
             }
             else
             {
@@ -209,6 +212,22 @@ namespace Game.Realm
             }
 
             return result;
+        }
+
+        private string CheckForLevelUp(Entity entity)
+        {
+            foreach(var l in Realm.Data.LevelLookup)
+            {
+                if (entity.Experience > l.Value &&
+                    entity.Level < l.Key)
+                {
+                    entity.LevelUp();
+                    entity.Revive();
+                    return "\r\nCongratulations! You have increased in level.";
+                }
+            }
+
+            return String.Empty;
         }
     }
 }

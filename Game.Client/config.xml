@@ -3,14 +3,14 @@
             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
             WindowLocationX="0"
             WindowLocationY="0"
-            WindowHeight="770"
-            WindowWidth="930"
+            WindowHeight="1000"
+            WindowWidth="1260"
             WindowState="2"
             Images="true"
             Sounds="false"
             Music="false"
             AutoStart="false"
             ServerMode="true"
-            ServerHost="sol"
+            ServerHost="dev.appnicity.com"
             ServerPort="1412">
 </Config>
