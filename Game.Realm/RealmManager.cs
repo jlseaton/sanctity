@@ -78,7 +78,9 @@ namespace Game.Realm
 
         public void Stop()
         {
+            //SavePCs();
             RemovePC(0); // Remove all players
+            //SaveNPCs();
 
             Running = false;
         }
@@ -242,9 +244,9 @@ namespace Game.Realm
                     }
                 }
             }
-            catch//(Exception ex)
+            catch(Exception ex)
             {
-                //TODO: Exception logging
+                BroadcastMessage(ex.Message);
             }
         }
 
@@ -316,8 +318,9 @@ namespace Game.Realm
 
                     case ActionType.Command:
                         if (player.AccountType != AccountType.DungeonMaster && 
-                            (packet.Text.StartsWith("kill") ||
-                            packet.Text.StartsWith("hps") ||
+                            (packet.Text.StartsWith("hps") ||
+                            packet.Text.StartsWith("kill") ||
+                            packet.Text.StartsWith("levelup") ||
                             packet.Text.StartsWith("spawn") ||
                             packet.Text.StartsWith("tp")))
                         {
@@ -433,37 +436,62 @@ namespace Game.Realm
                         }
                         else if (packet.Text.StartsWith("tp"))
                         {
-                            string tpResult = "Unable to teleport target. Usage: tp <target name> <to name> or <area id> <hex id>";
+                            string tpResult = "Unable to teleport target. Usage: tp <target name> <target2 name> or tp <target name> <area id> <hex id>";
                             try
                             {
-                                var name = packet.Text.Split(" ")[1].Trim();
-                                var areaId = packet.Text.Split(" ")[2].Trim();
-                                var hexId = packet.Text.Split(" ")[3].Trim();
+                                var targetName = packet.Text.Split(" ")[1].Trim();
+                                Entity tpTarget = FindEntity(0, targetName);
 
-                                Entity tpTarget = FindEntity(0, name);
                                 if (tpTarget != null)
                                 {
-                                    var newAreaId = Int16.Parse(areaId);
-                                    var newHexId = Int16.Parse(hexId);
-
-                                    if (newAreaId >= 0 && newAreaId < Areas.Count &&
-                                        newHexId > 0 && newHexId <= Areas[newAreaId].Hexes.Count)
+                                    if (packet.Text.Split(" ").Length <= 3)
                                     {
-                                        var fromLoc = player.Loc;
-                                        var toLoc = new Loc()
+                                        var target2Name = packet.Text.Split(" ")[2].Trim();
+                                        Entity tpTarget2 = FindEntity(0, target2Name);
+                                        if (tpTarget2 != null)
                                         {
-                                            AreaID = newAreaId,
-                                            HexID = newHexId,
-                                        };
-                                        MovePC(tpTarget as PC, toLoc);
-                                        
-                                        tpResult = tpTarget.FullName + " has been teleported by " + player.Name + "!";
-                                        SendPlayerStatusToHex(fromLoc, tpResult);
-                                        SendPlayerStatusToHex(toLoc, tpResult);
+                                            MovePC(tpTarget as PC, tpTarget2.Loc);
+
+                                            tpResult = tpTarget.FullName + " has been teleported to " + 
+                                                tpTarget2.FullName + " by " + player.Name + "!";
+
+                                            SendPlayerStatusToHex(tpTarget.Loc, tpResult);
+                                            SendPlayerStatusToHex(tpTarget2.Loc, tpResult);
+                                        }
+                                        else
+                                        {
+                                            tpResult = "Invalid teleport targets. " + tpResult;
+                                            SendPlayerStatus(player.ID, tpResult);
+                                        }
                                     }
                                     else
                                     {
-                                        SendPlayerStatus(player.ID, tpResult);
+                                        var areaId = packet.Text.Split(" ")[2].Trim();
+                                        var hexId = packet.Text.Split(" ")[3].Trim();
+                                        var newAreaId = Int16.Parse(areaId);
+                                        var newHexId = Int16.Parse(hexId);
+
+                                        if (newAreaId >= 0 && newAreaId < Areas.Count &&
+                                            newHexId > 0 && newHexId <= Areas[newAreaId].Hexes.Count)
+                                        {
+                                            var fromLoc = player.Loc;
+                                            var toLoc = new Loc()
+                                            {
+                                                AreaID = newAreaId,
+                                                HexID = newHexId,
+                                            };
+                                            MovePC(tpTarget as PC, toLoc);
+                                        
+                                            tpResult = tpTarget.FullName + " has been teleported by " + player.Name + "!";
+
+                                            SendPlayerStatusToHex(fromLoc, tpResult);
+                                            SendPlayerStatusToHex(toLoc, tpResult);
+                                        }
+                                        else
+                                        {
+                                            tpResult = "Invalid target location. " + tpResult;
+                                            SendPlayerStatus(player.ID, tpResult);
+                                        }
                                     }
                                 }
                                 else

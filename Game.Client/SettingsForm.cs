@@ -5,7 +5,7 @@
         public Config Config = new Config();
         private bool Connected = false;
 
-        public SettingsForm(Config config, bool connected = false)
+        public SettingsForm(Config config, bool connected)
         {
             InitializeComponent();
 
@@ -18,22 +18,32 @@
             this.checkBoxSplash.Checked = Config.Images;
             this.checkBoxSounds.Checked = Config.Sounds;
             this.checkBoxMusic.Checked = Config.Music;
-            this.checkBoxAutoStart.Checked = Config.AutoStart;
-            this.checkBoxAutoStart.Enabled = !Connected;
             this.checkBoxServerMode.Checked = Config.ServerMode;
-            this.checkBoxServerMode.Enabled = !Connected;
             this.comboBoxServerURL.Text = Config.ServerHost;
-            this.comboBoxServerURL.Enabled = !Connected;
             this.numericUpDownServerPort.Value = Config.ServerPort;
-            this.numericUpDownServerPort.Enabled = !Connected;
+            this.checkBoxAutoStart.Checked = Config.AutoStart;
 
             if (Connected)
             {
+                // No network changes allowed while playing
                 this.labelChangeMessage.Visible = true;
+                this.checkBoxServerMode.Enabled = false;
+                this.comboBoxServerURL.Enabled = false;
+                this.numericUpDownServerPort.Enabled = false;
             }
-            else 
+            else
             {
-                this.labelChangeMessage.Visible = false;
+                // If playing online, allow network changes
+                if (this.checkBoxServerMode.Checked)
+                {
+                    this.comboBoxServerURL.Enabled = true;
+                    this.numericUpDownServerPort.Enabled = true;
+                }
+                else
+                {
+                    this.comboBoxServerURL.Enabled = false;
+                    this.numericUpDownServerPort.Enabled = false;
+                }
             }
         }
 
@@ -48,10 +58,10 @@
             Config.Images = this.checkBoxSplash.Checked;
             Config.Sounds = this.checkBoxSounds.Checked;
             Config.Music = this.checkBoxMusic.Checked;
-            Config.AutoStart = this.checkBoxAutoStart.Checked;
             Config.ServerMode = this.checkBoxServerMode.Checked;
             Config.ServerHost = this.comboBoxServerURL.Text.Trim();
             Config.ServerPort = (int)this.numericUpDownServerPort.Value;
+            Config.AutoStart = this.checkBoxAutoStart.Checked;
 
             this.DialogResult = DialogResult.OK;
             this.Close();

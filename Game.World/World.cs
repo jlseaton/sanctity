@@ -303,10 +303,8 @@ namespace Game.World
 
         #region Data
 
-        //TODO: Finish load/save PCs
         public void LoadPCs()
         {
-            //return;
             var PCs = Realm.Data.LoadPCs();
 
             foreach (PC p in PCs)
@@ -327,7 +325,6 @@ namespace Game.World
 
         public void SavePCs()
         {
-            //return;
             foreach (PC p in Realm.GetPCs())
             {
                 SavePC(p);

@@ -302,7 +302,7 @@ namespace Game.Realm
                 Luck = 10,
                 HPs = 220,
                 MaxHPs = 220,
-                Experience = 2500,
+                Experience = 95500,
                 Gold = 250,
                 Stealth = 25,
                 ArmorClass = 10,
@@ -335,7 +335,7 @@ namespace Game.Realm
                 MaxHPs = 30,
                 MPs = 35,
                 MaxMPs = 35,
-                Experience = 250,
+                Experience = 0,
                 Gold = 50,
                 Stealth = 25,
                 LootClass = LootType.None,
@@ -367,7 +367,7 @@ namespace Game.Realm
                 MaxHPs = 60,
                 MPs = 25,
                 MaxMPs = 25,
-                Experience = 250,
+                Experience = 0,
                 Gold = 50,
                 Stealth = 40,
                 LootClass = LootType.None,
@@ -396,7 +396,7 @@ namespace Game.Realm
                 Luck = 10,
                 HPs = 55,
                 MaxHPs = 55,
-                Experience = 250,
+                Experience = 0,
                 Gold = 50,
                 Stealth = 15,
                 LootClass = LootType.None,
@@ -427,7 +427,7 @@ namespace Game.Realm
                 MaxHPs = 40,
                 MPs = 25,
                 MaxMPs = 25,
-                Experience = 250,
+                Experience = 0,
                 Gold = 50,
                 Stealth = 33,
                 LootClass = LootType.None,
@@ -458,7 +458,7 @@ namespace Game.Realm
                 MaxHPs = 25,
                 MPs = 40,
                 MaxMPs = 40,
-                Experience = 250,
+                Experience = 0,
                 Gold = 50,
                 Stealth = 25,
                 LootClass = LootType.None,
@@ -489,7 +489,7 @@ namespace Game.Realm
                 MaxHPs = 35,
                 MPs = 15,
                 MaxMPs = 15,
-                Experience = 250,
+                Experience = 0,
                 Gold = 50,
                 Stealth = 20,
                 LootClass = LootType.None,
@@ -521,7 +521,7 @@ namespace Game.Realm
                 MaxHPs = 35,
                 MPs = 15,
                 MaxMPs = 15,
-                Experience = 250,
+                Experience = 0,
                 Gold = 25,
                 Stealth = 33,
                 LootClass = LootType.None,
@@ -549,7 +549,7 @@ namespace Game.Realm
                 Luck = 15,
                 HPs = 30,
                 MaxHPs = 30,
-                Experience = 250,
+                Experience = 0,
                 Gold = 50,
                 Stealth = 10,
                 LootClass = LootType.None,
@@ -580,7 +580,7 @@ namespace Game.Realm
                 MaxHPs = 20,
                 MPs = 25,
                 MaxMPs = 25,
-                Experience = 250,
+                Experience = 0,
                 Gold = 15,
                 Stealth = 25,
                 LootClass = LootType.None,
@@ -629,6 +629,8 @@ namespace Game.Realm
                 MaxHPs = 120,
                 MPs = 50,
                 MaxMPs = 50,
+                HPRegen = 5,
+                MPRegen = 5,
                 MinDamage = 12,
                 MaxDamage = 72,
                 Experience = 5000,
@@ -1735,6 +1737,12 @@ namespace Game.Realm
             });
 
             return Quests;
+        }
+
+        //TODO: Finish load/save PCs to files/db
+        public void SavePCs()
+        {
+
         }
     }
 }

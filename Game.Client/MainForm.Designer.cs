@@ -126,7 +126,7 @@
             // 
             this.buttonStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonStart.Location = new System.Drawing.Point(347, 1);
-            this.buttonStart.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonStart.Margin = new System.Windows.Forms.Padding(5);
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(70, 35);
             this.buttonStart.TabIndex = 1;
@@ -139,7 +139,7 @@
             this.textBoxEvents.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxEvents.Location = new System.Drawing.Point(6, 5);
-            this.textBoxEvents.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.textBoxEvents.Margin = new System.Windows.Forms.Padding(5);
             this.textBoxEvents.Multiline = true;
             this.textBoxEvents.Name = "textBoxEvents";
             this.textBoxEvents.ReadOnly = true;
@@ -150,7 +150,7 @@
             // buttonNorth
             // 
             this.buttonNorth.Location = new System.Drawing.Point(55, 7);
-            this.buttonNorth.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonNorth.Margin = new System.Windows.Forms.Padding(5);
             this.buttonNorth.Name = "buttonNorth";
             this.buttonNorth.Size = new System.Drawing.Size(69, 40);
             this.buttonNorth.TabIndex = 4;
@@ -161,18 +161,18 @@
             // buttonSouth
             // 
             this.buttonSouth.Location = new System.Drawing.Point(55, 96);
-            this.buttonSouth.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonSouth.Margin = new System.Windows.Forms.Padding(5);
             this.buttonSouth.Name = "buttonSouth";
             this.buttonSouth.Size = new System.Drawing.Size(69, 35);
             this.buttonSouth.TabIndex = 5;
-            this.buttonSouth.Text = "S&outh";
+            this.buttonSouth.Text = "&South";
             this.buttonSouth.UseVisualStyleBackColor = true;
             this.buttonSouth.Click += new System.EventHandler(this.buttonSouth_Click);
             // 
             // buttonWest
             // 
             this.buttonWest.Location = new System.Drawing.Point(14, 53);
-            this.buttonWest.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonWest.Margin = new System.Windows.Forms.Padding(5);
             this.buttonWest.Name = "buttonWest";
             this.buttonWest.Size = new System.Drawing.Size(69, 35);
             this.buttonWest.TabIndex = 6;
@@ -183,7 +183,7 @@
             // buttonEast
             // 
             this.buttonEast.Location = new System.Drawing.Point(90, 53);
-            this.buttonEast.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonEast.Margin = new System.Windows.Forms.Padding(5);
             this.buttonEast.Name = "buttonEast";
             this.buttonEast.Size = new System.Drawing.Size(69, 35);
             this.buttonEast.TabIndex = 7;
@@ -205,7 +205,7 @@
             this.panelStats.Controls.Add(this.labelMPs);
             this.panelStats.Controls.Add(this.labelHPs);
             this.panelStats.Location = new System.Drawing.Point(669, 813);
-            this.panelStats.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.panelStats.Margin = new System.Windows.Forms.Padding(5);
             this.panelStats.Name = "panelStats";
             this.panelStats.Size = new System.Drawing.Size(170, 151);
             this.panelStats.TabIndex = 8;
@@ -237,7 +237,7 @@
             // 
             this.buttonRevive.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonRevive.Location = new System.Drawing.Point(94, 111);
-            this.buttonRevive.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonRevive.Margin = new System.Windows.Forms.Padding(5);
             this.buttonRevive.Name = "buttonRevive";
             this.buttonRevive.Size = new System.Drawing.Size(69, 35);
             this.buttonRevive.TabIndex = 14;
@@ -315,7 +315,7 @@
             // buttonDown
             // 
             this.buttonDown.Location = new System.Drawing.Point(90, 148);
-            this.buttonDown.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonDown.Margin = new System.Windows.Forms.Padding(5);
             this.buttonDown.Name = "buttonDown";
             this.buttonDown.Size = new System.Drawing.Size(69, 35);
             this.buttonDown.TabIndex = 9;
@@ -326,7 +326,7 @@
             // buttonUp
             // 
             this.buttonUp.Location = new System.Drawing.Point(13, 148);
-            this.buttonUp.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonUp.Margin = new System.Windows.Forms.Padding(5);
             this.buttonUp.Name = "buttonUp";
             this.buttonUp.Size = new System.Drawing.Size(69, 35);
             this.buttonUp.TabIndex = 8;
@@ -340,7 +340,7 @@
             this.pictureBoxPC.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.pictureBoxPC.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBoxPC.Location = new System.Drawing.Point(440, 621);
-            this.pictureBoxPC.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC.Name = "pictureBoxPC";
             this.pictureBoxPC.Size = new System.Drawing.Size(225, 347);
             this.pictureBoxPC.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -351,7 +351,7 @@
             // buttonAttack
             // 
             this.buttonAttack.Location = new System.Drawing.Point(13, 149);
-            this.buttonAttack.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonAttack.Margin = new System.Windows.Forms.Padding(5);
             this.buttonAttack.Name = "buttonAttack";
             this.buttonAttack.Size = new System.Drawing.Size(69, 35);
             this.buttonAttack.TabIndex = 15;
@@ -363,7 +363,7 @@
             // 
             this.buttonLook.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonLook.Location = new System.Drawing.Point(93, 193);
-            this.buttonLook.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonLook.Margin = new System.Windows.Forms.Padding(5);
             this.buttonLook.Name = "buttonLook";
             this.buttonLook.Size = new System.Drawing.Size(70, 35);
             this.buttonLook.TabIndex = 13;
@@ -375,11 +375,11 @@
             // 
             this.buttonSend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSend.Location = new System.Drawing.Point(347, 155);
-            this.buttonSend.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonSend.Margin = new System.Windows.Forms.Padding(5);
             this.buttonSend.Name = "buttonSend";
             this.buttonSend.Size = new System.Drawing.Size(70, 35);
             this.buttonSend.TabIndex = 12;
-            this.buttonSend.Text = "&Send";
+            this.buttonSend.Text = "Send";
             this.buttonSend.UseVisualStyleBackColor = true;
             this.buttonSend.Click += new System.EventHandler(this.buttonSend_Click);
             // 
@@ -388,7 +388,7 @@
             this.textBoxSend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxSend.Location = new System.Drawing.Point(6, 158);
-            this.textBoxSend.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.textBoxSend.Margin = new System.Windows.Forms.Padding(5);
             this.textBoxSend.Name = "textBoxSend";
             this.textBoxSend.Size = new System.Drawing.Size(339, 27);
             this.textBoxSend.TabIndex = 0;
@@ -399,7 +399,7 @@
             // 
             this.buttonSettings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSettings.Location = new System.Drawing.Point(347, 39);
-            this.buttonSettings.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonSettings.Margin = new System.Windows.Forms.Padding(5);
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.Size = new System.Drawing.Size(70, 35);
             this.buttonSettings.TabIndex = 12;
@@ -416,7 +416,7 @@
             this.panelChat.Controls.Add(this.buttonSend);
             this.panelChat.Controls.Add(this.textBoxEvents);
             this.panelChat.Location = new System.Drawing.Point(13, 621);
-            this.panelChat.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.panelChat.Margin = new System.Windows.Forms.Padding(5);
             this.panelChat.Name = "panelChat";
             this.panelChat.Size = new System.Drawing.Size(423, 193);
             this.panelChat.TabIndex = 13;
@@ -425,7 +425,7 @@
             // 
             this.buttonHide.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonHide.Location = new System.Drawing.Point(170, 193);
-            this.buttonHide.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonHide.Margin = new System.Windows.Forms.Padding(5);
             this.buttonHide.Name = "buttonHide";
             this.buttonHide.Size = new System.Drawing.Size(70, 35);
             this.buttonHide.TabIndex = 15;
@@ -445,7 +445,7 @@
             this.panelView.Controls.Add(this.panelNPCs);
             this.panelView.Controls.Add(this.panelPCs);
             this.panelView.Location = new System.Drawing.Point(0, 0);
-            this.panelView.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.panelView.Margin = new System.Windows.Forms.Padding(5);
             this.panelView.Name = "panelView";
             this.panelView.Size = new System.Drawing.Size(1115, 612);
             this.panelView.TabIndex = 15;
@@ -498,7 +498,7 @@
             // 
             this.pictureBoxNPC10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBoxNPC10.Location = new System.Drawing.Point(126, 472);
-            this.pictureBoxNPC10.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC10.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC10.Name = "pictureBoxNPC10";
             this.pictureBoxNPC10.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -508,7 +508,7 @@
             // pictureBoxNPC9
             // 
             this.pictureBoxNPC9.Location = new System.Drawing.Point(16, 472);
-            this.pictureBoxNPC9.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC9.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC9.Name = "pictureBoxNPC9";
             this.pictureBoxNPC9.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -518,8 +518,8 @@
             // pictureBoxNPC8
             // 
             this.pictureBoxNPC8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC8.Location = new System.Drawing.Point(126, 355);
-            this.pictureBoxNPC8.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC8.Location = new System.Drawing.Point(125, 353);
+            this.pictureBoxNPC8.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC8.Name = "pictureBoxNPC8";
             this.pictureBoxNPC8.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -528,8 +528,8 @@
             // 
             // pictureBoxNPC4
             // 
-            this.pictureBoxNPC4.Location = new System.Drawing.Point(16, 355);
-            this.pictureBoxNPC4.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC4.Location = new System.Drawing.Point(125, 120);
+            this.pictureBoxNPC4.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC4.Name = "pictureBoxNPC4";
             this.pictureBoxNPC4.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -539,7 +539,7 @@
             // pictureBoxNPC1
             // 
             this.pictureBoxNPC1.Location = new System.Drawing.Point(16, 5);
-            this.pictureBoxNPC1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC1.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC1.Name = "pictureBoxNPC1";
             this.pictureBoxNPC1.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -548,8 +548,8 @@
             // 
             // pictureBoxNPC3
             // 
-            this.pictureBoxNPC3.Location = new System.Drawing.Point(16, 236);
-            this.pictureBoxNPC3.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC3.Location = new System.Drawing.Point(16, 120);
+            this.pictureBoxNPC3.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC3.Name = "pictureBoxNPC3";
             this.pictureBoxNPC3.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -559,8 +559,8 @@
             // pictureBoxNPC5
             // 
             this.pictureBoxNPC5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC5.Location = new System.Drawing.Point(126, 5);
-            this.pictureBoxNPC5.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC5.Location = new System.Drawing.Point(16, 236);
+            this.pictureBoxNPC5.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC5.Name = "pictureBoxNPC5";
             this.pictureBoxNPC5.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -570,8 +570,8 @@
             // pictureBoxNPC7
             // 
             this.pictureBoxNPC7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC7.Location = new System.Drawing.Point(126, 236);
-            this.pictureBoxNPC7.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC7.Location = new System.Drawing.Point(16, 353);
+            this.pictureBoxNPC7.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC7.Name = "pictureBoxNPC7";
             this.pictureBoxNPC7.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -580,8 +580,8 @@
             // 
             // pictureBoxNPC2
             // 
-            this.pictureBoxNPC2.Location = new System.Drawing.Point(16, 123);
-            this.pictureBoxNPC2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC2.Location = new System.Drawing.Point(125, 5);
+            this.pictureBoxNPC2.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC2.Name = "pictureBoxNPC2";
             this.pictureBoxNPC2.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -591,8 +591,8 @@
             // pictureBoxNPC6
             // 
             this.pictureBoxNPC6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxNPC6.Location = new System.Drawing.Point(126, 120);
-            this.pictureBoxNPC6.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxNPC6.Location = new System.Drawing.Point(125, 236);
+            this.pictureBoxNPC6.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxNPC6.Name = "pictureBoxNPC6";
             this.pictureBoxNPC6.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxNPC6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -623,8 +623,8 @@
             // pictureBoxPC10
             // 
             this.pictureBoxPC10.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC10.Location = new System.Drawing.Point(141, 472);
-            this.pictureBoxPC10.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC10.Location = new System.Drawing.Point(127, 472);
+            this.pictureBoxPC10.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC10.Name = "pictureBoxPC10";
             this.pictureBoxPC10.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC10.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -634,7 +634,7 @@
             // pictureBoxPC9
             // 
             this.pictureBoxPC9.Location = new System.Drawing.Point(14, 472);
-            this.pictureBoxPC9.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC9.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC9.Name = "pictureBoxPC9";
             this.pictureBoxPC9.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC9.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -644,8 +644,8 @@
             // pictureBoxPC8
             // 
             this.pictureBoxPC8.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC8.Location = new System.Drawing.Point(141, 355);
-            this.pictureBoxPC8.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC8.Location = new System.Drawing.Point(127, 353);
+            this.pictureBoxPC8.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC8.Name = "pictureBoxPC8";
             this.pictureBoxPC8.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -654,8 +654,8 @@
             // 
             // pictureBoxPC4
             // 
-            this.pictureBoxPC4.Location = new System.Drawing.Point(14, 355);
-            this.pictureBoxPC4.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC4.Location = new System.Drawing.Point(127, 120);
+            this.pictureBoxPC4.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC4.Name = "pictureBoxPC4";
             this.pictureBoxPC4.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -665,7 +665,7 @@
             // pictureBoxPC1
             // 
             this.pictureBoxPC1.Location = new System.Drawing.Point(14, 5);
-            this.pictureBoxPC1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC1.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC1.Name = "pictureBoxPC1";
             this.pictureBoxPC1.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -674,8 +674,8 @@
             // 
             // pictureBoxPC3
             // 
-            this.pictureBoxPC3.Location = new System.Drawing.Point(14, 237);
-            this.pictureBoxPC3.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC3.Location = new System.Drawing.Point(14, 120);
+            this.pictureBoxPC3.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC3.Name = "pictureBoxPC3";
             this.pictureBoxPC3.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -685,8 +685,8 @@
             // pictureBoxPC5
             // 
             this.pictureBoxPC5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC5.Location = new System.Drawing.Point(141, 5);
-            this.pictureBoxPC5.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC5.Location = new System.Drawing.Point(14, 237);
+            this.pictureBoxPC5.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC5.Name = "pictureBoxPC5";
             this.pictureBoxPC5.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -696,8 +696,8 @@
             // pictureBoxPC7
             // 
             this.pictureBoxPC7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC7.Location = new System.Drawing.Point(141, 236);
-            this.pictureBoxPC7.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC7.Location = new System.Drawing.Point(15, 353);
+            this.pictureBoxPC7.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC7.Name = "pictureBoxPC7";
             this.pictureBoxPC7.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -706,8 +706,8 @@
             // 
             // pictureBoxPC2
             // 
-            this.pictureBoxPC2.Location = new System.Drawing.Point(14, 120);
-            this.pictureBoxPC2.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC2.Location = new System.Drawing.Point(127, 5);
+            this.pictureBoxPC2.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC2.Name = "pictureBoxPC2";
             this.pictureBoxPC2.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -717,8 +717,8 @@
             // pictureBoxPC6
             // 
             this.pictureBoxPC6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBoxPC6.Location = new System.Drawing.Point(141, 120);
-            this.pictureBoxPC6.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.pictureBoxPC6.Location = new System.Drawing.Point(127, 237);
+            this.pictureBoxPC6.Margin = new System.Windows.Forms.Padding(5);
             this.pictureBoxPC6.Name = "pictureBoxPC6";
             this.pictureBoxPC6.Size = new System.Drawing.Size(103, 107);
             this.pictureBoxPC6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -729,7 +729,7 @@
             // 
             this.buttonGet.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonGet.Location = new System.Drawing.Point(13, 193);
-            this.buttonGet.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonGet.Margin = new System.Windows.Forms.Padding(5);
             this.buttonGet.Name = "buttonGet";
             this.buttonGet.Size = new System.Drawing.Size(69, 35);
             this.buttonGet.TabIndex = 16;
@@ -743,7 +743,7 @@
             this.listBoxEntities.FormattingEnabled = true;
             this.listBoxEntities.ItemHeight = 20;
             this.listBoxEntities.Location = new System.Drawing.Point(3, 3);
-            this.listBoxEntities.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.listBoxEntities.Margin = new System.Windows.Forms.Padding(5);
             this.listBoxEntities.Name = "listBoxEntities";
             this.listBoxEntities.Size = new System.Drawing.Size(250, 144);
             this.listBoxEntities.TabIndex = 18;
@@ -754,7 +754,7 @@
             this.listBoxItems.FormattingEnabled = true;
             this.listBoxItems.ItemHeight = 20;
             this.listBoxItems.Location = new System.Drawing.Point(3, 232);
-            this.listBoxItems.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.listBoxItems.Margin = new System.Windows.Forms.Padding(5);
             this.listBoxItems.Name = "listBoxItems";
             this.listBoxItems.Size = new System.Drawing.Size(250, 104);
             this.listBoxItems.TabIndex = 19;
@@ -771,7 +771,7 @@
             this.panelObjects.Controls.Add(this.buttonHide);
             this.panelObjects.Controls.Add(this.buttonLook);
             this.panelObjects.Location = new System.Drawing.Point(842, 621);
-            this.panelObjects.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.panelObjects.Margin = new System.Windows.Forms.Padding(5);
             this.panelObjects.Name = "panelObjects";
             this.panelObjects.Size = new System.Drawing.Size(258, 344);
             this.panelObjects.TabIndex = 20;
@@ -781,7 +781,7 @@
             // 
             this.buttonInspect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.buttonInspect.Location = new System.Drawing.Point(93, 149);
-            this.buttonInspect.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.buttonInspect.Margin = new System.Windows.Forms.Padding(5);
             this.buttonInspect.Name = "buttonInspect";
             this.buttonInspect.Size = new System.Drawing.Size(69, 35);
             this.buttonInspect.TabIndex = 16;
@@ -798,7 +798,7 @@
             this.panelAccount.Controls.Add(this.buttonSettings);
             this.panelAccount.Controls.Add(this.buttonStart);
             this.panelAccount.Location = new System.Drawing.Point(13, 819);
-            this.panelAccount.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.panelAccount.Margin = new System.Windows.Forms.Padding(5);
             this.panelAccount.Name = "panelAccount";
             this.panelAccount.Size = new System.Drawing.Size(423, 151);
             this.panelAccount.TabIndex = 16;
@@ -828,7 +828,7 @@
             this.panelMovement.Controls.Add(this.buttonUp);
             this.panelMovement.Controls.Add(this.buttonDown);
             this.panelMovement.Location = new System.Drawing.Point(669, 621);
-            this.panelMovement.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.panelMovement.Margin = new System.Windows.Forms.Padding(5);
             this.panelMovement.Name = "panelMovement";
             this.panelMovement.Size = new System.Drawing.Size(170, 188);
             this.panelMovement.TabIndex = 15;
@@ -847,7 +847,7 @@
             this.Controls.Add(this.panelChat);
             this.Controls.Add(this.panelView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.Margin = new System.Windows.Forms.Padding(5);
             this.Name = "MainForm";
             this.Text = "Lords of Chaos: Sanctity\'s Edge";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);

@@ -32,10 +32,9 @@ namespace Game.Test
         public void TestProtocol()
         {
             Realm.Start();
-
-            lastPacket = null;
-
+            Realm.AddPlayer(1);
             Realm.GameEvents += Realm_GameEvents;
+            lastPacket = null;
 
             var packet = new Packet()
             {
@@ -45,8 +44,8 @@ namespace Game.Test
 
             Realm.HandlePacket(packet, 1);
 
-            Assert.IsTrue(lastPacket != null);
-            Assert.IsTrue(lastPacket.ActionType == ActionType.Broadcast);
+            Assert.IsTrue((lastPacket != null) && 
+                lastPacket.ActionType == ActionType.Broadcast);
             Assert.IsTrue(!String.IsNullOrEmpty(lastPacket.Text));
 
             Realm.Stop();

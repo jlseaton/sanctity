@@ -14,7 +14,7 @@
         public static readonly int MaxGroupSize = 6;
         public static readonly int NPCCorpseDecay = 30;
         public static readonly int PlayerCorpseDecay = 30;
-        public static readonly int PCInactivityTimeout = 0; //TODO: Debug lock race condition when inactivity timeout is used
+        public static readonly int PCInactivityTimeout = 0;
         public static readonly string PCDefaultSecret = "loc";
     }
 

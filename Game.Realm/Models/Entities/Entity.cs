@@ -6,6 +6,7 @@ namespace Game.Realm
     public class Entity : Thing
     {
         public Loc Loc { get; set; }
+        public Loc StartLoc { get; set; }
         public MoveDirection Facing { get; set; }
 
         public string Surname { get; set; }
@@ -25,6 +26,8 @@ namespace Game.Realm
         public int DeathSoundID { get; set; }
 
         public DateTime DeathTime { get; set; }
+
+        public Stack<Aggro> Aggressors { get; set; }
 
         public int FactionID { get; set; }
         public int FactionWeight { get; set; }
