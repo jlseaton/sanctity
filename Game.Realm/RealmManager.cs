@@ -843,14 +843,11 @@ namespace Game.Realm
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    lock (hex.PCs)
+                    foreach (PC p in hex.PCs)
                     {
-                        foreach (PC p in hex.PCs)
+                        if (p.ID == id || p.Name == name)
                         {
-                            if (p.ID == id || p.Name == name)
-                            {
-                                return p;
-                            }
+                            return p;
                         }
                     }
                 }
@@ -865,14 +862,11 @@ namespace Game.Realm
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    lock (hex.PCs)
+                    foreach (NPC n in hex.NPCs)
                     {
-                        foreach (NPC n in hex.NPCs)
+                        if (n.ID == id || n.Name == name)
                         {
-                            if (n.ID == id || n.Name == name)
-                            {
-                                return n;
-                            }
+                            return n;
                         }
                     }
                 }

@@ -18,21 +18,33 @@ namespace Game.Realm
             LevelLookup.Add(level++, 900);
             LevelLookup.Add(level++, 2700);
             LevelLookup.Add(level++, 6500);
-            LevelLookup.Add(level++, 4000);
+            LevelLookup.Add(level++, 14000);
             LevelLookup.Add(level++, 23000);
             LevelLookup.Add(level++, 34000);
             LevelLookup.Add(level++, 48000);
             LevelLookup.Add(level++, 64000);
             LevelLookup.Add(level++, 85000);
-            LevelLookup.Add(level++, 00000);
-            LevelLookup.Add(level++, 20000);
-            LevelLookup.Add(level++, 40000);
-            LevelLookup.Add(level++, 65000);
-            LevelLookup.Add(level++, 95000);
+            LevelLookup.Add(level++, 100000);
+            LevelLookup.Add(level++, 120000);
+            LevelLookup.Add(level++, 140000);
+            LevelLookup.Add(level++, 165000);
+            LevelLookup.Add(level++, 195000);
             LevelLookup.Add(level++, 225000);
             LevelLookup.Add(level++, 265000);
             LevelLookup.Add(level++, 305000);
             LevelLookup.Add(level++, 355000);
+            LevelLookup.Add(level++, 390000);
+            LevelLookup.Add(level++, 430000);
+            LevelLookup.Add(level++, 470000);
+            LevelLookup.Add(level++, 515000);
+            LevelLookup.Add(level++, 565000);
+            LevelLookup.Add(level++, 615000);
+            LevelLookup.Add(level++, 675000);
+            LevelLookup.Add(level++, 735000);
+            LevelLookup.Add(level++, 800000);
+            LevelLookup.Add(level++, 870000);
+            LevelLookup.Add(level++, 940000);
+            LevelLookup.Add(level++, 1010000); // Current max is level 30
         }
 
         public List<Area> LoadAreas()
@@ -293,7 +305,7 @@ namespace Game.Realm
                 Name = "Hoxore",
                 Surname = "the Cranky",
                 Age = 28,
-                Level = 15,
+                Level = 29,
                 Strength = 19,
                 Dexterity = 15,
                 Constitution = 15,
@@ -302,7 +314,8 @@ namespace Game.Realm
                 Luck = 10,
                 HPs = 220,
                 MaxHPs = 220,
-                Experience = 95500,
+                HPRegen = 10,
+                Experience = 1009999,
                 Gold = 250,
                 Stealth = 25,
                 ArmorClass = 10,
@@ -533,29 +546,31 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountType= AccountType.Hero,
                 Type = EntityType.PC,
                 Race = RaceType.Human,
                 Class = ClassType.Paladin,
                 Alignment = AlignmentType.LawfulGood,
                 Name = "Derwin",
                 Surname = "the Just",
-                Age = 23,
-                Level = 1,
+                Age = 28,
+                Level = 10,
                 Strength = 14,
                 Dexterity = 18,
                 Constitution = 12,
                 Intelligence = 11,
                 Wisdom = 10,
                 Luck = 15,
-                HPs = 30,
-                MaxHPs = 30,
-                Experience = 0,
+                HPs = 120,
+                MaxHPs = 120,
+                HPRegen = 5,
+                Experience = 85000,
                 Gold = 50,
                 Stealth = 10,
                 LootClass = LootType.None,
-                MainHandID = 6,
+                MainHandID = 7,
                 ImageName = "whiteknightpaladin",
-                Bio = "Always ready to fight with passion.",
+                Bio = "Always ready to fight with passion and test out dungeons.",
             });
 
             Players.Add(new PC()
@@ -569,18 +584,19 @@ namespace Game.Realm
                 Name = "Chella",
                 Surname = "the Bitey",
                 Age = 14,
-                Level = 1,
+                Level = 5,
                 Strength = 11,
                 Dexterity = 14,
                 Constitution = 12,
                 Intelligence = 11,
                 Wisdom = 15,
                 Luck = 14,
-                HPs = 20,
-                MaxHPs = 20,
+                HPs = 60,
+                MaxHPs = 60,
                 MPs = 25,
                 MaxMPs = 25,
-                Experience = 0,
+                HPRegen = 3,
+                Experience = 23000,
                 Gold = 15,
                 Stealth = 25,
                 LootClass = LootType.None,
@@ -1529,12 +1545,12 @@ namespace Game.Realm
                 QuestID = 1,
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "vorpalsword",
+                Name = "vorpal sword",
                 Value = 5000,
                 ToHitBonus = 3,
                 DamageBonus = 2,
-                MinDamage = 6,
-                MaxDamage = 12,
+                MinDamage = 12,
+                MaxDamage = 48,
                 Effects = new List<int>() { 1 },
             });
 
@@ -1587,10 +1603,22 @@ namespace Game.Realm
                 ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "twohandedsword",
+                Name = "two-handed sword",
                 Value = 15,
                 MinDamage = 3,
                 MaxDamage = 18,
+            });
+
+            Items.Add(new Item()
+            {
+                ID = id++,
+                Type = ItemType.Weapon,
+                Article = "a",
+                Name = "flaming two-handed sword",
+                Value = 15,
+                MinDamage = 8,
+                MaxDamage = 32,
+                Effects = new List<int>() { 5 },
             });
 
             Items.Add(new Item()
@@ -1713,6 +1741,19 @@ namespace Game.Realm
                 MaximumTargets = 6,
                 FizzleChance = 75,
                 Verb = " issues forth a poisonous cloud on ",
+            });
+
+            Effects.Add(new Effect()
+            {
+                ID = id++,
+                Name = "flamelick",
+                Type = EffectType.Damage,
+                Damage = DamageType.Fire,
+                MinDamage = 4,
+                MaxDamage = 12,
+                MaximumTargets = 1,
+                FizzleChance = 75,
+                Verb = " ignites licks of flame on ",
             });
 
             return Effects;

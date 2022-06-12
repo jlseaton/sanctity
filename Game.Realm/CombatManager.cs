@@ -150,11 +150,12 @@ namespace Game.Realm
 
                 StringBuilder rewards = new StringBuilder();
 
-                if (target.Experience > 0)
+                if (target.Experience > 0 && !(target is PC))
                 {
                     attacker.Experience += target.Experience;
                     rewards.Append("You earned " + target.Experience.ToString()
                         + " experience points.");
+
                     rewards.Append(CheckForLevelUp(attacker));
                 }
 
@@ -216,15 +217,13 @@ namespace Game.Realm
 
         private string CheckForLevelUp(Entity entity)
         {
-            foreach(var l in Realm.Data.LevelLookup)
+            if (entity.Experience >=
+                Realm.Data.LevelLookup[entity.Level] &&
+                entity.Level < Realm.Data.LevelLookup.Count - 1)
             {
-                if (entity.Experience > l.Value &&
-                    entity.Level < l.Key)
-                {
-                    entity.LevelUp();
-                    entity.Revive();
-                    return "\r\nCongratulations! You have increased in level.";
-                }
+                entity.LevelUp();
+                entity.Revive();
+                return "\r\nCongratulations! You have increased in level.";
             }
 
             return String.Empty;
