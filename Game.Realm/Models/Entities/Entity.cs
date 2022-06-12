@@ -124,7 +124,8 @@ namespace Game.Realm
             Languages = new List<int> { 0 }; // Everyone sentient knows the common language
         }
 
-        public string GetDescription(bool includeBio = true, bool includeLoc = false)
+        public string GetDescription(bool includeBio = true, 
+            bool includeLoc = false, bool includeState = true)
         {
             StringBuilder sb = new StringBuilder(this.FullName);
             if (!String.IsNullOrEmpty(Surname))
@@ -134,7 +135,11 @@ namespace Game.Realm
                 sb.Append(" " + Race);
             if (!String.IsNullOrEmpty(Class.ToString()))
                 sb.Append(" " + Class);
-            sb.Append(" (State: " + State.ToString() + ")");
+
+            if (MainHand != null)
+            {
+                sb.Append("\r\nThey are wielding " + MainHand.FullName + ".");
+            }
             if (includeBio)
             {
                 if (!String.IsNullOrEmpty(Bio))
@@ -144,6 +149,10 @@ namespace Game.Realm
             {
                 sb.Append(" at Area:" + Loc.AreaID.ToString() + 
                     "-Hex:" + Loc.HexID.ToString());
+            }
+            if (includeState)
+            {
+                sb.Append(" (State: " + State.ToString() + ")");
             }
             return sb.ToString();
         }

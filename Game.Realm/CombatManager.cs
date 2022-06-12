@@ -65,7 +65,7 @@ namespace Game.Realm
 
                         result = attacker.FullName + verb + target.FullName + weaponName +
                             " for " + procDamage.ToString() + " " +
-                            effect.Damage.ToString().ToUpper() + " damage";
+                            effect.Damage.ToString() + " damage";
 
                         if (effect.Type == EffectType.Stun)
                         {
@@ -130,7 +130,7 @@ namespace Game.Realm
 
                                 result += "\r\n" + attacker.FullName + verb +
                                     target.FullName + weaponName + " for " + procDamage.ToString() +
-                                    " " + eff.Damage.ToString().ToUpper() + " damage";
+                                    " " + eff.Damage.ToString() + " damage";
                             }
                         }
                     }

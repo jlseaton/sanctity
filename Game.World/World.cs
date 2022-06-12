@@ -14,8 +14,8 @@ namespace Game.World
         private bool Logging { get; set; }
         private bool Running { get; set; }
         private Config Config { get; set; }
-        public RealmManager Realm;
         private TcpListener Listener;
+        public RealmManager Realm;
         //public ILog log = null;
 
         #endregion

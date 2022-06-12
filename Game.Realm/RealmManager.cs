@@ -162,7 +162,7 @@ namespace Game.Realm
                 {
                     foreach (Hex hex in area.Hexes)
                     {
-                        lock (hex.NPCs)
+                        //lock (hex.NPCs)
                         {
                             for (int i = 0; i < hex.NPCs.Count; i++)
                             {
@@ -195,18 +195,18 @@ namespace Game.Realm
                                     if (DateTime.Now.Subtract(npc.DeathTime).Seconds >=
                                         Constants.NPCCorpseDecay)
                                     {
-                                        // Revive npcs 25% of the time or remove them
-                                        if (Randomizer.Next(75) >= 90)
+                                        // Revive npcs 25% of the time
+                                        if (Randomizer.Next(100) >= 75)
                                         {
-                                            npc.State = StateType.Normal;
-                                            npc.HPs = npc.MaxHPs;
-                                            npc.MPs = npc.MaxMPs;
+                                            npc.Revive();
                                             npc.Mood = MoodType.Normal;
                                             npc.Followed = 0;
+                                            SendPlayerStatusToHex(npc.Loc);
                                         }
                                         else
                                         {
-                                            RemoveEntity(npc);
+                                            //TODO: Corpse cleanup / respawn periodically
+                                            //RemoveEntity(npc);
                                         }
                                     }
                                 }
@@ -217,7 +217,7 @@ namespace Game.Realm
                             }
                         }
 
-                        lock(hex.PCs)
+                        //lock(hex.PCs)
                         {
                             for (int i = 0; i < hex.PCs.Count; i++)
                             {
@@ -319,6 +319,7 @@ namespace Game.Realm
                     case ActionType.Command:
                         if (player.AccountType != AccountType.DungeonMaster && 
                             (packet.Text.StartsWith("hps") ||
+                            packet.Text.StartsWith("give") ||
                             packet.Text.StartsWith("kill") ||
                             packet.Text.StartsWith("levelup") ||
                             packet.Text.StartsWith("spawn") ||
@@ -330,7 +331,40 @@ namespace Game.Realm
 
                         if (packet.Text.ToLower() == "help")
                         {
-                            SendPlayerStatus(player.ID, "List of / commands:\r\nhelp, hps, kill, levelup, look, pvp, revive, spawn, tp, who, yell");
+                            SendPlayerStatus(player.ID, "List of / commands:\r\nhelp, give, hps, kill, levelup, look, pvp, revive, spawn, tp, who, yell");
+                        }
+                        else if (packet.Text.StartsWith("give"))
+                        {
+                            string itemResult = "Unable to give item. Usage: give <target> <item id>";
+                            try
+                            {
+                                var giveTargetName = packet.Text.Split(" ")[1].Trim();
+                                if (giveTargetName != null)
+                                {
+                                    Entity giveTarget = FindEntity(0, giveTargetName);
+                                    if (giveTarget != null)
+                                    {
+                                        var giveItemId = 
+                                            Int16.Parse(packet.Text.Split(" ")[2].Trim());
+
+                                        var weapon = Data.LoadItems()
+                                            .Where(i => i.ID == giveItemId).Single();
+
+                                        if (weapon != null)
+                                        {
+                                            giveTarget.MainHand = weapon;
+                                            itemResult = player.Name + " gives " + 
+                                                giveTarget.Name + " " + weapon.FullName;
+
+                                            SendPlayerStatusToHex(player.Loc, itemResult);
+                                        }
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, itemResult);
+                            }
                         }
                         else if (packet.Text.StartsWith("kill"))
                         {
@@ -389,10 +423,17 @@ namespace Game.Realm
                                     Entity leveled = FindEntity(0, levelupTarget);
                                     if (leveled != null)
                                     {
-                                        leveled.LevelUp();
-                                        levelupResult = leveled.FullName + " has been leveled up by " + player.Name + "!";
-                                        SendPlayerStatusToHex(player.Loc);
-                                        BroadcastMessage(levelupResult);
+                                        if (leveled.Level < Data.LevelLookup.Count - 1)
+                                        {
+                                            leveled.LevelUp();
+                                            levelupResult = leveled.FullName + " has been leveled up by " + player.Name + "!";
+                                            SendPlayerStatusToHex(player.Loc);
+                                            BroadcastMessage(levelupResult);
+                                        }
+                                        else
+                                        {
+                                            SendPlayerMessage(player.ID, leveled.FullName + " is already at maximum level.");
+                                        }
                                     }
                                     else
                                     {
