@@ -59,7 +59,7 @@ namespace Game.Server
             #pragma warning disable CS8602 // Dereference of a possibly null reference.
             Text += " - v" + assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
-                assembly.GetName().Version.Build.ToString() + " - Realm: " + Realm.FullName;
+                assembly.GetName().Version.Build.ToString() + " - Realm: " + Realm.Name;
         }
         private void MainForm_Load(object sender, EventArgs e)
         {

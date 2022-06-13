@@ -3,9 +3,12 @@ using System.Text;
 
 namespace Game.Realm
 {
-    public class RealmManager : Thing
+    public class RealmManager
     {
         #region Fields
+
+        public int ID { get; set; }
+        public string Name { get; set; }
 
         public bool Running { get; private set; }
         public int PulseRate { get; set; }

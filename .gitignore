@@ -11,4 +11,4 @@ Publish/
 TestResults/
 Update/
 Thumbs.db
-ClickOnceProfile.pubxml.user
+*.user
