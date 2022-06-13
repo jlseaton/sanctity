@@ -8,8 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>App.ico</ApplicationIcon>
     <Version>1.0.1</Version>
+	<RuntimeFrameworkVersion>6.0.2</RuntimeFrameworkVersion>
   </PropertyGroup>
-
   <ItemGroup>
     <None Remove="Images\Thumbs.db" />
     <None Remove="Images\tiles\Thumbs.db" />
