@@ -9,6 +9,7 @@ namespace Game.Realm
 
         public int LockID { get; set; }
         public int LockLevel { get; set; }
+        public bool NoCombat { get; set; }
 
         public List<int> PermanentNPCs = new List<int>();
         public List<EncounterType> RandomNPCs = new List<EncounterType>();

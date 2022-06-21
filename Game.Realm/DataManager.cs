@@ -239,6 +239,7 @@ namespace Game.Realm
                 {
                     ID = 1,
                     Name = "Umbra Tavern",
+                    NoCombat = true,
                     Tile = new Tile()
                     {
                         Tile2ID = "woodentable2",
@@ -295,9 +296,10 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Dunatis",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.Hero,
-                Race = RaceType.Human,
+                Race = RaceType.HalfOrc,
                 Class = ClassType.Barbarian,
                 Alignment = AlignmentType.Neutral,
                 Origin = "Planar",
@@ -328,6 +330,7 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Lexanna",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Gender = GenderType.Female,
@@ -360,11 +363,12 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Caitlanna",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Gender = GenderType.Female,
                 Race = RaceType.HalfElf,
-                Class = ClassType.Rogue,
+                Class = ClassType.Sorcerer,
                 Alignment = AlignmentType.LawfulGood,
                 Name = "Caitlanna",
                 Surname = "the Surly",
@@ -384,7 +388,7 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 40,
                 LootClass = LootType.None,
-                MainHandID = 3,
+                MainHandID = 2,
                 ImageName = "femalehumandruid",
                 Bio = "Caitlanna fights for the weak and loves her Bella.",
             });
@@ -392,6 +396,7 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Owlshonor",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Race = RaceType.Dwarven,
@@ -415,12 +420,13 @@ namespace Game.Realm
                 LootClass = LootType.None,
                 MainHandID = 5,
                 ImageName = "maledwarffighter",
-                Bio = "Me big and strong.",
+                Bio = "A stout and commanding figure, you want him on your side in a fight.",
             });
 
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Gnorm",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Race = RaceType.Halfling,
@@ -452,12 +458,13 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Wuppah",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
-                Race = RaceType.Elf,
-                Class = ClassType.Sorcerer,
+                Race = RaceType.Halfling,
+                Class = ClassType.Rogue,
                 Alignment = AlignmentType.ChaoticEvil,
-                Name = "Natillah",
+                Name = "Ayevee",
                 Surname = "the Well Endowed",
                 Age = 24,
                 Level = 1,
@@ -475,7 +482,7 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 25,
                 LootClass = LootType.None,
-                MainHandID = 2,
+                MainHandID = 3,
                 ImageName = "femalehumanblond",
                 Bio = "She can defeat you with just a look.",
             });
@@ -483,6 +490,7 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Faerune",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Race = RaceType.Human,
@@ -506,7 +514,7 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 20,
                 LootClass = LootType.None,
-                MainHandID = 4,
+                MainHandID = 2,
                 ImageName = "malehumanwizard",
                 Bio = "He has crispy furious fingers.",
             });
@@ -514,6 +522,7 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Tractive",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
                 Gender = GenderType.Male,
@@ -546,7 +555,42 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
-                AccountType= AccountType.Hero,
+                AccountName = "Lukazz",
+                AccountType = AccountType.DungeonMaster,
+                Type = EntityType.PC,
+                Gender = GenderType.Male,
+                Race = RaceType.Human,
+                Class = ClassType.Monk,
+                Alignment = AlignmentType.ChaoticGood,
+                Name = "Lukazz",
+                Surname = "the Resolute",
+                Age = 27,
+                Level = 1,
+                Strength = 13,
+                Dexterity = 14,
+                Constitution = 14,
+                Intelligence = 11,
+                Wisdom = 15,
+                Luck = 14,
+                HPs = 35,
+                MaxHPs = 35,
+                MPs = 15,
+                MaxMPs = 15,
+                Experience = 0,
+                Gold = 25,
+                Stealth = 33,
+                LootClass = LootType.None,
+                MinDamage = 3,
+                MaxDamage = 6,
+                ImageName = "malehumansandyblond",
+                Bio = "In battle he is calm and measured in his every move.",
+            });
+
+            Players.Add(new PC()
+            {
+                ID = id++,
+                AccountName = "Derwin",
+                AccountType = AccountType.Hero,
                 Type = EntityType.PC,
                 Race = RaceType.Human,
                 Class = ClassType.Paladin,
@@ -576,6 +620,7 @@ namespace Game.Realm
             Players.Add(new PC()
             {
                 ID = id++,
+                AccountName = "Chella",
                 Type = EntityType.PC,
                 Gender = GenderType.Female,
                 Race = RaceType.Gnome,
@@ -600,7 +645,8 @@ namespace Game.Realm
                 Gold = 15,
                 Stealth = 25,
                 LootClass = LootType.None,
-                MainHandID = 2,
+                MinDamage = 2,
+                MaxDamage = 5,
                 ImageName = "badger",
                 Bio = "She'll bite your face off. Guinea pigs Charli and Bella put together into one big killing machine.",
             });
@@ -631,6 +677,7 @@ namespace Game.Realm
                 ID = id++,
                 QuestID = 1,
                 Origin = "Gaping Maw",
+                CorpseDecayRate = 99,
                 Type = EntityType.NPC,
                 Race = RaceType.Demonic,
                 Size = SizeType.Huge,
@@ -674,7 +721,7 @@ namespace Game.Realm
                 Alignment = AlignmentType.LawfulGood,
                 ArmorClass = 50,
                 Article = "a",
-                Name = "elfqueen",
+                Name = "Natillah Lesbun",
                 ImageName = "elfqueen",
                 HPs = 120,
                 MaxHPs = 120,
@@ -706,7 +753,7 @@ namespace Game.Realm
                 Alignment = AlignmentType.LawfulGood,
                 ArmorClass = 50,
                 Article = "a",
-                Name = "humanking",
+                Name = "Gundarik Lesbun",
                 ImageName = "humanking",
                 HPs = 120,
                 MaxHPs = 120,
@@ -1119,6 +1166,7 @@ namespace Game.Realm
             {
                 ID = id++,
                 Type = EntityType.NPC,
+                CorpseDecayRate = 75,
                 Race = RaceType.Dragon,
                 Level = 11,
                 Alignment = AlignmentType.LawfulGood,

@@ -95,9 +95,9 @@ namespace Game.World
                     Constants.PacketBufferSize, SocketFlags.None);
                 var data = Encoding.UTF8.GetString(inStream, 0, read);
 
-                if (Constants.PacketCompression)
+                if (Constants.PacketCompression && data.Length > 3)
                 {
-                    data = data.Substring(0, data.Length - 3);
+                    data = data.Replace(Constants.PacketDelimiter, "");
                 }
 
                 var packet = Packet.Deserialize(data);
@@ -125,18 +125,11 @@ namespace Game.World
                             Text = result,
                         });
 
+                        Conn.Disconnect();
+
                         LogEntry(result);
 
-                        if (Conn.Client.Connected)
-                        {
-                            Conn.Disconnect();
-                        }
-
-                        if (player.Conn.Connected)
-                        {
-                            player.Conn.Disconnect();
-                        }
-
+                        player.Disconnect();
                         Realm.RemovePC(player.ID);
                     }
                     else

@@ -12,8 +12,8 @@
 
         public static readonly int MaxLevel = 20;
         public static readonly int MaxGroupSize = 6;
-        public static readonly int NPCCorpseDecay = 30;
-        public static readonly int PlayerCorpseDecay = 30;
+        public static readonly int NPCDefaultCorpseDecay = 30;
+        public static readonly int PCDefaultCorpseDecay = 30;
         public static readonly int PCInactivityTimeout = 0;
         public static readonly string PCDefaultSecret = "loc";
     }
@@ -119,20 +119,20 @@
         Halfling,
         Elf,
         HalfElf,
-        HalfOrc,
-        Orc,
-        Goblin,
         Dwarven,
         Gnome,
+        HalfOrc,
         Humanoid,
+        Orc,
+        Goblin,
         Animal,
         Aquatic,
         Insect,
+        Reptillian,
+        Undead,
         Demonic,
         Dragon,
         Planar,
-        Reptillian,
-        Undead,
     };
 
     public enum ClassType

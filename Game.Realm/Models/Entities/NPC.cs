@@ -26,6 +26,7 @@ namespace Game.Realm
             Type = EntityType.NPC;
             ImageName = Name;
             Loc.AreaID = 1;
+            CorpseDecayRate = Constants.NPCDefaultCorpseDecay;
         }
 
         public new NPC Clone()

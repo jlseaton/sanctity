@@ -196,10 +196,10 @@ namespace Game.Realm
                                 if (npc.State == StateType.Dead)
                                 {
                                     if (DateTime.Now.Subtract(npc.DeathTime).Seconds >=
-                                        Constants.NPCCorpseDecay)
+                                        Constants.NPCDefaultCorpseDecay)
                                     {
-                                        // Revive npcs 25% of the time
-                                        if (Randomizer.Next(100) >= 75)
+                                        // Revive npcs based on their decary rate
+                                        if (Randomizer.Next(100) >= npc.CorpseDecayRate)
                                         {
                                             npc.Revive();
                                             npc.Mood = MoodType.Normal;
@@ -295,7 +295,18 @@ namespace Game.Realm
                     if (packet.Text.StartsWith("/"))
                     {
                         packet.ActionType = ActionType.Command;
-                        packet.Text = packet.Text.Replace("/", "").Trim().ToLower();
+
+                        // Preserve casing for bio command text
+                        if (packet.Text.StartsWith("/bio"))
+                        {
+                            packet.Text =
+                                packet.Text.Replace("/", "").Trim();
+                        }
+                        else
+                        {
+                            packet.Text = 
+                                packet.Text.Replace("/", "").Trim().ToLower();
+                        }
                     }
                 }
 
@@ -334,11 +345,56 @@ namespace Game.Realm
 
                         if (packet.Text.ToLower() == "help")
                         {
-                            SendPlayerStatus(player.ID, "List of / commands:\r\nhelp, give, hps, kill, levelup, look, pvp, revive, spawn, tp, who, yell");
+                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio. help, hps, give, kill, levelup, look, pvp, revive, spawn, tp, who, yell");
+                        }
+                        else if (packet.Text.StartsWith("bio"))
+                        {
+                            string bioResult = "Unable to change bio. Usage: bio <biography text>";
+                            try
+                            {
+                                var newBio =
+                                    packet.Text.Substring(4, packet.Text.Length - 4).Trim();
+
+                                if (newBio != null)
+                                {
+                                    player.Bio = newBio;
+                                    bioResult = player.FullName + " bio is now set to " + newBio;
+                                    SendPlayerStatusToHex(player.Loc, bioResult);
+                                }
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, bioResult);
+                            }
+                        }
+                        else if (packet.Text.StartsWith("hps"))
+                        {
+                            string hpResult = "Unable to change maximum hit points. Usage: hps <hp amount>";
+                            try
+                            {
+                                var newHps = packet.Text.Split(" ")[1].Trim();
+                                if (newHps != null)
+                                {
+                                    player.MaxHPs = Int16.Parse(newHps);
+                                    player.Revive();
+                                    hpResult = player.FullName + " maximum hit points are now set to " + newHps;
+                                    SendPlayerStatusToHex(player.Loc, hpResult);
+                                }
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, hpResult);
+                            }
                         }
                         else if (packet.Text.StartsWith("give"))
                         {
-                            string itemResult = "Unable to give item. Usage: give <target> <item id>";
+                            string itemResult = "Unable to give item. Usage: give <target> <item name>:\r\n";
+                            foreach (var item in Items)
+                            {
+                                itemResult += item.Name.ToLower().Trim() + ", ";
+                            }
+                            itemResult = itemResult.Trim().TrimEnd(',');
+
                             try
                             {
                                 var giveTargetName = packet.Text.Split(" ")[1].Trim();
@@ -347,11 +403,12 @@ namespace Game.Realm
                                     Entity giveTarget = FindEntity(0, giveTargetName);
                                     if (giveTarget != null)
                                     {
-                                        var giveItemId = 
-                                            Int16.Parse(packet.Text.Split(" ")[2].Trim());
+                                        var giveItemName =
+                                            packet.Text.Substring(giveTargetName.Length + 6, 
+                                            packet.Text.Length - giveTargetName.Length - 6).Trim();
 
                                         var weapon = Data.LoadItems()
-                                            .Where(i => i.ID == giveItemId).Single();
+                                            .Where(i => i.Name.ToLower() == giveItemName).Single();
 
                                         if (weapon != null)
                                         {
@@ -396,25 +453,6 @@ namespace Game.Realm
                                 SendPlayerStatus(player.ID, killResult);
                             }
                         }
-                        else if (packet.Text.StartsWith("hps"))
-                        {
-                            string hpResult = "Unable to change maximum hit points. Usage: hps <hp amount>";
-                            try
-                            {
-                                var newHps = packet.Text.Split(" ")[1].Trim();
-                                if (newHps != null)
-                                {
-                                    player.MaxHPs = Int16.Parse(newHps);
-                                    player.Revive();
-                                    hpResult = player.FullName + " maximum hit points are now set to " + newHps;
-                                    SendPlayerStatusToHex(player.Loc, hpResult);
-                                }
-                            }
-                            catch
-                            {
-                                SendPlayerStatus(player.ID, hpResult);
-                            }
-                        }
                         else if (packet.Text.StartsWith("levelup"))
                         {
                             string levelupResult = "Unable to level up target. Usage: levelup <target name>";
@@ -451,10 +489,18 @@ namespace Game.Realm
                         }
                         else if (packet.Text.StartsWith("spawn"))
                         {
-                            string spawnResult = "Unable to spawn target. Usage: spawn <target name>";
+                            string spawnResult = "Unable to spawn target. Usage: spawn <target name>:\r\n";
+                            foreach(var npc in NPCs)
+                            {
+                                spawnResult += npc.Name.ToLower().Trim() + ", ";
+                            }
+                            spawnResult = spawnResult.Trim().TrimEnd(',');
+
                             try
                             {
-                                var spawnTarget = packet.Text.Split(" ")[1].Trim();
+                                var spawnTarget =
+                                    packet.Text.Substring(6, packet.Text.Length - 6).Trim();
+
                                 if (spawnTarget != null)
                                 {
                                     var spawn = NPCs.Where(npc => npc.Name.ToLower() == spawnTarget.ToLower()).Single();
@@ -662,35 +708,31 @@ namespace Game.Realm
                         else if (packet.Text.StartsWith("inspect"))
                         {
                             var desc = "You see " + player.GetDescription(true);
-                            if (target != null)
+
+                            if (packet.Text.Length > 8)
                             {
-                                SendPlayerStatus(player.ID, desc);
-                            }
-                            else if (packet.Text.Contains("("))
-                            {
-                                var inspectedName = packet.Text.Split(" ")[1].Trim();
+                                var inspectedName =
+                                    packet.Text.Substring(8, packet.Text.Length - 8).Trim().ToLower();
 
                                 if (!String.IsNullOrEmpty(inspectedName))
                                 {
                                     var pc = FindPC(-1, inspectedName);
                                     if (pc != null)
                                     {
-                                        SendPlayerStatus(player.ID, pc.GetDescription());
+                                        desc = "You see " + pc.GetDescription();
                                     }
                                     else
                                     {
                                         var npc = FindNPC(-1, inspectedName);
                                         if (npc != null)
                                         {
-                                            SendPlayerStatus(player.ID, npc.GetDescription());
+                                            desc = "You see " + npc.GetDescription();
                                         }
                                     }
                                 }
                             }
-                            else
-                            {
-                                SendPlayerStatus(player.ID, desc);
-                            }
+
+                            SendPlayerStatus(player.ID, desc);
                         }
                         else if (packet.Text.StartsWith("get"))
                         {
@@ -736,6 +778,11 @@ namespace Game.Realm
                         if (player.State == StateType.Dead)
                         {
                             SendPlayerMessage(player.ID, "You cannot do that when you are dead.");
+                        }
+                        else if(Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].NoCombat &&
+                            player.AccountType != AccountType.DungeonMaster)
+                        { 
+                            SendPlayerMessage(player.ID, "Combat is not allowed in this area.");
                         }
                         else
                         {
@@ -889,7 +936,8 @@ namespace Game.Realm
                 {
                     foreach (PC p in hex.PCs)
                     {
-                        if (p.ID == id || p.Name == name)
+                        if (p.ID == id || 
+                            p.Name.ToLower() == name.ToLower())
                         {
                             return p;
                         }
@@ -908,7 +956,8 @@ namespace Game.Realm
                 {
                     foreach (NPC n in hex.NPCs)
                     {
-                        if (n.ID == id || n.Name == name)
+                        if (n.ID == id || 
+                            n.Name.ToLower() == name.ToLower())
                         {
                             return n;
                         }

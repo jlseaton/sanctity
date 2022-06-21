@@ -1,14 +1,14 @@
 Lords of Chaos: Sanctity's Edge
 -------------------------------
-Game client and server engine for Windows, requiring the .NET 6 Desktop Framework, which can be installed here:
-  x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.1-windows-x64-installer
+Game client for Windows requires the .NET 6 Desktop Framework, which can be installed from here:
+  x64: https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.6-windows-x64-installer
 
 Project Descriptions:
 ---------------------
-Game.Client: Game client using .NET 6 WinForms
+Game.Client: Game client for Windows using .NET WinForms
 Game.Core: Contains shared models and utility classes
 Game.Realm: Game realm logic for specific areas
-Game.Server: Game server logic for realms and .NET 6 WinForms
+Game.Server: Game server logic for realms and .NET WinForms
 Game.Test: Unit tests
 Game.World: Console based game server to run multiple realms on different platforms
 --------------------------------

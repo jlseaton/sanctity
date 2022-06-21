@@ -11,6 +11,11 @@
 
             Config = config;
             Connected = connected;
+#if DEBUG
+            this.checkBoxAutoStart.Visible = true;
+#else
+            this.checkBoxAutoStart.Visible = false;
+#endif
         }
 
         private void SettingsForm_Shown(object sender, EventArgs e)
@@ -26,7 +31,6 @@
             if (Connected)
             {
                 // No network changes allowed while playing
-                this.labelChangeMessage.Visible = true;
                 this.checkBoxServerMode.Enabled = false;
                 this.comboBoxServerURL.Enabled = false;
                 this.numericUpDownServerPort.Enabled = false;

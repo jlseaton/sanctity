@@ -16,8 +16,8 @@ namespace Game.Client
         private Connection? Conn;
         private RealmManager Realm;
 
-        private List<PC> PCs = new List<PC>();
         private Stats MyStats { get; set; }
+        private List<PC> PCs = new List<PC>();
         private List<Stats> PCStats = new List<Stats>();
         private List<Stats> NPCStats = new List<Stats>();
         private List<Stats> ItemStats = new List<Stats>();
@@ -73,10 +73,10 @@ namespace Game.Client
             this.listBoxPCs.SelectedIndex = 0;
 
             this.BackgroundImage = GetIndexedImage("skin");
-            this.panelView.BackgroundImage = GetIndexedImage("stars1");
-            this.panelPCs.BackgroundImage = GetIndexedImage("stars1");
-            this.panelNPCs.BackgroundImage = GetIndexedImage("stars1");
-            this.pictureBoxPC.BackgroundImage = GetIndexedImage("castlewallwitharches1");
+            this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
+            this.panelPCs.BackgroundImage = GetIndexedImage("burntbackground3");
+            this.panelNPCs.BackgroundImage = GetIndexedImage("burntbackground3");
+            this.pictureBoxPC.BackgroundImage = GetIndexedImage("burntbackground3");
             this.pictureBoxStatus.BackgroundImage = GetIndexedImage("hourglass");
 
             PlayMusic("ambient1");
@@ -185,7 +185,7 @@ namespace Game.Client
         {
             if (Conn != null && Conn.Connected && this.Tiles != null)
             {
-                UpdateView(this.Tiles);
+
             }
         }
 
@@ -313,19 +313,11 @@ namespace Game.Client
                         ThreadPool.QueueUserWorkItem(EventsThread, this);
                     }
 
-                    var join = new Packet()
+                    SendPacket(new Packet()
                     {
                         ActionType = ActionType.Join,
                         ID = this.listBoxPCs.SelectedIndex + 1,
-                    };
-
-                    if (SendPacket(join))
-                    {
-                        //PlaySound("tavernnoise1");
-                        //PlayMusic("loc1");
-                    }
-
-                    UpdateStatus(new Packet() { ActionType = ActionType.Exit });
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -408,8 +400,7 @@ namespace Game.Client
                     {
                         PlayMusic("death1");
                     }
-                    else if (packet.ActionType == ActionType.Status)// ||
-                                                                    //packet.ActionType == ActionType.Movement)
+                    else if (packet.ActionType == ActionType.Status)
                     {
                         UpdateTiles(packet);
                         UpdateStatus(packet);
@@ -661,13 +652,20 @@ namespace Game.Client
             // Update current Hex images
             if (Config.Images && tileFiles.Any())
             {
-                this.pictureBoxTilesMain.Image = CombineBitmap(tileFiles);
-            }
-        }
+                if (!String.IsNullOrEmpty(packet.Tile.Tile1ID))
+                {
+                    this.pictureBoxTilesMain.Image = GetIndexedImage(packet.Tile.Tile1ID);
+                }
 
-        private void P_MouseClick(object? sender, MouseEventArgs e)
-        {
-            throw new NotImplementedException();
+                if (!String.IsNullOrEmpty(packet.Tile.Tile2ID))
+                {
+                    using (Graphics g = Graphics.FromImage(this.pictureBoxTilesMain.Image))
+                    {
+                        var img2 = GetIndexedImage(packet.Tile.Tile2ID);
+                        g.DrawImage(img2, 0, 0, img2.Width, img2.Height);
+                    }
+                }
+            }
         }
 
         private void UpdateConnectionStatus()
@@ -686,11 +684,8 @@ namespace Game.Client
                         this.panelChat.Enabled = true;
                         this.panelMovement.Visible = true;
                         this.panelStats.Visible = true;
-                        this.panelNPCs.Visible = true;
-                        this.panelTiles.Visible = true;
-                        this.panelPCs.Visible = true;
+                        this.panelObjects.Visible = true;
                         this.listBoxPCs.Enabled = false;
-                        panelView.BackgroundImage = null;
 
                         if (MyStats != null && MyStats.HPs <= 0)
                         {
@@ -708,11 +703,9 @@ namespace Game.Client
                         this.panelMovement.Visible = false;
                         this.panelStats.Visible = false;
                         this.panelObjects.Visible = false;
-                        this.panelNPCs.Visible = false;
-                        this.panelTiles.Visible = false;
-                        this.panelPCs.Visible = false;
                         this.listBoxPCs.Enabled = true;
-                        panelView.BackgroundImage = GetIndexedImage("loctitle");
+                        this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
+
                         this.pictureBoxPC.Image =
                             GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
                     }
@@ -723,6 +716,7 @@ namespace Game.Client
                 ProcessException(ex);
             }
         }
+
         private string GetIndexedFileName(string[] list, string name)
         {
             foreach (string s in list)
@@ -746,113 +740,6 @@ namespace Game.Client
 
             var img = Image.FromFile(GetIndexedFileName(this.ImageFilenames, imageName));
             return img;
-        }
-
-        private void ShowCenterImage(Image image, string fileName)
-        {
-            image = Image.FromFile(fileName);
-
-            //pictureBoxTile24.Location =
-            //    new Point((pictureBoxTile24.Parent.ClientSize.Width / 2) -
-            //    (pictureBoxTile24.Image.Width / 2), (pictureBoxTile24.Parent.ClientSize.Height / 2) -
-            //    (pictureBoxTile24.Image.Height / 2));
-
-            //image.Refresh();
-        }
-
-        public static Bitmap CombineBitmap(IEnumerable<string> files)
-        {
-            // Read all images into memory
-            List<Bitmap> images = new List<Bitmap>();
-            Bitmap finalImage = null;
-
-            try
-            {
-                int width = 0;
-                int height = 0;
-
-                foreach (string image in files)
-                {
-                    if (image != null)
-                    {
-                        // create a Bitmap from the file and add it to the list
-                        Bitmap bitmap = new Bitmap(image);
-
-                        // update the size of the final bitmap
-                        width += bitmap.Width;
-                        height = bitmap.Height > height ? bitmap.Height : height;
-
-                        images.Add(bitmap);
-                    }
-                }
-
-                // create a bitmap to hold the combined image
-                finalImage = new Bitmap(width, height);
-
-                // get a graphics object from the image so we can draw on it
-                using (Graphics g = Graphics.FromImage(finalImage))
-                {
-                    // set background color
-                    g.Clear(Color.Transparent);
-
-                    // go through each image and draw it on the final image
-                    foreach (Bitmap image in images)
-                    {
-                        g.DrawImage(image, new Rectangle(0, 0, image.Width, image.Height));
-                    }
-                }
-
-                return finalImage;
-            }
-            catch (Exception)
-            {
-                if (finalImage != null) finalImage.Dispose();
-                throw;
-            }
-            finally
-            {
-                // clean up memory
-                foreach (Bitmap image in images)
-                {
-                    image.Dispose();
-                }
-            }
-        }
-
-        public void UpdateView(Tile[] tiles)
-        {
-            var g = this.panelView.CreateGraphics();
-            g.Clear(Color.Black);
-
-            int width = this.panelView.Width;
-            int height = this.panelView.Height;
-            int thickness = 20;
-
-            var brush = new SolidBrush(Color.Violet);
-
-            //if (tiles.North == 0)
-            //{
-            //    var rec = new Rectangle(0, 0, width, thickness);
-            //    g.FillRectangle(brush, rec);
-            //}
-
-            //if (tiles.South == 0)
-            //{
-            //    var rec = new Rectangle(0, height - thickness, width, thickness);
-            //    g.FillRectangle(brush, rec);
-            //}
-
-            //if (tiles.East == 0)
-            //{
-            //    var rec = new Rectangle(width - thickness, 0, thickness, height);
-            //    g.FillRectangle(brush, rec);
-            //}
-
-            //if (tiles.West == 0)
-            //{
-            //    var rec = new Rectangle(0, 0, thickness, height);
-            //    g.FillRectangle(brush, rec);
-            //}
         }
 
         #endregion
@@ -984,9 +871,18 @@ namespace Game.Client
             this.buttonInspect.Enabled = false;
             if (this.listBoxEntities.SelectedItem != null)
             {
-                SendPacket(new Packet() { 
-                    ActionType = ActionType.Command, Text = "inspect " + 
-                    this.listBoxEntities.SelectedItem.ToString(),
+                var inspected = this.listBoxEntities.SelectedItem.ToString();
+                var i = inspected.IndexOf('(');
+                if (i >= 0)
+                {
+                    inspected = inspected.Substring(0, i);
+                }
+                inspected = inspected.ToLower().Trim();
+
+                SendPacket(new Packet()
+                {
+                    ActionType = ActionType.Command,
+                    Text = "inspect " + inspected,
                 });
             }
             else

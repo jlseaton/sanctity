@@ -63,6 +63,7 @@ namespace Game.Realm
 
         public Stats Stats { get; set; }
 
+        public int CorpseDecayRate { get; set; }
         public int HPs { get; set; }
         public int MaxHPs { get; set; }
         public int MPs { get; set; }
@@ -117,6 +118,7 @@ namespace Game.Realm
             MaxDamage = 2;
             HPRegen = 1;
             MPRegen = 1;
+            CorpseDecayRate = 50;
 
             Loc = new Loc() { AreaID = areaId, HexID = hexId };
             Stats = new Stats() { Name = Name };
@@ -125,7 +127,7 @@ namespace Game.Realm
         }
 
         public string GetDescription(bool includeBio = true, 
-            bool includeLoc = false, bool includeState = true)
+            bool includeLoc = false, bool includeState = false)
         {
             StringBuilder sb = new StringBuilder(this.FullName);
             if (!String.IsNullOrEmpty(Surname))
@@ -135,24 +137,27 @@ namespace Game.Realm
                 sb.Append(" " + Race);
             if (!String.IsNullOrEmpty(Class.ToString()))
                 sb.Append(" " + Class);
-
-            if (MainHand != null)
+#if DEBUG
+            if (includeState)
             {
-                sb.Append("\r\nThey are wielding " + MainHand.FullName + ".");
+                sb.Append("\r\nSTATE: " + State.ToString());
             }
+            if (includeLoc)
+            {
+                sb.Append("\r\nLOC: Area:" + Loc.AreaID.ToString() +
+                    "-Hex:" + Loc.HexID.ToString());
+            }
+#endif
+            if (this is PC && MainHand != null)
+            {
+                sb.Append(" wielding " + MainHand.FullName);
+            }
+            sb.Append(".");
+
             if (includeBio)
             {
                 if (!String.IsNullOrEmpty(Bio))
                     sb.Append("\r\n" + Bio);
-            }
-            if (includeLoc)
-            {
-                sb.Append(" at Area:" + Loc.AreaID.ToString() + 
-                    "-Hex:" + Loc.HexID.ToString());
-            }
-            if (includeState)
-            {
-                sb.Append(" (State: " + State.ToString() + ")");
             }
             return sb.ToString();
         }
