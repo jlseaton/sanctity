@@ -337,6 +337,7 @@ namespace Game.Realm
                             packet.Text.StartsWith("kill") ||
                             packet.Text.StartsWith("levelup") ||
                             packet.Text.StartsWith("spawn") ||
+                            packet.Text.StartsWith("tile") ||
                             packet.Text.StartsWith("tp")))
                         {
                             SendPlayerMessage(player.ID, "You have no knowledge of how to use this power.");
@@ -345,7 +346,7 @@ namespace Game.Realm
 
                         if (packet.Text.ToLower() == "help")
                         {
-                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio. help, hps, give, kill, levelup, look, pvp, revive, spawn, tp, who, yell");
+                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio. help, hps, give, kill, levelup, look, pvp, revive, spawn, tile, p, who, yell");
                         }
                         else if (packet.Text.StartsWith("bio"))
                         {
@@ -522,6 +523,44 @@ namespace Game.Realm
                             catch
                             {
                                 SendPlayerStatus(player.ID, spawnResult);
+                            }
+                        }
+                        else if (packet.Text.StartsWith("tile"))
+                        {
+                            string tileResult = "Unable to tile area. Usage: tile <tile number> <tile name>:\r\n";
+
+                            try
+                            {
+                                var tileNumber = Int16.Parse(packet.Text.Split(" ")[1].Trim());
+
+                                string tileName = String.Empty;
+                                try
+                                {
+                                    if (!String.IsNullOrEmpty(packet.Text.Split(" ")[2].Trim()))
+                                    {
+                                        tileName = packet.Text.Split(" ")[2].Trim();
+                                    }
+                                }
+                                catch { }
+
+                                if (tileNumber == 1)
+                                    Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].Tile.Tile1ID = tileName;
+                                else if (tileNumber == 2)
+                                    Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].Tile.Tile2ID = tileName;
+                                else if (tileNumber == 3)
+                                    Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].Tile.Tile3ID = tileName;
+                                else
+                                {
+                                    SendPlayerStatus(player.ID, tileResult);
+                                    return tileResult;
+                                }
+
+                                tileResult = player.FullName + " has changed tile " + tileNumber.ToString() + " to " + tileName;
+                                SendPlayerStatusToHex(player.Loc);
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, tileResult);
                             }
                         }
                         else if (packet.Text.StartsWith("tp"))

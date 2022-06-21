@@ -1,6 +1,8 @@
 ﻿using Game.Core;
 using Game.Realm;
 using NAudio.Wave;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace Game.Client
 {
@@ -661,8 +663,17 @@ namespace Game.Client
                 {
                     using (Graphics g = Graphics.FromImage(this.pictureBoxTilesMain.Image))
                     {
-                        var img2 = GetIndexedImage(packet.Tile.Tile2ID);
-                        g.DrawImage(img2, 0, 0, img2.Width, img2.Height);
+                        //g.CompositingMode = CompositingMode.SourceCopy;
+                        g.CompositingQuality = CompositingQuality.HighQuality;
+
+                        using (var wrapMode = new ImageAttributes())
+                        {
+                            wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                            var img2 = GetIndexedImage(packet.Tile.Tile2ID);
+                            var destinationRect = new Rectangle(0, 0, 260, 260);
+                            //    this.pictureBoxTilesMain.Width, this.pictureBoxTilesMain.Height);
+                            g.DrawImage(img2, destinationRect, 0, 0, img2.Width, img2.Height, GraphicsUnit.Pixel, wrapMode);
+                        }
                     }
                 }
             }
