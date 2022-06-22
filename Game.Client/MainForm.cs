@@ -154,6 +154,7 @@ namespace Game.Client
             this.Location = p;
 
             this.WindowState = (FormWindowState)Config.WindowState;
+            this.listBoxPCs.SelectedIndex = (int)Config.PlayerID - 1;
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -175,6 +176,7 @@ namespace Game.Client
             Config.WindowHeight = this.Size.Height;
             Config.WindowWidth = this.Size.Width;
             Config.WindowState = (int)this.WindowState;
+            Config.PlayerID = (int)this.listBoxPCs.SelectedIndex + 1;
             Config.SaveConfig("config.xml", Config);
 
             if (AudioEngine.Instance != null)
@@ -673,6 +675,14 @@ namespace Game.Client
                             var destinationRect = new Rectangle(0, 0, 260, 260);
                             //    this.pictureBoxTilesMain.Width, this.pictureBoxTilesMain.Height);
                             g.DrawImage(img2, destinationRect, 0, 0, img2.Width, img2.Height, GraphicsUnit.Pixel, wrapMode);
+
+                            if (!String.IsNullOrEmpty(packet.Tile.Tile3ID))
+                            {
+                                var img3 = GetIndexedImage(packet.Tile.Tile3ID);
+                                var destinationRect3 = new Rectangle(90, 90, 90, 90);
+                                //    this.pictureBoxTilesMain.Width, this.pictureBoxTilesMain.Height);
+                                g.DrawImage(img3, destinationRect3, 0, 0, img2.Width, img2.Height, GraphicsUnit.Pixel, wrapMode);
+                            }
                         }
                     }
                 }

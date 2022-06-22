@@ -9,6 +9,7 @@ namespace Game.Client
         public int WindowHeight { get; set; }
         public int WindowWidth { get; set; }
         public int WindowState { get; set; }
+        public int PlayerID { get; set; }
 
         public bool Images { get; set; }
         public bool Sounds { get; set; }
@@ -24,7 +25,8 @@ namespace Game.Client
             WindowLocationY = 0;
             WindowHeight = 686;
             WindowWidth = 930;
-            WindowState = 2;
+            WindowState = 0;
+            PlayerID = 1;
             Images = true;
             Sounds = true;
             Music = false;
@@ -51,6 +53,7 @@ namespace Game.Client
                     WindowHeight = int.Parse(cfg.Attribute("WindowHeight").Value),
                     WindowWidth = int.Parse(cfg.Attribute("WindowWidth").Value),
                     WindowState = int.Parse(cfg.Attribute("WindowState").Value),
+                    PlayerID = int.Parse(cfg.Attribute("PlayerID").Value),
                     Images = (cfg.Attribute("Images").Value)
                         .ToLower() == "true" ? true : false,
                     Sounds = (cfg.Attribute("Sounds").Value)
@@ -70,6 +73,7 @@ namespace Game.Client
             config.WindowHeight = appConfig.WindowHeight;
             config.WindowWidth = appConfig.WindowWidth;
             config.WindowState = appConfig.WindowState;
+            config.PlayerID = appConfig.PlayerID;
             config.Images = appConfig.Images;
             config.Sounds = appConfig.Sounds;
             config.Music = appConfig.Music;
@@ -90,6 +94,7 @@ namespace Game.Client
             root.SetAttributeValue("WindowHeight", config.WindowHeight.ToString());
             root.SetAttributeValue("WindowWidth", config.WindowWidth.ToString());
             root.SetAttributeValue("WindowState", config.WindowState.ToString());
+            root.SetAttributeValue("PlayerID", config.PlayerID.ToString());
             root.SetAttributeValue("Images", config.Images.ToString());
             root.SetAttributeValue("Sounds", config.Sounds.ToString());
             root.SetAttributeValue("Music", config.Music.ToString());

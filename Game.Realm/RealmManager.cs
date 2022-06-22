@@ -346,7 +346,7 @@ namespace Game.Realm
 
                         if (packet.Text.ToLower() == "help")
                         {
-                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio. help, hps, give, kill, levelup, look, pvp, revive, spawn, tile, p, who, yell");
+                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio. help, hps, give, kill, levelup, look, pvp, quit, revive, spawn, tile, tp, who, yell");
                         }
                         else if (packet.Text.StartsWith("bio"))
                         {
@@ -368,6 +368,36 @@ namespace Game.Realm
                                 SendPlayerStatus(player.ID, bioResult);
                             }
                         }
+                        else if (packet.Text == "hide")
+                        {
+                            if (player.State == StateType.Dead)
+                            {
+                                SendPlayerMessage(player.ID, "You cannot do that when you are dead.");
+                            }
+                            else
+                            {
+                                if (player.State == StateType.Invisible)
+                                {
+                                    player.State = StateType.Normal;
+                                    SendPlayerStatusToHex(player.Loc);
+                                    SendPlayerMessage(player.ID, "You emerge from the shadows.");
+                                }
+                                else
+                                {
+                                    if (player.AttemptToHide())
+                                    {
+                                        player.State = StateType.Invisible;
+                                        SendPlayerStatusToHex(player.Loc);
+                                        SendPlayerMessage(player.ID, "You hide in the shadows.");
+                                    }
+                                    else
+                                    {
+                                        player.State = StateType.Normal;
+                                        SendPlayerMessage(player.ID, "You fail to hide in the shadows.");
+                                    }
+                                }
+                            }
+                        }
                         else if (packet.Text.StartsWith("hps"))
                         {
                             string hpResult = "Unable to change maximum hit points. Usage: hps <hp amount>";
@@ -386,6 +416,39 @@ namespace Game.Realm
                             {
                                 SendPlayerStatus(player.ID, hpResult);
                             }
+                        }
+                        else if (packet.Text.StartsWith("inspect"))
+                        {
+                            var desc = "You see " + player.GetDescription(true);
+
+                            if (packet.Text.Length > 8)
+                            {
+                                var inspectedName =
+                                    packet.Text.Substring(8, packet.Text.Length - 8).Trim().ToLower();
+
+                                if (!String.IsNullOrEmpty(inspectedName))
+                                {
+                                    var pc = FindPC(-1, inspectedName);
+                                    if (pc != null)
+                                    {
+                                        desc = "You see " + pc.GetDescription();
+                                    }
+                                    else
+                                    {
+                                        var npc = FindNPC(-1, inspectedName);
+                                        if (npc != null)
+                                        {
+                                            desc = "You see " + npc.GetDescription();
+                                        }
+                                    }
+                                }
+                            }
+
+                            SendPlayerStatus(player.ID, desc);
+                        }
+                        else if (packet.Text.StartsWith("get"))
+                        {
+                            SendPlayerMessage(player.ID, "You cannot pick up items... yet!");
                         }
                         else if (packet.Text.StartsWith("give"))
                         {
@@ -486,6 +549,69 @@ namespace Game.Realm
                             catch
                             {
                                 SendPlayerStatus(player.ID, levelupResult);
+                            }
+                        }
+                        else if (packet.Text == "pvp")
+                        {
+                            SendPlayerMessage(player.ID,
+                                "Usage: PVP <on/off>\r\nYour current PVP combat status: " +
+                                (player.PVP == true ? "ON" : "OFF"));
+                        }
+                        else if (packet.Text == "pvp on")
+                        {
+                            player.PVP = true;
+                            SendPlayerMessage(player.ID, "PVP combat is now turned ON.");
+                        }
+                        else if (packet.Text == "pvp off")
+                        {
+                            player.PVP = false;
+                            SendPlayerMessage(player.ID, "PVP combat is now turned OFF.");
+                        }
+                        else if (packet.Text == "quit")
+                        {
+                            var quitMessage = player.FullName + " has left the realm.";
+                            SendPlayerCommand(player.ID, ActionType.Exit);
+                            SendPlayerStatusToHex(player.Loc);
+                            BroadcastMessage(quitMessage);
+                            RemovePC(player.ID);
+                        }
+                        else if (packet.Text.StartsWith("revive"))
+                        {
+                            if (target != null)
+                            {
+                                target.Revive();
+                                SendPlayerStatus(player.ID, target.Name + " has been revived by " + player.Name + "!");
+                            }
+                            else if (packet.Text.Contains("("))
+                            {
+                                var targetName = packet.Text.Split(" ")[1].Trim();
+
+                                if (!String.IsNullOrEmpty(targetName))
+                                {
+                                    var pc = FindPC(-1, targetName);
+                                    if (pc != null)
+                                    {
+                                        pc.Revive();
+                                        SendPlayerStatusToHex(pc.Loc,
+                                            pc.Name + " has been revived by " + player.Name + "!");
+                                    }
+                                    else
+                                    {
+                                        var npc = FindNPC(-1, targetName);
+                                        if (npc != null)
+                                        {
+                                            npc.Revive();
+                                            SendPlayerStatusToHex(npc.Loc,
+                                                npc.Name + " has been revived by " + player.Name + "!");
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                player.Revive();
+                                SendPlayerStatusToHex(player.Loc,
+                                    player.Name + " has been revived by " + player.Name + "!");
                             }
                         }
                         else if (packet.Text.StartsWith("spawn"))
@@ -658,124 +784,6 @@ namespace Game.Realm
                                 sb.Append(p.GetDescription(false, true));
                             }
                             SendPlayerStatus(player.ID, sb.ToString(), true);
-                        }
-                        else if (packet.Text.StartsWith("revive"))
-                        {
-                            if (target != null)
-                            {
-                                target.Revive();
-                                SendPlayerStatus(player.ID, target.Name + " has been revived by " + player.Name + "!");
-                            }
-                            else if (packet.Text.Contains("("))
-                            {
-                                var targetName = packet.Text.Split(" ")[1].Trim();
-
-                                if (!String.IsNullOrEmpty(targetName))
-                                {
-                                    var pc = FindPC(-1, targetName);
-                                    if (pc != null)
-                                    {
-                                        pc.Revive();
-                                        SendPlayerStatusToHex(pc.Loc,
-                                            pc.Name + " has been revived by " + player.Name + "!");
-                                    }
-                                    else
-                                    {
-                                        var npc = FindNPC(-1, targetName);
-                                        if (npc != null)
-                                        {
-                                            npc.Revive();
-                                            SendPlayerStatusToHex(npc.Loc,
-                                                npc.Name + " has been revived by " + player.Name + "!");
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                player.Revive();
-                                SendPlayerStatusToHex(player.Loc,
-                                    player.Name + " has been revived by " + player.Name + "!");
-                            }
-                        }
-                        else if (packet.Text == "pvp")
-                        {
-                            SendPlayerMessage(player.ID,
-                                "Usage: PVP <on/off>\r\nYour current PVP combat status: " +
-                                (player.PVP == true ? "ON" : "OFF"));
-                        }
-                        else if (packet.Text == "pvp on")
-                        {
-                            player.PVP = true;
-                            SendPlayerMessage(player.ID, "PVP combat is now turned ON.");
-                        }
-                        else if (packet.Text == "pvp off")
-                        {
-                            player.PVP = false;
-                            SendPlayerMessage(player.ID, "PVP combat is now turned OFF.");
-                        }
-                        else if (packet.Text == "hide")
-                        {
-                            if (player.State == StateType.Dead)
-                            {
-                                SendPlayerMessage(player.ID, "You cannot do that when you are dead.");
-                            }
-                            else
-                            {
-                                if (player.State == StateType.Invisible)
-                                {
-                                    player.State = StateType.Normal;
-                                    SendPlayerStatusToHex(player.Loc);
-                                    SendPlayerMessage(player.ID, "You emerge from the shadows.");
-                                }
-                                else
-                                {
-                                    if (player.AttemptToHide())
-                                    {
-                                        player.State = StateType.Invisible;
-                                        SendPlayerStatusToHex(player.Loc);
-                                        SendPlayerMessage(player.ID, "You hide in the shadows.");
-                                    }
-                                    else
-                                    {
-                                        player.State = StateType.Normal;
-                                        SendPlayerMessage(player.ID, "You fail to hide in the shadows.");
-                                    }
-                                }
-                            }
-                        }
-                        else if (packet.Text.StartsWith("inspect"))
-                        {
-                            var desc = "You see " + player.GetDescription(true);
-
-                            if (packet.Text.Length > 8)
-                            {
-                                var inspectedName =
-                                    packet.Text.Substring(8, packet.Text.Length - 8).Trim().ToLower();
-
-                                if (!String.IsNullOrEmpty(inspectedName))
-                                {
-                                    var pc = FindPC(-1, inspectedName);
-                                    if (pc != null)
-                                    {
-                                        desc = "You see " + pc.GetDescription();
-                                    }
-                                    else
-                                    {
-                                        var npc = FindNPC(-1, inspectedName);
-                                        if (npc != null)
-                                        {
-                                            desc = "You see " + npc.GetDescription();
-                                        }
-                                    }
-                                }
-                            }
-
-                            SendPlayerStatus(player.ID, desc);
-                        }
-                        else if (packet.Text.StartsWith("get"))
-                        {
-                            SendPlayerMessage(player.ID, "You cannot pick up items... yet!");
                         }
                         else
                         {

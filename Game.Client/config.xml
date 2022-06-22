@@ -6,6 +6,7 @@
             WindowHeight="760"
             WindowWidth="1000"
             WindowState="0"
+		    PlayerID="1"
             Images="true"
             Sounds="false"
             Music="false"
