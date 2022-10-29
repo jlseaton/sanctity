@@ -10,6 +10,7 @@ namespace Game.Realm
         public string? Token { get; private set; }
         public string? Secret { get; private set; }
         public bool Authenticated { get; private set; }
+        public DateTime Created { get; set; }
         public DateTime LastActivity { get; set; }
         public bool PVP { get; set; }
         public new string FullName
@@ -34,6 +35,7 @@ namespace Game.Realm
 
         public PC() : base()
         {
+            Created = DateTime.Now;
             PVP = true;
             Type = EntityType.PC;
             Gender = GenderType.Male;

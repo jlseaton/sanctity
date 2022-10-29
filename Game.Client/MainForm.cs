@@ -48,12 +48,14 @@ namespace Game.Client
                 System.Reflection.Assembly.GetExecutingAssembly();
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            this.Text += " - v" + assembly.GetName().Version.Major.ToString() + "." +
+            var version = " - v" + assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
                 assembly.GetName().Version.Build.ToString() + "." +
                 assembly.GetName().Version.Revision.ToString();
 
-            Realm = new RealmManager(1, "Lords of Chaos");
+            this.Text = version;            
+            Realm = new RealmManager(1);
+            Realm.Version = version;
 
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
             Realm.GameEvents += ReceivePacket;

@@ -14,10 +14,13 @@ namespace Game.World
         private bool Logging { get; set; }
         private bool Running { get; set; }
         private Config Config { get; set; }
+        
         private TcpListener Listener;
-        public RealmManager Realm;
+
         //public ILog log = null;
 
+        public RealmManager Realm;
+        
         #endregion
 
         #region Application
@@ -34,6 +37,14 @@ namespace Game.World
             Realm = new RealmManager(Config.WorldID, "Myrnn");
             Realm.GameEvents += HandleGameEvent;
             Logging = true;
+
+            var version = 
+                System.Diagnostics.Process.GetCurrentProcess().MainModule.FileVersionInfo.ProductVersion;
+
+            if (!String.IsNullOrEmpty(version))
+            {
+                Realm.Version = version;
+            }
 
             if (startListening)
             {

@@ -9,12 +9,20 @@ namespace Game.Realm
 
         public int ID { get; set; }
         public string Name { get; set; }
+        public string Version { get; set; }
 
         public bool Running { get; private set; }
+        public DateTime Started { get; private set; }
+
         public int PulseRate { get; set; }
         public int RoundDuration { get; set; }
         public long Round { get; private set; }
-        public int EntityCount = 1;
+        
+        public int PCLogins { get; set; }
+        public int TotalPCs { get; set; }
+        public int TotalNPCs { get; set; }
+        public int PCDeaths { get; set; }
+        public int NPCDeaths { get; set; }
 
         public event EventHandler<Packet> GameEvents;
 
@@ -36,7 +44,7 @@ namespace Game.Realm
 
         #region Application
 
-        public RealmManager(int id, string name = "Dungeon Lab", 
+        public RealmManager(int id = 1, string name = "Dungeon Lab", 
             int roundDuration = 2000, int pulseRate = 2000)
         {
             ID = id;
@@ -44,11 +52,12 @@ namespace Game.Realm
             RoundDuration = roundDuration;
             PulseRate = pulseRate;
             Round = 0;
+            Version = "v1.0.0";
         }
 
         private void ClearAllData()
         {
-            EntityCount = 1;
+            PCLogins = PCDeaths = NPCDeaths = 0;
             Quests.Clear();
             Effects.Clear();
             Items.Clear();
@@ -64,7 +73,7 @@ namespace Game.Realm
             Quests = Data.LoadQuests();
             Areas = Data.LoadAreas();
             NPCs = Data.LoadNPCs();
-            //Players = Data.LoadPlayers();
+            //PCs = Data.LoadPCs();
         }
 
         public void Start()
@@ -77,6 +86,7 @@ namespace Game.Realm
             SpawnNPCs();
 
             Running = true;
+            Started = DateTime.Now;
         }
 
         public void Stop()
@@ -336,7 +346,10 @@ namespace Game.Realm
                             packet.Text.StartsWith("give") ||
                             packet.Text.StartsWith("kill") ||
                             packet.Text.StartsWith("levelup") ||
+                            packet.Text.StartsWith("reboot") ||
+                            packet.Text.StartsWith("shutdown") ||
                             packet.Text.StartsWith("spawn") ||
+                            packet.Text.StartsWith("summon") ||
                             packet.Text.StartsWith("tile") ||
                             packet.Text.StartsWith("tp")))
                         {
@@ -346,7 +359,7 @@ namespace Game.Realm
 
                         if (packet.Text.ToLower() == "help")
                         {
-                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio. help, hps, give, kill, levelup, look, pvp, quit, revive, spawn, tile, tp, who, yell");
+                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio. help, hps, give, kill, levelup, look, played, pvp, quit, reboot, revive, shutdown, spawn, stats, summon, tile, tp, version, who, yell");
                         }
                         else if (packet.Text.StartsWith("bio"))
                         {
@@ -551,6 +564,17 @@ namespace Game.Realm
                                 SendPlayerStatus(player.ID, levelupResult);
                             }
                         }
+                        else if (packet.Text == "look")
+                        {
+                            SendPlayerStatus(player.ID, "", true);
+                        }
+                        else if (packet.Text == "played")
+                        {
+                            var played = (DateTime.Now - player.Created);
+                            SendPlayerMessage(player.ID, player.FullName + " has been playing for " +
+                                played.Days.ToString() + " days, " + played.Hours.ToString() + " hours, " +
+                                played.Seconds.ToString() + " seconds.");
+                        }
                         else if (packet.Text == "pvp")
                         {
                             SendPlayerMessage(player.ID,
@@ -574,6 +598,11 @@ namespace Game.Realm
                             SendPlayerStatusToHex(player.Loc);
                             BroadcastMessage(quitMessage);
                             RemovePC(player.ID);
+                        }
+                        else if (packet.Text == "reboot")
+                        {
+                            var rebootMessage = " The realm is rebooting, please exit now.";
+                            BroadcastMessage(rebootMessage);
                         }
                         else if (packet.Text.StartsWith("revive"))
                         {
@@ -614,9 +643,16 @@ namespace Game.Realm
                                     player.Name + " has been revived by " + player.Name + "!");
                             }
                         }
+                        else if (packet.Text == "shutdown")
+                        {
+                            var rebootMessage = " The realm is shutting down, please exit now.";
+                            BroadcastMessage(rebootMessage);
+                            Thread.Sleep(5000);
+                            Stop();
+                        }
                         else if (packet.Text.StartsWith("spawn"))
                         {
-                            string spawnResult = "Unable to spawn target. Usage: spawn <target name>:\r\n";
+                            string spawnResult = "Unable to set spawn. Usage: spawn <target name/type> <spawnrate>:\r\n";
                             foreach(var npc in NPCs)
                             {
                                 spawnResult += npc.Name.ToLower().Trim() + ", ";
@@ -649,6 +685,54 @@ namespace Game.Realm
                             catch
                             {
                                 SendPlayerStatus(player.ID, spawnResult);
+                            }
+                        }
+                        else if (packet.Text == "stats")
+                        {
+                            var stats = this.Name + " " + this.Version + ", " +
+                                "Started: " + this.Started.ToString() + "\r\n" +
+                                "Total PC Logins: " + this.PCLogins.ToString() + ", " +
+                                "Total PCs: " + this.TotalPCs.ToString() + ", " +
+                                "Total PC Deaths: " + this.PCDeaths.ToString() + "\r\n" +
+                                "Total NPCs: " + this.TotalNPCs.ToString() + ", " +
+                                "Total NPC Deaths: " + this.NPCDeaths.ToString();
+                            SendPlayerStatus(player.ID, stats);
+                        }
+                        else if (packet.Text.StartsWith("summon"))
+                        {
+                            string summonResult = "Unable to summon target. Usage: summon <target name>:\r\n";
+                            foreach (var npc in NPCs)
+                            {
+                                summonResult += npc.Name.ToLower().Trim() + ", ";
+                            }
+                            summonResult = summonResult.Trim().TrimEnd(',');
+
+                            try
+                            {
+                                var spawnTarget =
+                                    packet.Text.Substring(6, packet.Text.Length - 6).Trim();
+
+                                if (spawnTarget != null)
+                                {
+                                    var spawn = NPCs.Where(npc => npc.Name.ToLower() == spawnTarget.ToLower()).Single();
+                                    if (spawn != null)
+                                    {
+                                        spawn.Loc = player.Loc;
+                                        Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].NPCs.Add(spawn);
+
+                                        summonResult = spawn.FullName + " has been spawned by " + player.Name + "!";
+                                        SendPlayerStatusToHex(player.Loc);
+                                        BroadcastMessage(summonResult);
+                                    }
+                                    else
+                                    {
+                                        SendPlayerMessage(player.ID, "Unable to find spawn target " + spawnTarget + ".");
+                                    }
+                                }
+                            }
+                            catch
+                            {
+                                SendPlayerStatus(player.ID, summonResult);
                             }
                         }
                         else if (packet.Text.StartsWith("tile"))
@@ -758,10 +842,6 @@ namespace Game.Realm
                             {
                                 SendPlayerStatus(player.ID, tpResult);
                             }
-                        }
-                        else if (packet.Text == "look")
-                        {
-                            SendPlayerStatus(player.ID, "", true);
                         }
                         else if (packet.Text.StartsWith("yell"))
                         {
@@ -916,6 +996,8 @@ namespace Game.Realm
                         .Hexes[entity.Loc.HexID - 1]
                         .PCs.Add((PC)entity);
                 }
+                TotalPCs++;
+                PCLogins++;
             }
             else if (entity is NPC)
             {
@@ -925,6 +1007,7 @@ namespace Game.Realm
                         .Hexes[entity.Loc.HexID - 1]
                         .NPCs.Add((NPC)entity);
                 }
+                TotalNPCs++;
             }
         }
 

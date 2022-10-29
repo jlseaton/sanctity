@@ -191,6 +191,11 @@ namespace Game.Realm
                 {
                     Realm.SendPlayerStatus(target.ID, "You have died.");
                     Realm.BroadcastMessage(result);
+                    Realm.PCDeaths++;
+                }
+                else
+                {
+                    Realm.NPCDeaths++;
                 }
 
                 Realm.SendPlayerStatusToHex(target.Loc, result);

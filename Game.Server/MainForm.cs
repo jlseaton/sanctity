@@ -17,15 +17,12 @@ namespace Game.Server
         #region Fields
 
         private bool Logging { get; set; }
-        private bool Running { get; set; }
 
         private Config Config { get; set; }
 
-        private RealmManager Realm;
-
         private World.World World;
 
-        public ILog log = null;
+        public ILog log;
 
         #endregion
 
@@ -37,12 +34,6 @@ namespace Game.Server
             log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
             InitializeComponent();
-
-            World = new World.World();
-            World.Initialize(false);
-            World.Realm.GameEvents += HandleGameEvent;
-            World.Startup(false);
-            Realm = World.Realm;
 
             Application.ThreadException += Application_ThreadException;
 
@@ -56,11 +47,20 @@ namespace Game.Server
             var assembly =
                 System.Reflection.Assembly.GetExecutingAssembly();
 
-            #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            Text += " - v" + assembly.GetName().Version.Major.ToString() + "." +
+            World = new World.World();
+            World.Initialize(false);
+            World.Realm.GameEvents += HandleGameEvent;
+
+            var version = "Realm: " + World.Realm.Name + " - v" + 
+                assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
-                assembly.GetName().Version.Build.ToString() + " - Realm: " + Realm.Name;
+                assembly.GetName().Version.Build.ToString();
+
+            World.Realm.Version = version;
+
+            Text += " - " + version;
         }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
 
@@ -97,27 +97,24 @@ namespace Game.Server
         {
             var cancellation = new CancellationTokenSource();
 
-            if (Running)
+            if (World.Realm.Running)
             {
                 buttonStart.Enabled = false;
                 LogEntry("Stopping Game Server...");
                 timerEvents.Enabled = false;
-                Realm.Stop();
-                Running = false;
+                World.Realm.Stop();
                 LogEntry("Game Server Stopped");
                 buttonStart.Text = "&Start";
                 buttonStart.Enabled = true;
-                SavePCs();
                 RefreshStatus();
             }
             else
             {
                 buttonStart.Enabled = false;
                 LogEntry("Starting Game Server...");
-                Realm.Start();
-                LoadPCs();
+                World.Realm.Start();
+                World.Startup(false);
                 timerEvents.Enabled = true;
-                Running = true;
                 LogEntry("Game Server Started and listening for connections on port " + Config.ServerPort.ToString());
                 buttonStart.Text = "&Stop";
                 buttonStart.Enabled = true;
@@ -152,14 +149,14 @@ namespace Game.Server
                 {
                     listBoxAreas.Items.Clear();
 
-                    foreach (string area in Realm.Areas.Select(a => a.Title).ToList())
+                    foreach (string area in World.Realm.Areas.Select(a => a.Title).ToList())
                     {
                         listBoxAreas.Items.Add(area);
                     }
 
                     listBoxPlayers.Items.Clear();
 
-                    var PCs = Realm.GetPCs();
+                    var PCs = World.Realm.GetPCs();
 
                     for (int i = 0; i < PCs.Count; i++)
                     {
@@ -167,7 +164,7 @@ namespace Game.Server
 
                         if (PC.Conn != null && !PC.Conn.Client.Connected)
                         {
-                            Realm.RemovePC(PC.ID);
+                            World.Realm.RemovePC(PC.ID);
                         }
                         else
                         {
@@ -191,45 +188,12 @@ namespace Game.Server
         private void TimerEvents_Tick(object sender, EventArgs e)
         {
             RefreshStatus();
-            Realm.ProcessEvents();
+            World.Realm.ProcessEvents();
         }
 
         #endregion
 
         #region Data
-
-        public void LoadPCs()
-        {
-            var PCs = Realm.Data.LoadPCs();
-
-            foreach (PC p in PCs)
-            {
-                var fileName = p.Name = ".xml";
-                if (File.Exists(fileName))
-                {
-                    try
-                    {
-                        // If there is a PC.xml file, overwrite the template
-                        PC newPC = DeserializePC(fileName);
-                        //Realm.Data.ReplacePlayer(p, newPC);
-                    }
-                    catch { }
-                }
-            }
-        }
-
-        public void SavePCs()
-        {
-            foreach (PC p in Realm.GetPCs())
-            {
-                SavePC(p);
-            }
-        }
-
-        public void SavePC(PC p)
-        {
-
-        }
 
         public void SerializePC(string file, PC p)
         {
@@ -255,10 +219,10 @@ namespace Game.Server
 
         private void buttonBroadcast_Click(object sender, EventArgs e)
         {
-            if (Running && !String.IsNullOrEmpty(textBoxBroadcast.Text))
+            if (World.Realm.Running && !String.IsNullOrEmpty(textBoxBroadcast.Text))
             {
                 var message = "SYSTEM: " + textBoxBroadcast.Text;
-                Realm.BroadcastMessage(message);
+                World.Realm.BroadcastMessage(message);
                 textBoxBroadcast.Text = "";
             }
         }
@@ -296,10 +260,9 @@ namespace Game.Server
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (Running)
+            if (World.Realm.Running)
             {
-                Realm.Stop();
-                SavePCs();
+                World.Realm.Stop();
                 RefreshStatus();
             }
 
