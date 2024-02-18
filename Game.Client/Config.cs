@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using System.Runtime.Serialization;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace Game.Client
 {
@@ -28,7 +30,7 @@ namespace Game.Client
             WindowState = 0;
             PlayerID = 1;
             Images = true;
-            Sounds = true;
+            Sounds = false;
             Music = false;
             AutoStart = false;
             ServerMode = true;
@@ -36,73 +38,56 @@ namespace Game.Client
             ServerPort = 1412;
         }
 
-        public Config LoadConfig(string fileName)
+        public Config LoadConfig(MainForm parent, string fileName)
         {
             Config config = new Config();
 
-            var doc = XDocument.Load(fileName);
+            try
+            {
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                    "\\Lords of Chaos";
+                //System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
 
-            // Load app config attributes
-            var appConfig =
-                doc.Descendants("Config")
-
-                .Select(cfg => new
+                if (Directory.Exists(path) && File.Exists(path + "\\" + fileName))
                 {
-                    WindowLocationX = int.Parse(cfg.Attribute("WindowLocationX").Value),
-                    WindowLocationY = int.Parse(cfg.Attribute("WindowLocationY").Value),
-                    WindowHeight = int.Parse(cfg.Attribute("WindowHeight").Value),
-                    WindowWidth = int.Parse(cfg.Attribute("WindowWidth").Value),
-                    WindowState = int.Parse(cfg.Attribute("WindowState").Value),
-                    PlayerID = int.Parse(cfg.Attribute("PlayerID").Value),
-                    Images = (cfg.Attribute("Images").Value)
-                        .ToLower() == "true" ? true : false,
-                    Sounds = (cfg.Attribute("Sounds").Value)
-                        .ToLower() == "true" ? true : false,
-                    Music = (cfg.Attribute("Music").Value)
-                        .ToLower() == "true" ? true : false,
-                    AutoStart = (cfg.Attribute("AutoStart").Value)
-                        .ToLower() == "true" ? true : false,
-                    ServerMode = (cfg.Attribute("ServerMode").Value)
-                        .ToLower() == "true" ? true : false,
-                    ServerHost = (cfg.Attribute("ServerHost").Value),
-                    ServerPort = int.Parse(cfg.Attribute("ServerPort").Value),
-                }).SingleOrDefault();
+                    var serializer = new XmlSerializer(typeof(Config));
+                    using (var reader = new StreamReader(path + "\\" + fileName))
+                    {
+                        return (Config) serializer.Deserialize(reader);
+                    }
+                }
 
-            config.WindowLocationX = appConfig.WindowLocationX;
-            config.WindowLocationY = appConfig.WindowLocationY;
-            config.WindowHeight = appConfig.WindowHeight;
-            config.WindowWidth = appConfig.WindowWidth;
-            config.WindowState = appConfig.WindowState;
-            config.PlayerID = appConfig.PlayerID;
-            config.Images = appConfig.Images;
-            config.Sounds = appConfig.Sounds;
-            config.Music = appConfig.Music;
-            config.AutoStart = appConfig.AutoStart;
-            config.ServerMode = appConfig.ServerMode;
-            config.ServerHost = appConfig.ServerHost;
-            config.ServerPort = appConfig.ServerPort;
+            }
+            catch(Exception ex)
+            {
+                parent.LogEntry(ex.Message);
+            }
 
             return config;
         }
 
-        public void SaveConfig(string fileName, Config config)
+        public void SaveConfig(MainForm parent, string fileName, Config config)
         {
-            var doc = XDocument.Load(fileName);
-            var root = doc.Root;
-            root.SetAttributeValue("WindowLocationX", config.WindowLocationX.ToString());
-            root.SetAttributeValue("WindowLocationY", config.WindowLocationY.ToString());
-            root.SetAttributeValue("WindowHeight", config.WindowHeight.ToString());
-            root.SetAttributeValue("WindowWidth", config.WindowWidth.ToString());
-            root.SetAttributeValue("WindowState", config.WindowState.ToString());
-            root.SetAttributeValue("PlayerID", config.PlayerID.ToString());
-            root.SetAttributeValue("Images", config.Images.ToString());
-            root.SetAttributeValue("Sounds", config.Sounds.ToString());
-            root.SetAttributeValue("Music", config.Music.ToString());
-            root.SetAttributeValue("AutoStart", config.AutoStart.ToString());
-            root.SetAttributeValue("ServerMode", config.ServerMode.ToString());
-            root.SetAttributeValue("ServerHost", config.ServerHost.ToString());
-            root.SetAttributeValue("ServerPort", config.ServerPort.ToString());
-            doc.Save(fileName);
+            try
+            {
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                    "\\Lords of Chaos";
+                    //System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                var serializer = new XmlSerializer(typeof(Config));
+                var writer = new StreamWriter(path + "\\" + fileName);
+                serializer.Serialize(writer, config);
+                writer.Close();
+            }
+            catch(Exception ex)
+            {
+                parent.LogEntry(ex.Message);
+            }
         }
 
         public void Serialize(string file, Config c)
@@ -118,14 +103,21 @@ namespace Game.Client
 
         public Config Deserialize(string file)
         {
-            var xs =
-                new System.Xml.Serialization.XmlSerializer(typeof(Config));
+            try
+            { 
+                var xs =
+                    new System.Xml.Serialization.XmlSerializer(typeof(Config));
 
-            StreamReader reader = File.OpenText(file);
-            Config c = (Config)xs.Deserialize(reader);
+                StreamReader reader = File.OpenText(file);
+                Config config = (Config)xs.Deserialize(reader);
+                reader.Close();
 
-            reader.Close();
-            return c;
+                if (config != null)
+                    return config;
+            }
+            catch { }
+
+            return new Config();
         }
     }
 }

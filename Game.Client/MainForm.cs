@@ -3,6 +3,7 @@ using Game.Realm;
 using NAudio.Wave;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace Game.Client
 {
@@ -18,7 +19,7 @@ namespace Game.Client
         private Connection? Conn;
         private RealmManager Realm;
 
-        private Stats MyStats { get; set; }
+        private Stats MyStats { get; set; } = new Stats();
         private List<PC> PCs = new List<PC>();
         private List<Stats> PCStats = new List<Stats>();
         private List<Stats> NPCStats = new List<Stats>();
@@ -67,8 +68,6 @@ namespace Game.Client
                     " Level " + pc.Level.ToString() + ", " + pc.Race + " " + pc.Class);
             }
 
-            Config = new Config().LoadConfig("config.xml");
-
             // Index all music, sound, and images file names
             MusicFilenames = Directory.GetFiles("Music\\", "*.*", SearchOption.AllDirectories);
             SoundFilenames = Directory.GetFiles("Sounds\\", "*.*", SearchOption.AllDirectories);
@@ -83,54 +82,25 @@ namespace Game.Client
             this.pictureBoxPC.BackgroundImage = GetIndexedImage("burntbackground3");
             this.pictureBoxStatus.BackgroundImage = GetIndexedImage("hourglass");
 
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                "\\Lords of Chaos";
+            //System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+
+            Config = new Config();
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+            
+            if (!File.Exists(path + "\\config.xml"))
+            {
+                Config.SaveConfig(this, "config.xml", Config);
+            }
+
+            Config = Config.LoadConfig(this, "config.xml");
+
             PlayMusic("ambient1");
-        }
-
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
-        {
-            if (keyData == Keys.Enter && !this.textBoxSend.Focused)
-            {
-                this.textBoxSend.Focus();
-                return true;
-            }
-            else if (keyData == Keys.Up && !this.textBoxSend.Focused)
-            {
-                buttonNorth_Click(this, null);
-                this.buttonNorth.Focus();
-                return true;
-            }
-            else if (keyData == Keys.Down && !this.textBoxSend.Focused)
-            {
-                buttonSouth_Click(this, null);
-                this.buttonSouth.Focus();
-                return true;
-            }
-            else if (keyData == Keys.Right && !this.textBoxSend.Focused)
-            {
-                buttonEast_Click(this, null);
-                this.buttonEast.Focus();
-                return true;
-            }
-            else if (keyData == Keys.Left && !this.textBoxSend.Focused)
-            {
-                buttonWest_Click(this, null);
-                this.buttonWest.Focus();
-                return true;
-            }
-            else if (keyData == Keys.OemQuestion && !this.textBoxSend.Focused)
-            {
-                this.textBoxSend.Focus();
-            }
-            else if (keyData == Keys.Oem5)
-            {
-                this.textBoxSend.Text = LastSentCommand;
-                this.textBoxSend.Focus();
-                this.textBoxSend.SelectionStart = 0;
-                this.textBoxSend.SelectionLength = this.textBoxSend.Text.Length;
-                return true;
-            }
-
-            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         private void MainForm_Shown(object sender, EventArgs e)
@@ -179,7 +149,7 @@ namespace Game.Client
             Config.WindowWidth = this.Size.Width;
             Config.WindowState = (int)this.WindowState;
             Config.PlayerID = (int)this.listBoxPCs.SelectedIndex + 1;
-            Config.SaveConfig("config.xml", Config);
+            Config.SaveConfig(this, "config.xml", Config);
 
             if (AudioEngine.Instance != null)
             {
@@ -769,6 +739,53 @@ namespace Game.Client
 
         #region UI Events
 
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Enter && !this.textBoxSend.Focused)
+            {
+                this.textBoxSend.Focus();
+                return true;
+            }
+            else if (keyData == Keys.Up && !this.textBoxSend.Focused)
+            {
+                buttonNorth_Click(this, null);
+                this.buttonNorth.Focus();
+                return true;
+            }
+            else if (keyData == Keys.Down && !this.textBoxSend.Focused)
+            {
+                buttonSouth_Click(this, null);
+                this.buttonSouth.Focus();
+                return true;
+            }
+            else if (keyData == Keys.Right && !this.textBoxSend.Focused)
+            {
+                buttonEast_Click(this, null);
+                this.buttonEast.Focus();
+                return true;
+            }
+            else if (keyData == Keys.Left && !this.textBoxSend.Focused)
+            {
+                buttonWest_Click(this, null);
+                this.buttonWest.Focus();
+                return true;
+            }
+            else if (keyData == Keys.OemQuestion && !this.textBoxSend.Focused)
+            {
+                this.textBoxSend.Focus();
+            }
+            else if (keyData == Keys.Oem5)
+            {
+                this.textBoxSend.Text = LastSentCommand;
+                this.textBoxSend.Focus();
+                this.textBoxSend.SelectionStart = 0;
+                this.textBoxSend.SelectionLength = this.textBoxSend.Text.Length;
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
+
         private void buttonStart_Click(object sender, EventArgs e)
         {
             ToggleConnect();
@@ -786,7 +803,8 @@ namespace Game.Client
             if (form.ShowDialog() == DialogResult.OK)
             {
                 Config = form.Config;
-                Config.SaveConfig("config.xml", Config);
+
+                Config.SaveConfig(this, "config.xml", Config);
             }
         }
 
@@ -1141,7 +1159,7 @@ namespace Game.Client
 
         #region Logging
 
-        private void LogEntry(string entry)
+        public void LogEntry(string entry)
         {
             if (!String.IsNullOrEmpty(entry))
             {

@@ -35,7 +35,7 @@ namespace Game.Core
             LastConnected = DateTime.Now;
             LastActive = DateTime.Now;
             OfflineMode = offlineMode;
-            Client = new TcpClient();
+            Client = new TcpClient(AddressFamily.InterNetwork); // Avoid localhost connect delay due to IP6 being enabled
         }
 
         public void Connect()
