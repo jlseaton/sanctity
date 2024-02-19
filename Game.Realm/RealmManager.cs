@@ -359,7 +359,7 @@ namespace Game.Realm
 
                         if (packet.Text.ToLower() == "help")
                         {
-                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio. help, hps, give, kill, levelup, look, played, pvp, quit, reboot, revive, shutdown, spawn, stats, summon, tile, tp, version, who, yell");
+                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio, help, hide, hps, get, give, inspect, kill, levelup, look, played, pvp, quit, reboot, revive, shutdown, spawn, stats, summon, tile, tp, who, yell");
                         }
                         else if (packet.Text.StartsWith("bio"))
                         {
@@ -689,7 +689,8 @@ namespace Game.Realm
                         }
                         else if (packet.Text == "stats")
                         {
-                            var stats = this.Name + " " + this.Version + ", " +
+                            var stats = "Server v" + this.Version + ", " +
+                                "Realm: " + this.Name + "\r\n" +
                                 "Started: " + this.Started.ToString() + "\r\n" +
                                 "Total PC Logins: " + this.PCLogins.ToString() + ", " +
                                 "Total PCs: " + this.TotalPCs.ToString() + ", " +

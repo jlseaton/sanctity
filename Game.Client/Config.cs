@@ -1,4 +1,6 @@
-﻿using System.Runtime.Serialization;
+﻿using Game.Core;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -6,6 +8,7 @@ namespace Game.Client
 {
     public class Config
     {
+        public string Version { get; set; }
         public int WindowLocationX { get; set; }
         public int WindowLocationY { get; set; }
         public int WindowHeight { get; set; }
@@ -15,7 +18,9 @@ namespace Game.Client
 
         public bool Images { get; set; }
         public bool Sounds { get; set; }
+        public int SoundVolume { get; set; }
         public bool Music { get; set; }
+        public int MusicVolume { get; set; }
         public bool AutoStart { get; set; }
         public bool ServerMode { get; set; }
         public string ServerHost { get; set; }
@@ -23,6 +28,7 @@ namespace Game.Client
 
         public Config()
         {
+            Version = "1.0.0.0";
             WindowLocationX = 0;
             WindowLocationY = 0;
             WindowHeight = 686;
@@ -30,64 +36,62 @@ namespace Game.Client
             WindowState = 0;
             PlayerID = 1;
             Images = true;
-            Sounds = false;
-            Music = false;
+            Sounds = true;
+            SoundVolume = 3; // 1 to 10
+            Music = true;
+            MusicVolume = 3; // 1 to 10
             AutoStart = false;
             ServerMode = true;
             ServerHost = "dev.appnicity.com";
             ServerPort = 1412;
         }
 
-        public Config LoadConfig(MainForm parent, string fileName)
+        public Config LoadConfig(string version, string fileName = "config.xml")
         {
             Config config = new Config();
+            config.Version = version;
 
-            try
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                "\\" + Constants.ClientTitle;
+
+            if (Directory.Exists(path) && File.Exists(path + "\\" + fileName))
             {
-                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                    "\\Lords of Chaos";
-                //System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-
-                if (Directory.Exists(path) && File.Exists(path + "\\" + fileName))
+                var serializer = new XmlSerializer(typeof(Config));
+                using (var reader = new StreamReader(path + "\\" + fileName))
                 {
-                    var serializer = new XmlSerializer(typeof(Config));
-                    using (var reader = new StreamReader(path + "\\" + fileName))
-                    {
-                        return (Config) serializer.Deserialize(reader);
-                    }
+                    config = (Config) serializer.Deserialize(reader);
                 }
 
+                // If the existing config file is not the current version, create a new one
+                if (config == null || 
+                    config.Version != version)
+                {
+                    config = new Config() { Version = version };
+                    SaveConfig(fileName);
+                }
             }
-            catch(Exception ex)
+            else
             {
-                parent.LogEntry(ex.Message);
+                SaveConfig(fileName);
             }
 
             return config;
         }
 
-        public void SaveConfig(MainForm parent, string fileName, Config config)
+        public void SaveConfig(string fileName = "config.xml")
         {
-            try
-            {
-                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                    "\\Lords of Chaos";
-                    //System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                "\\" + Constants.ClientTitle;
 
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                var serializer = new XmlSerializer(typeof(Config));
-                var writer = new StreamWriter(path + "\\" + fileName);
-                serializer.Serialize(writer, config);
-                writer.Close();
-            }
-            catch(Exception ex)
+            if (!Directory.Exists(path))
             {
-                parent.LogEntry(ex.Message);
+                Directory.CreateDirectory(path);
             }
+
+            var serializer = new XmlSerializer(typeof(Config));
+            var writer = new StreamWriter(path + "\\" + fileName);
+            serializer.Serialize(writer, this);
+            writer.Close();
         }
 
         public void Serialize(string file, Config c)

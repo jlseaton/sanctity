@@ -13,9 +13,9 @@ namespace Game.Client
 
         private WaveOut Music = new WaveOut();
         private WaveOut Sounds = new WaveOut();
-        private AudioEngine Audio = new AudioEngine();
+        //private AudioEngine Audio = new AudioEngine(); //TODO: Can't set volume it seems, so is this useless?
 
-        private Config Config = new Config();
+        private Config Config;
         private Connection? Conn;
         private RealmManager Realm;
 
@@ -45,17 +45,29 @@ namespace Game.Client
 
             Tiles = new Tile[Constants.VisibleTiles];
 
+            this.Text = "Lords of Chaos";
+
             var assembly =
                 System.Reflection.Assembly.GetExecutingAssembly();
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            var version = " - v" + assembly.GetName().Version.Major.ToString() + "." +
+            var version = assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
                 assembly.GetName().Version.Build.ToString() + "." +
                 assembly.GetName().Version.Revision.ToString();
 
-            this.Text = version;            
-            Realm = new RealmManager(1);
+            Config = new Config() { Version = version };
+
+            try
+            {
+                Config = Config.LoadConfig(version);
+            }
+            catch (Exception ex)
+            {
+                LogEntry(ex.Message);
+            }
+
+            Realm = new RealmManager();
             Realm.Version = version;
 
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
@@ -83,22 +95,7 @@ namespace Game.Client
             this.pictureBoxStatus.BackgroundImage = GetIndexedImage("hourglass");
 
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                "\\Lords of Chaos";
-            //System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
-
-            Config = new Config();
-
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
-            
-            if (!File.Exists(path + "\\config.xml"))
-            {
-                Config.SaveConfig(this, "config.xml", Config);
-            }
-
-            Config = Config.LoadConfig(this, "config.xml");
+                "\\" + Constants.ClientTitle;
 
             PlayMusic("ambient1");
         }
@@ -149,7 +146,10 @@ namespace Game.Client
             Config.WindowWidth = this.Size.Width;
             Config.WindowState = (int)this.WindowState;
             Config.PlayerID = (int)this.listBoxPCs.SelectedIndex + 1;
-            Config.SaveConfig(this, "config.xml", Config);
+            Config.SaveConfig();
+
+            Sounds.Stop();
+            Music.Stop(); //TODO: This is not working
 
             if (AudioEngine.Instance != null)
             {
@@ -213,6 +213,9 @@ namespace Game.Client
                 }
             }
 
+            Sounds.Stop();
+            Music.Stop();
+
             Conn.Disconnect();
             UpdateConnectionStatus();
         }
@@ -252,18 +255,30 @@ namespace Game.Client
 
                 Conn.SendPacket(packet);
                 Conn.Disconnect();
+
+                Sounds.Stop();
+                Music.Stop();
                 PlayMusic("ambient1");
+
                 UpdateStatus(packet);
 
                 if (!Config.ServerMode)
                 {
                     Realm.Stop();
                 }
+
+                this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
+                this.buttonStart.Text = "&Join";
+                this.Refresh();
             }
             else
             {
                 try
                 {
+                    this.buttonStart.Text = "Joining...";
+                    this.pictureBoxTilesMain.Image = GetIndexedImage("smoke");
+                    this.Refresh();
+
                     Conn = new Connection(!Config.ServerMode,
                         Config.ServerHost, Config.ServerPort);
 
@@ -288,6 +303,9 @@ namespace Game.Client
                         Realm.Start();
                         ThreadPool.QueueUserWorkItem(EventsThread, this);
                     }
+
+                    Sounds.Stop();
+                    Music.Stop();
 
                     SendPacket(new Packet()
                     {
@@ -664,7 +682,7 @@ namespace Game.Client
         private void UpdateConnectionStatus()
         {
             try
-            { 
+            {
                 if (this.InvokeRequired)
                 {
                     this.Invoke((Action)(() => UpdateConnectionStatus()));
@@ -674,7 +692,10 @@ namespace Game.Client
                     if (Conn != null && Conn.Connected)
                     {
                         this.buttonStart.Text = "&Quit";
+                        this.panelAccount.Visible = false;
+                        this.panelAccount.BringToFront();
                         this.panelChat.Enabled = true;
+                        this.panelChat.Visible = true;
                         this.panelMovement.Visible = true;
                         this.panelStats.Visible = true;
                         this.panelObjects.Visible = true;
@@ -691,20 +712,22 @@ namespace Game.Client
                     }
                     else
                     {
-                        this.buttonStart.Text = "&Join";
+                        // this.buttonStart.Text = "&Join";
+                        this.panelAccount.Visible = true;
+                        this.panelAccount.BringToFront();
                         this.panelChat.Enabled = false;
+                        this.panelChat.Visible = false;
                         this.panelMovement.Visible = false;
                         this.panelStats.Visible = false;
                         this.panelObjects.Visible = false;
                         this.listBoxPCs.Enabled = true;
-                        this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
 
                         this.pictureBoxPC.Image =
                             GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ProcessException(ex);
             }
@@ -731,8 +754,16 @@ namespace Game.Client
                 return null;
             }
 
-            var img = Image.FromFile(GetIndexedFileName(this.ImageFilenames, imageName));
-            return img;
+            var img = GetIndexedFileName(this.ImageFilenames, imageName);
+
+            if (!String.IsNullOrEmpty(img))
+            {
+                return Image.FromFile(img);
+            }
+            else
+            {
+                return null;
+            }
         }
 
         #endregion
@@ -794,17 +825,28 @@ namespace Game.Client
         private void buttonSettings_Click(object sender, EventArgs e)
         {
             bool allowNetworkChanges = false;
+
             if (Conn != null && Conn.Connected)
             {
                 allowNetworkChanges = true;
             }
-            SettingsForm form = new SettingsForm(Config, allowNetworkChanges);
+
+            SettingsForm form = new SettingsForm(Config, Sounds, Music, allowNetworkChanges);
 
             if (form.ShowDialog() == DialogResult.OK)
             {
                 Config = form.Config;
+                Config.SaveConfig();
 
-                Config.SaveConfig(this, "config.xml", Config);
+                if (!Config.Sounds)
+                {
+                    Sounds.Stop();
+                }
+
+                if (!Config.Music)
+                {
+                    Music.Stop();
+                }
             }
         }
 
@@ -819,7 +861,7 @@ namespace Game.Client
                     Text = this.textBoxSend.Text
                 });
                 this.textBoxSend.Text = "";
-                Thread.Sleep(CommandDelayInterval/2);
+                Thread.Sleep(CommandDelayInterval / 2);
                 this.buttonSend.Enabled = true;
             }
         }
@@ -849,7 +891,7 @@ namespace Game.Client
 
                     LastSentCommand = this.textBoxSend.Text;
                     this.textBoxSend.Text = "";
-                    Thread.Sleep(CommandDelayInterval/2);
+                    Thread.Sleep(CommandDelayInterval / 2);
                     this.buttonSend.Enabled = true;
                 }
             }
@@ -857,7 +899,7 @@ namespace Game.Client
 
         private void listBoxPCs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.pictureBoxPC.Image = 
+            this.pictureBoxPC.Image =
                 GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
         }
 
@@ -980,7 +1022,7 @@ namespace Game.Client
 
             if (this.listBoxEntities.SelectedItem != null)
             {
-                PlayMusic("combat1", true, false);
+                PlayMusic("combat1", true, true);
 
                 var sound = Randomizer.Next(4);
                 if (sound == 0)
@@ -1100,8 +1142,6 @@ namespace Game.Client
 
                     if (!String.IsNullOrEmpty(fileName))
                     {
-                        Music.Volume = 0.1F;
-                        
                         if (stopCurrent)
                         {
                             Music.Stop();
@@ -1112,6 +1152,7 @@ namespace Game.Client
                             var r = new Mp3FileReader(fileName);
                             var loopStream = new LoopStream(r);
                             Music.Init(loopStream);
+                            Music.Volume = (float)Config.MusicVolume / 100;
                             Music.Play();
                             //var wave = new WaveOut();
                             //wave.Init(loopStream);
@@ -1134,14 +1175,22 @@ namespace Game.Client
         {
             if (Config.Sounds)
             {
+                if (name == "silence")
+                {
+                    Sounds.Stop();
+                    return;
+                }
+
                 try
                 {
                     var fileName = GetIndexedFileName(SoundFilenames, name);
 
                     var r = new Mp3FileReader(fileName);
                     Sounds.Init(r);
-                    //Sounds.Play();
-                    AudioEngine.Instance.PlaySound(fileName);
+                    Sounds.Volume = (float)Config.SoundVolume / 100;
+                    Sounds.Play();
+                    //AudioEngine.Instance.Volume = Config.SoundVolume / 10F;
+                    //AudioEngine.Instance.PlaySound(fileName);
                     //if (Sounds.PlaybackState == PlaybackState.Playing)
                     //    Sounds.Stop();
                     //var wave = new WaveOut();

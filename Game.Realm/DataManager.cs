@@ -59,8 +59,10 @@ namespace Game.Realm
                     ID = 1,
                     Tile = new Tile()
                     {
+
                         Name = "Entrance",
                         Text = "You are standing at the entrance to the Dungeon Lab.",
+                        SoundID = "silence",
                         Tile2ID = "stairsup",
                         East = 2,
                         Up = new Loc() { AreaID = 0, HexID = 1 }, // Leads back to tavern
