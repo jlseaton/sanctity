@@ -7,6 +7,7 @@ namespace Game.Server
 {
     public class Config
     {
+        public bool Logging { get; set; }
         public bool AutoStart { get; set; }
         public int RealmID { get; set; }
         public int ServerPort { get; set; }
@@ -15,6 +16,7 @@ namespace Game.Server
 
         public Config()
         {
+            Logging = true;
             AutoStart = true;
             RealmID = 0;
             ServerPort = 1412;
@@ -22,44 +24,31 @@ namespace Game.Server
             NetworkWriteDelay = 250;
         }
 
-        public Config LoadConfig(string fileName)
+        public Config LoadConfig(string fileName = "config_realm.xml")
         {
             Config config = new Config();
 
             var doc = XDocument.Load(fileName);
 
-            // Load app config attributes
-            var appConfig =
-                doc.Descendants("Config")
-
-                .Select(cfg => new
-                {
-                    RealmID = int.Parse(cfg.Attribute("RealmID").Value),
-                    AutoStart = (cfg.Attribute("AutoStart").Value)
-                        .ToLower() == "true" ? true : false,
-                    ServerPort = int.Parse(cfg.Attribute("ServerPort").Value),
-                    NetworkReadDelay = int.Parse(cfg.Attribute("NetworkReadDelay").Value),
-                    NetworkWriteDelay = int.Parse(cfg.Attribute("NetworkWriteDelay").Value),
-                }).SingleOrDefault();
-
-            config.RealmID = appConfig.RealmID;
-            config.AutoStart = appConfig.AutoStart;
-            config.ServerPort = appConfig.ServerPort;
-            config.NetworkReadDelay = appConfig.NetworkReadDelay;
-            config.NetworkWriteDelay = appConfig.NetworkWriteDelay;
+            var serializer = new XmlSerializer(typeof(Config));
+            using (var reader = new StreamReader(fileName))
+            {
+                config = (Config)serializer.Deserialize(reader);
+            }
 
             return config;
         }
 
-        public void SaveConfig(string fileName, Config config)
+        public void SaveConfig(string fileName = "config_realm.xml")
         {
             var doc = XDocument.Load(fileName);
             var root = doc.Root;
-            root.SetAttributeValue("RealmID", config.RealmID.ToString());
-            root.SetAttributeValue("AutoStart", config.AutoStart.ToString());
-            root.SetAttributeValue("ServerPort", config.ServerPort.ToString());
-            root.SetAttributeValue("NetworkReadDelay", config.NetworkReadDelay.ToString());
-            root.SetAttributeValue("NetworkWriteDelay", config.NetworkReadDelay.ToString());
+            root.SetAttributeValue("Logging", Logging.ToString());
+            root.SetAttributeValue("AutoStart", AutoStart.ToString());
+            root.SetAttributeValue("RealmID", RealmID.ToString());
+            root.SetAttributeValue("ServerPort", ServerPort.ToString());
+            root.SetAttributeValue("NetworkReadDelay", NetworkReadDelay.ToString());
+            root.SetAttributeValue("NetworkWriteDelay", NetworkReadDelay.ToString());
             doc.Save(fileName);
         }
 

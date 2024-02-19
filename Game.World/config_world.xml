@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            WorldID="1"
-            WorldName="Myrnn"
-            AutoStart="true"
-            ServerPort="1412"
-            NetworkReadDelay="250"
-            NetworkWriteDelay="250">
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<WorldID>1</WorldID>
+	<WorldName>Myrnn</WorldName>
+	<AutoStart>true</AutoStart>
+	<ServerPort>1412</ServerPort>
+	<NetworkReadDelay>250</NetworkReadDelay>
+	<NetworkWriteDelay>250</NetworkWriteDelay>
 	<Realms>
 		<Realm id="lab" title="Dungeon Lab" description="An experimental starter area."></Realm>
 	</Realms>

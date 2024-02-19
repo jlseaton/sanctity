@@ -34,7 +34,7 @@ namespace Game.World
         public void Initialize(bool startListening = true)
         {
             Config = new Config().LoadConfig("config_world.xml");
-            Realm = new RealmManager(Config.WorldID, "Myrnn");
+            Realm = new RealmManager(Config.WorldID, Config.WorldName);
             Realm.GameEvents += HandleGameEvent;
             Logging = true;
 
@@ -265,7 +265,9 @@ namespace Game.World
             Realm.Start();
             StartTcpListenerThread();
             Running = true;
-            LogEntry("Game Server Started and listening for connections on port " + Config.ServerPort.ToString());
+            LogEntry("Lords of Chaos Server v" + Realm.Version + 
+                " initialized and listening for connections on port " + 
+                Config.ServerPort.ToString());
 
             if (processEvents)
             {

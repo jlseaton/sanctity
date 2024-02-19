@@ -1,13 +1,9 @@
 ﻿using Game.Core;
 using Game.Realm;
-using Game.World;
 using log4net;
 using log4net.Config;
 using System.Data;
-using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace Game.Server
@@ -15,8 +11,6 @@ namespace Game.Server
     public partial class MainForm : Form
     {
         #region Fields
-
-        private bool Logging { get; set; }
 
         private Config Config { get; set; }
 
@@ -28,6 +22,8 @@ namespace Game.Server
 
         #region Application
 
+        public static readonly string ServerTitle = "Lords of Chaos Server";
+
         public MainForm()
         {
             XmlConfigurator.Configure();
@@ -37,28 +33,29 @@ namespace Game.Server
 
             Application.ThreadException += Application_ThreadException;
 
-            Config = new Config().LoadConfig("realmconfig.xml");
+            Config = new Config().LoadConfig();
 
             timerEvents.Tick += TimerEvents_Tick;
             timerEvents.Enabled = false;
 
-            Logging = true;
-
             var assembly =
                 System.Reflection.Assembly.GetExecutingAssembly();
 
-            World = new World.World();
-            World.Initialize(false);
-            World.Realm.GameEvents += HandleGameEvent;
-
-            var version = "Realm: " + World.Realm.Name + " - v" + 
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            var version =
                 assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
-                assembly.GetName().Version.Build.ToString();
+                assembly.GetName().Version.Build.ToString() + "." +
+                assembly.GetName().Version.Revision.ToString();
 
+            World = new World.World();
+            World.Realm = new RealmManager();
             World.Realm.Version = version;
+            World.Initialize(false);
+#pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
+            World.Realm.GameEvents += HandleGameEvent;
 
-            Text += " - " + version;
+            Text = ServerTitle + " v" + version + " - Realm: " + World.Realm.Name;
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -208,7 +205,7 @@ namespace Game.Server
         {
             var xs = new XmlSerializer(typeof(PC));
             StreamReader reader = File.OpenText(file);
-            PC p = (PC) xs.Deserialize(reader);
+            PC p = (PC)xs.Deserialize(reader);
             reader.Close();
             return p;
         }
@@ -266,7 +263,7 @@ namespace Game.Server
                 RefreshStatus();
             }
 
-            Config.SaveConfig("realmconfig.xml", Config);
+            Config.SaveConfig();
         }
 
         private void contextMenuStrip1_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -294,7 +291,7 @@ namespace Game.Server
         {
             try
             {
-                if (Logging)
+                if (Config.Logging)
                 {
                     try
                     {

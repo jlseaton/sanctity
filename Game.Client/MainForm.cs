@@ -3,7 +3,6 @@ using Game.Realm;
 using NAudio.Wave;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO;
 
 namespace Game.Client
 {
@@ -13,7 +12,6 @@ namespace Game.Client
 
         private WaveOut Music = new WaveOut();
         private WaveOut Sounds = new WaveOut();
-        //private AudioEngine Audio = new AudioEngine(); //TODO: Can't set volume it seems, so is this useless?
 
         private Config Config;
         private Connection? Conn;
@@ -51,7 +49,8 @@ namespace Game.Client
                 System.Reflection.Assembly.GetExecutingAssembly();
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            var version = assembly.GetName().Version.Major.ToString() + "." +
+            var version = 
+                assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
                 assembly.GetName().Version.Build.ToString() + "." +
                 assembly.GetName().Version.Revision.ToString();
@@ -150,11 +149,6 @@ namespace Game.Client
 
             Sounds.Stop();
             Music.Stop(); //TODO: This is not working
-
-            if (AudioEngine.Instance != null)
-            {
-                AudioEngine.Instance.Dispose();
-            }
         }
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
@@ -275,7 +269,6 @@ namespace Game.Client
             {
                 try
                 {
-                    this.buttonStart.Text = "Joining...";
                     this.pictureBoxTilesMain.Image = GetIndexedImage("smoke");
                     this.Refresh();
 
@@ -712,7 +705,7 @@ namespace Game.Client
                     }
                     else
                     {
-                        // this.buttonStart.Text = "&Join";
+                        this.buttonStart.Text = "&Join";
                         this.panelAccount.Visible = true;
                         this.panelAccount.BringToFront();
                         this.panelChat.Enabled = false;
@@ -1160,7 +1153,7 @@ namespace Game.Client
                         }
                         else
                         {
-                            AudioEngine.Instance.PlaySound(fileName);
+                            PlaySound(name);
                         }
                     }
                 }
@@ -1189,8 +1182,6 @@ namespace Game.Client
                     Sounds.Init(r);
                     Sounds.Volume = (float)Config.SoundVolume / 100;
                     Sounds.Play();
-                    //AudioEngine.Instance.Volume = Config.SoundVolume / 10F;
-                    //AudioEngine.Instance.PlaySound(fileName);
                     //if (Sounds.PlaybackState == PlaybackState.Playing)
                     //    Sounds.Stop();
                     //var wave = new WaveOut();

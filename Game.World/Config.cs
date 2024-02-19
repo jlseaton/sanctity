@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.IO;
+using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace Game.World
@@ -15,52 +16,37 @@ namespace Game.World
         public Config()
         {
             AutoStart = true;
-            WorldID = 0;
+            WorldID = 1;
+            WorldName = "Myrnn";
             ServerPort = 1412;
             NetworkReadDelay = 250;
             NetworkWriteDelay = 250;
         }
 
-        public Config LoadConfig(string fileName)
+        public Config LoadConfig(string fileName = "config_world.xml")
         {
             Config config = new Config();
 
             var doc = XDocument.Load(fileName);
 
-            // Load app config attributes
-            var appConfig =
-                doc.Descendants("Config")
-
-                .Select(cfg => new
-                {
-                    WorldID = int.Parse(cfg.Attribute("WorldID").Value),
-                    WorldName = cfg.Attribute("WorldName"),
-                    AutoStart = (cfg.Attribute("AutoStart").Value)
-                        .ToLower() == "true" ? true : false,
-                    ServerPort = int.Parse(cfg.Attribute("ServerPort").Value),
-                    NetworkReadDelay = int.Parse(cfg.Attribute("NetworkReadDelay").Value),
-                    NetworkWriteDelay = int.Parse(cfg.Attribute("NetworkWriteDelay").Value),
-                }).SingleOrDefault();
-
-            config.WorldID = appConfig.WorldID;
-            config.WorldName = (string)appConfig.WorldName;
-            config.AutoStart = appConfig.AutoStart;
-            config.ServerPort = appConfig.ServerPort;
-            config.NetworkReadDelay = appConfig.NetworkReadDelay;
-            config.NetworkWriteDelay = appConfig.NetworkWriteDelay;
+            var serializer = new XmlSerializer(typeof(Config));
+            using (var reader = new StreamReader(fileName))
+            {
+                config = (Config)serializer.Deserialize(reader);
+            }
 
             return config;
         }
 
-        public void SaveConfig(string fileName, Config config)
+        public void SaveConfig(string fileName = "config_world.xml")
         {
             var doc = XDocument.Load(fileName);
             var root = doc.Root;
-            root.SetAttributeValue("RealmID", config.WorldID.ToString());
-            root.SetAttributeValue("AutoStart", config.AutoStart.ToString());
-            root.SetAttributeValue("ServerPort", config.ServerPort.ToString());
-            root.SetAttributeValue("NetworkReadDelay", config.NetworkReadDelay.ToString());
-            root.SetAttributeValue("NetworkWriteDelay", config.NetworkReadDelay.ToString());
+            root.SetAttributeValue("RealmID", WorldID.ToString());
+            root.SetAttributeValue("AutoStart", AutoStart.ToString());
+            root.SetAttributeValue("ServerPort", ServerPort.ToString());
+            root.SetAttributeValue("NetworkReadDelay", NetworkReadDelay.ToString());
+            root.SetAttributeValue("NetworkWriteDelay", NetworkReadDelay.ToString());
             doc.Save(fileName);
         }
 

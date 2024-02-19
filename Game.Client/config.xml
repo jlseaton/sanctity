@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-            WindowLocationX="0"
-            WindowLocationY="0"
-            WindowHeight="760"
-            WindowWidth="1000"
-            WindowState="0"
-		    PlayerID="1"
-            Images="true"
-            Sounds="false"
-            Music="false"
-            AutoStart="false"
-            ServerMode="true"
-            ServerHost="dev.appnicity.com"
-            ServerPort="1412">
+<Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<Version>1.0.3.0</Version>
+	<WindowLocationX>656</WindowLocationX>
+	<WindowLocationY>185</WindowLocationY>
+	<WindowHeight>686</WindowHeight>
+	<WindowWidth>930</WindowWidth>
+	<WindowState>0</WindowState>
+	<PlayerID>10</PlayerID>
+	<Images>true</Images>
+	<Sounds>false</Sounds>
+	<SoundVolume>3</SoundVolume>
+	<Music>false</Music>
+	<MusicVolume>3</MusicVolume>
+	<AutoStart>false</AutoStart>
+	<ServerMode>true</ServerMode>
+	<ServerHost>sol</ServerHost>
+	<ServerPort>1412</ServerPort>
 </Config>

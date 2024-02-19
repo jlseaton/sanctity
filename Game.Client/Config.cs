@@ -29,8 +29,8 @@ namespace Game.Client
         public Config()
         {
             Version = "1.0.0.0";
-            WindowLocationX = 0;
-            WindowLocationY = 0;
+            WindowLocationX = 495;
+            WindowLocationY = 75;
             WindowHeight = 686;
             WindowWidth = 930;
             WindowState = 0;
