@@ -27,7 +27,7 @@ namespace Game.Client
 
         private Tile[] Tiles { get; set; }
 
-        private int CommandDelayInterval = 1500;
+        private int CommandDelayInterval = 1000;
         private string LastSentCommand = String.Empty;
 
         private string[]
@@ -1040,11 +1040,10 @@ namespace Game.Client
 
         private void buttonAttack_Click(object sender, EventArgs e)
         {
+            this.buttonAttack.Enabled = false;
+
             if (this.listBoxEntities.SelectedItem != null)
             {
-                this.buttonAttack.Click -= this.buttonAttack_Click;
-                this.buttonAttack.Enabled = false;
-
                 PlayMusic("combat1", true, true);
 
                 var sound = Randomizer.Next(4);
@@ -1076,10 +1075,9 @@ namespace Game.Client
                 });
 
                 Thread.Sleep(CommandDelayInterval); // Simulate a delay in attacking, TODO: Use player attack speed
-
-                this.buttonAttack.Click += this.buttonAttack_Click;
-                this.buttonAttack.Enabled = true;
             }
+
+            this.buttonAttack.Enabled = true;
         }
 
         private void pictureBoxPC_Click(object sender, EventArgs e)
