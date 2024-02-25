@@ -42,12 +42,15 @@ namespace Game.World
         {
             var doc = XDocument.Load(fileName);
             var root = doc.Root;
-            root.SetAttributeValue("RealmID", WorldID.ToString());
-            root.SetAttributeValue("AutoStart", AutoStart.ToString());
-            root.SetAttributeValue("ServerPort", ServerPort.ToString());
-            root.SetAttributeValue("NetworkReadDelay", NetworkReadDelay.ToString());
-            root.SetAttributeValue("NetworkWriteDelay", NetworkReadDelay.ToString());
-            doc.Save(fileName);
+            if (root != null)
+            {
+                root.SetAttributeValue("RealmID", WorldID.ToString());
+                root.SetAttributeValue("AutoStart", AutoStart.ToString());
+                root.SetAttributeValue("ServerPort", ServerPort.ToString());
+                root.SetAttributeValue("NetworkReadDelay", NetworkReadDelay.ToString());
+                root.SetAttributeValue("NetworkWriteDelay", NetworkReadDelay.ToString());
+                doc.Save(fileName);
+            }
         }
 
         public void Serialize(string file, Config c)

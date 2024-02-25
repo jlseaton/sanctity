@@ -17,6 +17,7 @@ namespace Game.Core
         public DateTime LastConnected { get; private set; }
 
         public DateTime LastActive { get; private set; }
+        public DateTime LastSendPacket { get; private set; }
 
         private List<Packet> WritePacketBuffer = new List<Packet>();
 
@@ -34,6 +35,7 @@ namespace Game.Core
             Port = port;
             LastConnected = DateTime.Now;
             LastActive = DateTime.Now;
+            //LastSendPacket = DateTime.Now;
             OfflineMode = offlineMode;
             Client = new TcpClient(AddressFamily.InterNetwork); // Avoid localhost connect delay due to IP6 being enabled
         }
@@ -64,29 +66,36 @@ namespace Game.Core
         {
             List<Packet> packets = new List<Packet>();
 
-            var read = Client.GetStream().Read(inStream, 0, Constants.PacketBufferSize);
-            var data = Encoding.UTF8.GetString(inStream, 0, read);
-
-            int passes = 0;
-            while (!String.IsNullOrEmpty(data) && data.Contains(Constants.PacketDelimiter)
-                && passes++ < 5)
+            try
             {
-                int delimiterOffset = Constants.PacketCompression
-                    ? 0 : Constants.PacketDelimiter.Length;
+                var read = Client.GetStream().Read(inStream, 0, Constants.PacketBufferSize);
+                var data = Encoding.UTF8.GetString(inStream, 0, read);
 
-                int foundAt = data.IndexOf(Constants.PacketDelimiter) +
-                    delimiterOffset;
-
-                var incoming = data.Substring(0, foundAt);
-
-                if (!String.IsNullOrEmpty(incoming))
+                int passes = 0;
+                while (!String.IsNullOrEmpty(data) && data.Contains(Constants.PacketDelimiter)
+                    && passes++ < 5)
                 {
-                    var packet = Packet.Deserialize(incoming);
-                    packets.Add(packet);
-                }
+                    int delimiterOffset = Constants.PacketCompression
+                        ? 0 : Constants.PacketDelimiter.Length;
 
-                data = data.Substring(foundAt, data.Length - foundAt)
-                    .TrimStart(Constants.PacketDelimiter.ToCharArray());
+                    int foundAt = data.IndexOf(Constants.PacketDelimiter) +
+                        delimiterOffset;
+
+                    var incoming = data.Substring(0, foundAt);
+
+                    if (!String.IsNullOrEmpty(incoming))
+                    {
+                        var packet = Packet.Deserialize(incoming);
+                        packets.Add(packet);
+                    }
+
+                    data = data.Substring(foundAt, data.Length - foundAt)
+                        .TrimStart(Constants.PacketDelimiter.ToCharArray());
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine("ReadPackets Error: " + ex.Message);
             }
 
             LastActive = DateTime.Now;
@@ -111,6 +120,22 @@ namespace Game.Core
 
         public void BufferPacket(Packet packet)
         {
+            // Ensure we don't send packets too often
+            //var ticks = DateTime.Now.Ticks -
+            //    LastSendPacket.Ticks;
+
+            //if (ticks < Constants.PacketBufferThrottle)
+            //{
+            //    Console.WriteLine("BufferPacket Throttled: " + ticks.ToString());
+            //    return;
+            //}
+            //else
+            //{
+            //    Console.WriteLine("BufferPacket Ticks: " + ticks.ToString());
+            //}
+            
+            //LastSendPacket = DateTime.Now;
+
             lock (WritePacketBuffer)
             {
                 WritePacketBuffer.Add(packet);
@@ -121,14 +146,21 @@ namespace Game.Core
         {
             if (!OfflineMode)
             {
-                string message = Packet.Serialize(packet);
+                try
+                {
+                    string message = Packet.Serialize(packet);
 
-                var stream = Client.GetStream();
-                byte[] outStream = Encoding.UTF8.GetBytes(message);
-                stream.Write(outStream, 0, outStream.Length);
-                stream.Flush();
+                    var stream = Client.GetStream();
+                    byte[] outStream = Encoding.UTF8.GetBytes(message);
+                    stream.Write(outStream, 0, outStream.Length);
+                    stream.Flush();
 
-                LastActive = DateTime.Now;
+                    LastActive = DateTime.Now;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("SendPackets Error: " + ex.Message);
+                }
             }
         }
     }

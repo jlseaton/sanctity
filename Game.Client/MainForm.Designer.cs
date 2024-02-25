@@ -756,10 +756,10 @@
             listBoxEntities.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             listBoxEntities.FormattingEnabled = true;
             listBoxEntities.ItemHeight = 15;
-            listBoxEntities.Location = new Point(-2, 2);
+            listBoxEntities.Location = new Point(3, 2);
             listBoxEntities.Margin = new Padding(4);
             listBoxEntities.Name = "listBoxEntities";
-            listBoxEntities.Size = new Size(202, 109);
+            listBoxEntities.Size = new Size(197, 109);
             listBoxEntities.TabIndex = 18;
             // 
             // listBoxItems
@@ -767,10 +767,10 @@
             listBoxItems.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             listBoxItems.FormattingEnabled = true;
             listBoxItems.ItemHeight = 15;
-            listBoxItems.Location = new Point(-2, 174);
+            listBoxItems.Location = new Point(3, 174);
             listBoxItems.Margin = new Padding(4);
             listBoxItems.Name = "listBoxItems";
-            listBoxItems.Size = new Size(202, 79);
+            listBoxItems.Size = new Size(197, 79);
             listBoxItems.TabIndex = 19;
             // 
             // panelObjects

@@ -36,6 +36,7 @@ namespace Game.Realm
 
         public EntityType Type { get; set; }
         public StateType State { get; set; }
+        public MoodType Mood { get; set; }
         public GenderType Gender { get; set; }
         public SizeType Size { get; set; }
         public RaceType Race { get; set; }

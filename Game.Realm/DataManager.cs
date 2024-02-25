@@ -67,6 +67,7 @@ namespace Game.Realm
                         East = 2,
                         Up = new Loc() { AreaID = 0, HexID = 1 }, // Leads back to tavern
                     },
+                    PermanentNPCs = new List<int>() { 1, 2 },
                 });
 
                 Hexes.Add(new Hex()
@@ -186,7 +187,7 @@ namespace Game.Realm
                         Tile2ID = "knightstatue",
                         East = 10,
                     },
-                    PermanentNPCs = new List<int>() { 1 },
+                    PermanentNPCs = new List<int>() { 3 },
                 });
 
                 Hexes.Add(new Hex()
@@ -672,14 +673,82 @@ namespace Game.Realm
             var demoInven = new List<Item>();
             demoInven.Add(vorpal);
 
-            int id = 10000;
+            int id = 1000;
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                QuestID = 0,
+                Origin = "Umbral Tavern",
+                CorpseDecayRate = 99,
+                Type = EntityType.NPC,
+                Race = RaceType.Human,
+                Size = SizeType.Medium,
+                Speed = 40,
+                Level = 4,
+                Alignment = AlignmentType.Neutral,
+                ArmorClass = 25,
+                Article = "a",
+                Name = "barkeep",
+                ImageName = "malehumanbrunette",
+                HPs = 120,
+                MaxHPs = 120,
+                MPs = 0,
+                MaxMPs = 0,
+                HPRegen = 5,
+                MPRegen = 5,
+                MinDamage = 2,
+                MaxDamage = 4,
+                Experience = 0,
+                Gold = 0,
+                Mood = MoodType.Pacifist,
+                State = StateType.Ethereal,
+                Attackable = false,
+                EncounterClass = EncounterType.Unique,
+                LootClass = LootType.Common,
+                Skills = new List<int>() { },
+                Bio = "The barkeep looks at you indifferently.",
+            });
+
+            NPCs.Add(new NPC()
+            {
+                ID = id++,
+                QuestID = 0,
+                Origin = "Umbral Tavern",
+                CorpseDecayRate = 99,
+                Type = EntityType.NPC,
+                Race = RaceType.Human,
+                Size = SizeType.Medium,
+                Speed = 40,
+                Level = 1,
+                Alignment = AlignmentType.Neutral,
+                ArmorClass = 25,
+                Article = "a",
+                Name = "combat dummy",
+                ImageName = "maledarkelf",
+                HPs = 1200,
+                MaxHPs = 1200,
+                MPs = 0,
+                MaxMPs = 0,
+                HPRegen = 100,
+                MPRegen = 0,
+                MinDamage = 0,
+                MaxDamage = 0,
+                Experience = 0,
+                Gold = 0,
+                Mood = MoodType.Pacifist,
+                EncounterClass = EncounterType.Unique,
+                LootClass = LootType.Common,
+                Skills = new List<int>() { },
+                Bio = "The practice combat dummy looks like it needs a good thrashing.",
+            });
 
             NPCs.Add(new NPC()
             {
                 ID = id++,
                 QuestID = 1,
                 Origin = "Gaping Maw",
-                CorpseDecayRate = 99,
+                CorpseDecayRate = 5,
                 Type = EntityType.NPC,
                 Race = RaceType.Demonic,
                 Size = SizeType.Huge,

@@ -13,7 +13,6 @@ namespace Game.Realm
     public class NPC : Entity
     {
         public EncounterType EncounterClass { get; set; }
-        public MoodType Mood { get; set; }
 
         public int WanderRange { get; set; }
         public int Follows { get; set; }

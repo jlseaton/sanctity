@@ -1,4 +1,5 @@
 ﻿using Game.Core;
+using System.Numerics;
 using System.Text;
 
 namespace Game.Realm
@@ -17,7 +18,13 @@ namespace Game.Realm
             if (attacker == null || target == null ||
                 attacker.State == StateType.Dead || target.State == StateType.Dead)
             {
-                return String.Empty;
+                return "Your target is already dead.";
+            }
+
+            if ((attacker.Loc.AreaID != target.Loc.AreaID) || 
+                    (attacker.Loc.HexID != target.Loc.HexID))
+            {
+                return "Your target is out of reach.";
             }
 
             string result = String.Empty;
@@ -34,7 +41,7 @@ namespace Game.Realm
             if (attacker.State == StateType.Stunned)
             {
                 attacker.State = StateType.Normal;
-                result = "\r\n" + attacker.FullName + " recovers from being stunned.";
+                result = Environment.NewLine + attacker.FullName + " recovers from being stunned.";
                 Realm.SayMessage(result, target.Loc.AreaID, target.Loc.HexID);
                 return result;
             }
@@ -65,12 +72,12 @@ namespace Game.Realm
 
                         result = attacker.FullName + verb + target.FullName + weaponName +
                             " for " + procDamage.ToString() + " " +
-                            effect.Damage.ToString() + " damage";
+                            effect.Damage.ToString() + " damage.";
 
                         if (effect.Type == EffectType.Stun)
                         {
                             target.State = StateType.Stunned;
-                            result += "\r\n" + target.FullName + " has been stunned!";
+                            result += Environment.NewLine + target.FullName + " has been stunned!";
                         }
 
                         continueAttack = false;
@@ -98,14 +105,14 @@ namespace Game.Realm
                 if (damage <= 0)
                 {
                     result = attacker.FullName + " attacks "
-                        + target.FullName + " and misses";
+                        + target.FullName + " and misses.";
                 }
                 else
                 {
                     damage += minDamage;
 
                     result = attacker.FullName + " attacks and hits " + target.FullName +
-                        weaponName + " for " + damage.ToString() + " damage";
+                        weaponName + " for " + damage.ToString() + " damage.";
 
                     // Weapon procs
                     if (attacker.MainHand != null &&
@@ -128,16 +135,26 @@ namespace Game.Realm
                                 string verb = eff.Verb == String.Empty
                                     ? " attacks and hits " : eff.Verb;
 
-                                result += "\r\n" + attacker.FullName + verb +
+                                result += Environment.NewLine + attacker.FullName + verb +
                                     target.FullName + weaponName + " for " + procDamage.ToString() +
-                                    " " + eff.Damage.ToString() + " damage";
+                                    " " + eff.Damage.ToString() + " damage.";
                             }
                         }
                     }
                 }
             }
 
+            if (target.State == StateType.Dead)
+                return result;
+
             target.HPs -= damage;
+
+            if (target.Mood == MoodType.Pacifist)
+            {
+                Realm.SendPlayerStatusToHex(target.Loc, result);
+                return result;
+            }
+
             target.LastAttackerID = attacker.ID;
             target.State = StateType.Combat;
 
@@ -163,7 +180,7 @@ namespace Game.Realm
                 {
                     target.Gold -= target.Gold;
                     attacker.Gold += target.Gold;
-                    rewards.Append("\r\nYou found " + target.Gold.ToString()
+                    rewards.Append(Environment.NewLine + "You found " + target.Gold.ToString()
                         + " gold pieces.");
                 }
 
@@ -173,7 +190,7 @@ namespace Game.Realm
                     {
                         if (target.Inventory[i] != null)
                         {
-                            rewards.Append("\r\n" + target.FullName + " drops a "
+                            rewards.Append(Environment.NewLine + target.FullName + " drops a "
                                 + target.Inventory[i].FullName + ".");
 
                             //lock (hex.Items)
@@ -184,7 +201,7 @@ namespace Game.Realm
                     }
                 }
 
-                result += "\r\n" + target.FullName + " has been killed by "
+                result += Environment.NewLine + target.FullName + " has been killed by "
                     + attacker.FullName + ".";
 
                 if (target is PC)
@@ -228,7 +245,7 @@ namespace Game.Realm
             {
                 entity.LevelUp();
                 entity.Revive();
-                return "\r\nCongratulations! You have increased in level.";
+                return Environment.NewLine + "Congratulations! You have increased in level.";
             }
 
             return String.Empty;

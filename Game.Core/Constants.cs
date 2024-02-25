@@ -3,9 +3,11 @@
     public static class Constants
     {
         public static readonly string ClientTitle = "Lords of Chaos";
+        public static readonly string ServerTitle = "Lords of Chaos";
 
         public static readonly int ServerPort = 1500;
         public static readonly int PacketBufferSize = 1500;
+        public static readonly int PacketBufferThrottle = 5000000;
         public static readonly string PacketDelimiter = "\r\n}";
         public static readonly bool PacketCompression = true;
 
@@ -180,6 +182,7 @@
         Suspicous,
         Aggitated,
         Aggressive,
+        Pacifist,
     };
 
     public enum DamageType

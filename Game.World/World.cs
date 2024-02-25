@@ -52,11 +52,13 @@ namespace Game.World
             }
         }
 
-        private void ProcessException(Exception ex, bool showMessage = false,
-            string errorMessage = "")
+        private void ProcessException(Exception ex, string simpleMessage = "")
         {
-            string message = String.IsNullOrEmpty(errorMessage) ? ex.Message : errorMessage;
-            LogEntry(message, "error", ex);
+            string message =
+                String.IsNullOrEmpty(ex.Message)
+                    ? simpleMessage : simpleMessage + " " + ex.Message;
+
+            LogEntry(message);
         }
 
         #endregion
@@ -157,8 +159,11 @@ namespace Game.World
 
                             Realm.SendPlayerStatusToHex(player.Loc);
 
-                            ThreadPool.QueueUserWorkItem(PCReadThread, player);
-                            ThreadPool.QueueUserWorkItem(PCWriteThread, player);
+                            Task.Factory.StartNew(() => PCReadThread(player),
+                                TaskCreationOptions.LongRunning);
+
+                            Task.Factory.StartNew(() => PCWriteThread(player),
+                                TaskCreationOptions.LongRunning);
                         }
                         else
                         {
@@ -221,7 +226,7 @@ namespace Game.World
                 Thread.Sleep(Config.NetworkReadDelay);
             }
 
-            if (PC.Conn.Client.Connected)
+            if (PC.Conn != null && PC.Conn.Client.Connected)
             {
                 PC.Conn.Disconnect();
             }
@@ -421,9 +426,9 @@ namespace Game.World
                     catch { }
                 }
            }
-            catch (Exception ex)
-            {
-                ProcessException(ex);
+           catch (Exception ex)
+           {
+                Console.WriteLine(ex.Message);
             }
         }
 

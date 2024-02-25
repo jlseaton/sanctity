@@ -22,7 +22,7 @@ namespace Game.Server
 
         #region Application
 
-        public static readonly string ServerTitle = "Lords of Chaos Server";
+        public static string ServerTitle = Constants.ServerTitle;
 
         public MainForm()
         {

@@ -25,6 +25,8 @@ namespace Game.Client
         public bool ServerMode { get; set; }
         public string ServerHost { get; set; }
         public int ServerPort { get; set; }
+        public int NetworkReadDelay { get; set; }
+        public int NetworkWriteDelay { get; set; }
 
         public Config()
         {
@@ -44,6 +46,8 @@ namespace Game.Client
             ServerMode = true;
             ServerHost = "dev.appnicity.com";
             ServerPort = 1412;
+            NetworkReadDelay = 100;
+            NetworkWriteDelay = 100;
         }
 
         public Config LoadConfig(string version, string fileName = "config.xml")
@@ -51,28 +55,41 @@ namespace Game.Client
             Config config = new Config();
             config.Version = version;
 
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                "\\" + Constants.ClientTitle;
-
-            if (Directory.Exists(path) && File.Exists(path + "\\" + fileName))
+            try
             {
-                var serializer = new XmlSerializer(typeof(Config));
-                using (var reader = new StreamReader(path + "\\" + fileName))
-                {
-                    config = (Config) serializer.Deserialize(reader);
-                }
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                    "\\" + Constants.ClientTitle;
 
-                // If the existing config file is not the current version, create a new one
-                if (config == null || 
-                    config.Version != version)
+                if (Directory.Exists(path) && File.Exists(path + "\\" + fileName))
                 {
-                    config = new Config() { Version = version };
+                    var serializer = new XmlSerializer(typeof(Config));
+                    using (var reader = new StreamReader(path + "\\" + fileName))
+                    {
+                        config = (Config)serializer.Deserialize(reader);
+                    }
+
+                    // If the existing config file is not the current version, create a new one
+                    if (config == null ||
+                        config.Version != version)
+                    {
+                        config = new Config() { Version = version };
+                        SaveConfig(fileName);
+                    }
+
+                    if (PlayerID <= 0)
+                    {
+                        config.PlayerID = 1;
+                        SaveConfig(fileName);
+                    }
+                }
+                else
+                {
                     SaveConfig(fileName);
                 }
             }
-            else
+            catch (Exception ex)
             {
-                SaveConfig(fileName);
+                Console.WriteLine("LoadConfig Error: " + ex.Message);
             }
 
             return config;
@@ -80,18 +97,25 @@ namespace Game.Client
 
         public void SaveConfig(string fileName = "config.xml")
         {
-            var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
-                "\\" + Constants.ClientTitle;
-
-            if (!Directory.Exists(path))
+            try
             {
-                Directory.CreateDirectory(path);
-            }
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
+                    "\\" + Constants.ClientTitle;
 
-            var serializer = new XmlSerializer(typeof(Config));
-            var writer = new StreamWriter(path + "\\" + fileName);
-            serializer.Serialize(writer, this);
-            writer.Close();
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                var serializer = new XmlSerializer(typeof(Config));
+                var writer = new StreamWriter(path + "\\" + fileName);
+                serializer.Serialize(writer, this);
+                writer.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SaveConfig Error: " + ex.Message);
+            }
         }
 
         public void Serialize(string file, Config c)

@@ -3,6 +3,8 @@ using Game.Realm;
 using NAudio.Wave;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Numerics;
+using System.Windows.Forms;
 
 namespace Game.Client
 {
@@ -25,7 +27,7 @@ namespace Game.Client
 
         private Tile[] Tiles { get; set; }
 
-        private int CommandDelayInterval = 1000;
+        private int CommandDelayInterval = 1500;
         private string LastSentCommand = String.Empty;
 
         private string[]
@@ -41,15 +43,11 @@ namespace Game.Client
 
             Application.ThreadException += Application_ThreadException;
 
-            Tiles = new Tile[Constants.VisibleTiles];
-
-            this.Text = "Lords of Chaos";
-
             var assembly =
                 System.Reflection.Assembly.GetExecutingAssembly();
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
-            var version = 
+            var version =
                 assembly.GetName().Version.Major.ToString() + "." +
                 assembly.GetName().Version.Minor.ToString() + "." +
                 assembly.GetName().Version.Build.ToString() + "." +
@@ -60,10 +58,12 @@ namespace Game.Client
             try
             {
                 Config = Config.LoadConfig(version);
+                Tiles = new Tile[Constants.VisibleTiles];
+                this.Text = Constants.ClientTitle;
             }
             catch (Exception ex)
             {
-                LogEntry(ex.Message);
+                LogMessage(ex.Message);
             }
 
             Realm = new RealmManager();
@@ -164,14 +164,18 @@ namespace Game.Client
             ProcessException(e.Exception);
         }
 
-        private void ProcessException(Exception ex, bool showMessage = false,
-            string errorMessage = "")
+        private void ProcessException(Exception ex, string simpleMessage = "",
+            bool showMessage = false)
         {
-            string message = String.IsNullOrEmpty(errorMessage) ? ex.Message : errorMessage;
+            string message =
+                String.IsNullOrEmpty(ex.Message)
+                    ? simpleMessage : simpleMessage + " " + ex.Message;
+
+            LogMessage(message);
 
             if (showMessage)
             {
-                LogEntry(ex.Message);
+                MessageBox.Show(message, "Exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -179,7 +183,7 @@ namespace Game.Client
 
         #region Communications
 
-        private void PlayerReadThread(object context)
+        private void PCReadThread(object context)
         {
             while (Conn.Client != null && Conn.Client.Connected)
             {
@@ -197,14 +201,15 @@ namespace Game.Client
                 }
                 catch (IOException ioex)
                 {
-                    ProcessException(ioex);
-                    LogEntry("Disconnected from server");
+                    ProcessException(ioex, "Disconnected from server");
                     break;
                 }
                 catch (Exception ex)
                 {
                     ProcessException(ex);
                 }
+
+                Thread.Sleep(Config.NetworkReadDelay);
             }
 
             Sounds.Stop();
@@ -214,7 +219,7 @@ namespace Game.Client
             UpdateConnectionStatus();
         }
 
-        private void PlayerWriteThread(object context)
+        private void PCWriteThread(object context)
         {
             while (Conn.Client != null && Conn.Client.Connected)
             {
@@ -232,7 +237,7 @@ namespace Game.Client
                     ProcessException(ex);
                 }
 
-                Thread.Sleep(250);
+                Thread.Sleep(Config.NetworkWriteDelay);
             }
         }
 
@@ -240,30 +245,38 @@ namespace Game.Client
         {
             if (Conn != null && Conn.Connected)
             {
-                LogEntry("Disconnecting...");
-
-                Packet packet = new Packet()
+                try
                 {
-                    ActionType = ActionType.Exit,
-                };
+                    LogMessage("Disconnecting...");
 
-                Conn.SendPacket(packet);
-                Conn.Disconnect();
+                    Packet packet = new Packet()
+                    {
+                        ActionType = ActionType.Exit,
+                    };
 
-                Sounds.Stop();
-                Music.Stop();
-                PlayMusic("ambient1");
+                    Conn.SendPacket(packet);
+                    Conn.Disconnect();
 
-                UpdateStatus(packet);
+                    Sounds.Stop();
+                    Music.Stop();
+                    PlayMusic("ambient1");
 
-                if (!Config.ServerMode)
-                {
-                    Realm.Stop();
+                    UpdateStatus(packet);
+
+                    if (!Config.ServerMode)
+                    {
+                        Realm.Stop();
+                    }
                 }
-
-                this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
-                this.buttonStart.Text = "&Join";
-                this.Refresh();
+                catch (Exception ex)
+                {
+                    ProcessException(ex);
+                    //Conn.Disconnect();
+                }
+                finally
+                {
+                    //UpdateConnectionStatus();
+                }
             }
             else
             {
@@ -277,24 +290,29 @@ namespace Game.Client
 
                     if (Config.ServerMode)
                     {
-                        LogEntry("Connecting to multiplayer game server " + Config.ServerHost);
+                        LogMessage("Connecting to multiplayer game server " + Config.ServerHost);
 
                         // Connect to remote gaming server
                         await Conn.Client.ConnectAsync(Config.ServerHost, Config.ServerPort);
                         Conn.Connect();
 
                         // Start player read and write threads
-                        ThreadPool.QueueUserWorkItem(PlayerReadThread, this);
-                        ThreadPool.QueueUserWorkItem(PlayerWriteThread, this);
+                        Task.Factory.StartNew(PCReadThread,
+                            TaskCreationOptions.LongRunning);
+
+                        Task.Factory.StartNew(PCWriteThread,
+                            TaskCreationOptions.LongRunning);
                     }
                     else
                     {
-                        LogEntry("Connecting to single player game server locally");
+                        LogMessage("Connecting to single player game server locally");
 
                         // Start a local realm server and events thread
                         Conn.Connect();
                         Realm.Start();
-                        ThreadPool.QueueUserWorkItem(EventsThread, this);
+
+                        Task.Factory.StartNew(EventsThread,
+                            TaskCreationOptions.LongRunning);
                     }
 
                     Sounds.Stop();
@@ -308,7 +326,12 @@ namespace Game.Client
                 }
                 catch (Exception ex)
                 {
-                    ProcessException(ex, true);
+                    ProcessException(ex, "Unable to connect to the world. Please try again later.", true);
+                    //Conn.Disconnect();
+                }
+                finally
+                {
+                    UpdateConnectionStatus();
                 }
             }
         }
@@ -363,7 +386,7 @@ namespace Game.Client
                 {
                     if (!String.IsNullOrEmpty(packet.Text))
                     {
-                        string formattedText = packet.Text + "\r\n";
+                        string formattedText = packet.Text + Environment.NewLine;
 
                         lock (this.textBoxEvents)
                         {
@@ -382,6 +405,9 @@ namespace Game.Client
                         {
                             Realm.Stop();
                         }
+
+                        Sounds.Stop();
+                        Music.Stop();
                     }
                     else if (packet.ActionType == ActionType.Death)
                     {
@@ -406,113 +432,106 @@ namespace Game.Client
 
         private void UpdateStatus(Packet packet)
         {
-            if (this.InvokeRequired)
+            if (packet.Health != null)
             {
-                this.Invoke((Action)(() => UpdateStatus(packet)));
+                // Maintain character profile
+                MyStats = packet.Health;
+
+                this.labelPCName.Text = MyStats.Name;
+                this.labelAge.Text = "Age: " + MyStats.Age.ToString();
+                this.labelLevel.Text = "Level: " + MyStats.Level.ToString();
+                this.labelExperience.Text = "Exp: " + MyStats.Experience.ToString();
+                this.labelGold.Text = "Gold: " + MyStats.Gold.ToString();
+
+                this.labelHPs.Text =
+                    "HPs: " + packet.Health.HPs.ToString() +
+                    " / " + packet.Health.MaxHPs.ToString();
+
+                this.labelMPs.Text =
+                    "MPs: " + packet.Health.MPs.ToString() +
+                    " / " + packet.Health.MaxMPs.ToString();
+
+                // Play death or a hurt sound
+                if (MyStats != null && MyStats.HPs <= 0)
+                {
+                    PlayMusic("death1");
+                }
+                //else if (MyStats.HPs > packet.Health.HPs)
+                //{
+                //    var sound = Randomizer.Next(3);
+                //    if (sound == 0)
+                //        PlaySound(@"c_kana_hit3");
+                //    else if (sound == 1)
+                //        PlaySound(@"caiti_hit1");
+                //    else if (sound == 2)
+                //        PlaySound(@"caiti_hit3");
+                //    else
+                //        PlaySound(@"c_kana_hit1");
+                //}
             }
-            else
+
+            // Save any selected entities
+            string selected = "";
+            if (!String.IsNullOrEmpty((string)this.listBoxEntities.SelectedItem))
             {
-                if (packet.Health != null)
-                {
-                    // Maintain character profile
-                    MyStats = packet.Health;
-
-                    this.labelPCName.Text = MyStats.Name;
-                    this.labelAge.Text = "Age: " + MyStats.Age.ToString();
-                    this.labelLevel.Text = "Level: " + MyStats.Level.ToString();
-                    this.labelExperience.Text = "Exp: " + MyStats.Experience.ToString();
-                    this.labelGold.Text = "Gold: " + MyStats.Gold.ToString();
-
-                    this.labelHPs.Text =
-                        "HPs: " + packet.Health.HPs.ToString() +
-                        " / " + packet.Health.MaxHPs.ToString();
-
-                    this.labelMPs.Text =
-                        "MPs: " + packet.Health.MPs.ToString() +
-                        " / " + packet.Health.MaxMPs.ToString();
-
-                    // Play death or a hurt sound
-                    if (MyStats != null && MyStats.HPs <= 0)
-                    {
-                        PlayMusic("death1");
-                    }
-                    //else if (MyStats.HPs > packet.Health.HPs)
-                    //{
-                    //    var sound = Randomizer.Next(3);
-                    //    if (sound == 0)
-                    //        PlaySound(@"c_kana_hit3");
-                    //    else if (sound == 1)
-                    //        PlaySound(@"caiti_hit1");
-                    //    else if (sound == 2)
-                    //        PlaySound(@"caiti_hit3");
-                    //    else
-                    //        PlaySound(@"c_kana_hit1");
-                    //}
-                }
-
-                // Save any selected entities
-                string selected = "";
-                if (!String.IsNullOrEmpty((string)this.listBoxEntities.SelectedItem))
-                {
-                    selected = (string)this.listBoxEntities.SelectedItem;
-                    selected = selected.Split('(')[0].Trim();
-                }
-
-                this.listBoxEntities.Items.Clear();
-                this.listBoxItems.Items.Clear();
-
-                this.NPCStats.Clear();
-                this.PCStats.Clear();
-                this.ItemStats.Clear();
-
-                if (packet.NPCs != null && packet.NPCs.Any())
-                {
-                    foreach (var npc in packet.NPCs)
-                    {
-                        this.NPCStats.Add(npc.Value);
-                        var parsedNpc = npc.Value;
-                        this.listBoxEntities.Items.Add(npc.Value.Name.Trim() +
-                            " (" + npc.Value.HPs.ToString() + "/" + npc.Value.MaxHPs.ToString() + ")");
-                    }
-                }
-
-                if (packet.PCs != null && packet.PCs.Any())
-                {
-                    foreach (var p in packet.PCs)
-                    {
-                        if (p.Value.Name != this.labelPCName.Text)
-                        {
-                            this.PCStats.Add(p.Value);
-                            this.listBoxEntities.Items.Add(p.Value.Name.Trim() +
-                                " (" + p.Value.HPs.ToString() + "/" + p.Value.MaxHPs.ToString() + ")");
-                        }
-                    }
-                }
-
-                if (packet.Items != null && packet.Items.Any())
-                {
-                    foreach (var i in packet.Items)
-                    {
-                        this.ItemStats.Add(i.Value);
-                        this.listBoxItems.Items.Add(i.Value.Name.Trim());
-                    }
-                }
-
-                // Reselect any entities that were selected before refresh
-                if (!String.IsNullOrEmpty(selected))
-                {
-                    foreach (var i in this.listBoxEntities.Items)
-                    {
-                        if ((string)i.ToString().Split('(')[0].Trim()
-                            == selected)
-                        {
-                            this.listBoxEntities.SelectedItem = i;
-                        }
-                    }
-                }
-
-                UpdateConnectionStatus();
+                selected = (string)this.listBoxEntities.SelectedItem;
+                selected = selected.Split('(')[0].Trim();
             }
+
+            this.listBoxEntities.Items.Clear();
+            this.listBoxItems.Items.Clear();
+
+            this.NPCStats.Clear();
+            this.PCStats.Clear();
+            this.ItemStats.Clear();
+
+            if (packet.NPCs != null && packet.NPCs.Any())
+            {
+                foreach (var npc in packet.NPCs)
+                {
+                    this.NPCStats.Add(npc.Value);
+                    var parsedNpc = npc.Value;
+                    this.listBoxEntities.Items.Add(npc.Value.Name.Trim() +
+                        " (" + npc.Value.HPs.ToString() + "/" + npc.Value.MaxHPs.ToString() + ")");
+                }
+            }
+
+            if (packet.PCs != null && packet.PCs.Any())
+            {
+                foreach (var p in packet.PCs)
+                {
+                    if (p.Value.Name != this.labelPCName.Text)
+                    {
+                        this.PCStats.Add(p.Value);
+                        this.listBoxEntities.Items.Add(p.Value.Name.Trim() +
+                            " (" + p.Value.HPs.ToString() + "/" + p.Value.MaxHPs.ToString() + ")");
+                    }
+                }
+            }
+
+            if (packet.Items != null && packet.Items.Any())
+            {
+                foreach (var i in packet.Items)
+                {
+                    this.ItemStats.Add(i.Value);
+                    this.listBoxItems.Items.Add(i.Value.Name.Trim());
+                }
+            }
+
+            // Reselect any entities that were selected before refresh
+            if (!String.IsNullOrEmpty(selected))
+            {
+                for (int i = 0; i < this.listBoxEntities.Items.Count; i++)
+                {
+                    if ((string)this.listBoxEntities.Items[i].ToString().Split('(')[0].Trim()
+                        == selected)
+                    {
+                        this.listBoxEntities.SelectedItem = this.listBoxEntities.Items[i];
+                    }
+                }
+            }
+
+            UpdateConnectionStatus();
         }
 
         private void UpdateTiles(Packet packet)
@@ -692,6 +711,9 @@ namespace Game.Client
                         this.panelMovement.Visible = true;
                         this.panelStats.Visible = true;
                         this.panelObjects.Visible = true;
+                        this.panelPCs.Visible = true;
+                        this.panelNPCs.Visible = true;
+
                         this.listBoxPCs.Enabled = false;
 
                         if (MyStats != null && MyStats.HPs <= 0)
@@ -705,6 +727,7 @@ namespace Game.Client
                     }
                     else
                     {
+                        this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
                         this.buttonStart.Text = "&Join";
                         this.panelAccount.Visible = true;
                         this.panelAccount.BringToFront();
@@ -713,6 +736,9 @@ namespace Game.Client
                         this.panelMovement.Visible = false;
                         this.panelStats.Visible = false;
                         this.panelObjects.Visible = false;
+                        this.panelPCs.Visible = false;
+                        this.panelNPCs.Visible = false;
+
                         this.listBoxPCs.Enabled = true;
 
                         this.pictureBoxPC.Image =
@@ -892,8 +918,11 @@ namespace Game.Client
 
         private void listBoxPCs_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.pictureBoxPC.Image =
-                GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
+            if (this.listBoxPCs.SelectedIndex > -1)
+            {
+                this.pictureBoxPC.Image =
+                    GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
+            }
         }
 
         private void buttonNorth_Click(object sender, EventArgs e)
@@ -1011,10 +1040,11 @@ namespace Game.Client
 
         private void buttonAttack_Click(object sender, EventArgs e)
         {
-            this.buttonAttack.Enabled = false;
-
             if (this.listBoxEntities.SelectedItem != null)
             {
+                this.buttonAttack.Click -= this.buttonAttack_Click;
+                this.buttonAttack.Enabled = false;
+
                 PlayMusic("combat1", true, true);
 
                 var sound = Randomizer.Next(4);
@@ -1046,9 +1076,10 @@ namespace Game.Client
                 });
 
                 Thread.Sleep(CommandDelayInterval); // Simulate a delay in attacking, TODO: Use player attack speed
-            }
 
-            this.buttonAttack.Enabled = true;
+                this.buttonAttack.Click += this.buttonAttack_Click;
+                this.buttonAttack.Enabled = true;
+            }
         }
 
         private void pictureBoxPC_Click(object sender, EventArgs e)
@@ -1199,11 +1230,20 @@ namespace Game.Client
 
         #region Logging
 
-        public void LogEntry(string entry)
+        public void LogMessage(string message, bool logToFile = false)
         {
-            if (!String.IsNullOrEmpty(entry))
+            if (!String.IsNullOrEmpty(message))
             {
-                ReceivePacket(this, new Packet() { Text = entry });
+                // Write message to the UI
+                ReceivePacket(this,
+                    new Packet() { ActionType = ActionType.Say, Text = message });
+
+                //TODO: Log to file
+                if (logToFile)
+                {
+                    message = DateTime.Now + "," + message;
+                    Console.WriteLine(message);
+                }
             }
         }
 
