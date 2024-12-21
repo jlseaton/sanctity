@@ -41,7 +41,7 @@ namespace Game.Realm
         public List<NPC> NPCs = new List<NPC>();
         public List<PC> Players = new List<PC>();
 
-        protected OpenAIAPI api = new OpenAIAPI("sk-proj-");
+        protected OpenAIAPI api = new OpenAIAPI();
 
         #endregion
 
