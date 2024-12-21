@@ -49,7 +49,7 @@ namespace Game.Server
                 assembly.GetName().Version.Revision.ToString();
 
             World = new World.World();
-            World.Realm = new RealmManager();
+            World.Realm = new RealmManager(); //TODO: Load this from config_world.json
             World.Realm.Version = version;
             World.Initialize(false);
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).

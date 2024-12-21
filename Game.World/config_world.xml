@@ -2,6 +2,7 @@
 <Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<WorldID>1</WorldID>
 	<WorldName>Myrnn</WorldName>
+	<AI>false</AI>
 	<AutoStart>true</AutoStart>
 	<ServerPort>1412</ServerPort>
 	<NetworkReadDelay>250</NetworkReadDelay>

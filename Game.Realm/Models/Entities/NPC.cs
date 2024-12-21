@@ -24,7 +24,7 @@ namespace Game.Realm
         {
             Type = EntityType.NPC;
             ImageName = Name;
-            Loc.AreaID = 1;
+            //Loc.AreaID = 1;
             CorpseDecayRate = Constants.NPCDefaultCorpseDecay;
         }
 
@@ -48,7 +48,7 @@ namespace Game.Realm
                             if (Followed++ < Follows)
                             {
                                 realm.TellMessage(player, FullName + " follows you!");
-                                realm.Move(this, packet.MoveDirection.ToString().ToLower());
+                                realm.EntityMove(this, packet.MoveDirection.ToString().ToLower());
                             }
                         }
                     }

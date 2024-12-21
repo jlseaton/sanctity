@@ -2,69 +2,34 @@
 {
     public class Tile
     {
-        public int ID { get; set; }
-        public string? Name { get; set; }
-
-        public bool Transparent { get; set; }
-        public bool Permeable { get; set; }
-
-        public string? SoundID { get; set; }
-        public string? MusicID { get; set; }
-
-        public string? Text { get; set; }
-
-        public string? Tile1ID { get; set; }
-        public string? Tile2ID { get; set; }
-        public string? Tile3ID { get; set; }
-
-        public int North { get; set; }
-        public int South { get; set; }
-        public int East { get; set; }
-        public int West { get; set; }
-        public Loc Up { get; set; }
-        public Loc Down { get; set; }
-
-
-        public int NorthTileID { get; set; }
-        public int SouthTileID { get; set; }
-        public int EastTileID { get; set; }
-        public int WestTileID { get; set; }
-        public int UpTileID { get; set; }
-        public int DownTileID { get; set; }
+        public string? TileEffectID;
+        public string? Tile1ID;
+        public int Tile1Size { get; set; }
+        public int Tile1Angle { get; set; }
+        public int Tile1XOffset { get; set; }
+        public int Tile1YOffset { get; set; }
+        public string? Tile2ID;
+        public int Tile2Size { get; set; }
+        public int Tile2Angle { get; set; }
+        public int Tile2XOffset { get; set; }
+        public int Tile2YOffset { get; set; }
+        public string? Tile3ID;
+        public int Tile3Size { get; set; }
+        public int Tile3Angle { get; set; }
+        public int Tile3XOffset { get; set; }
+        public int Tile3YOffset { get; set; }
 
         public Tile()
         {
-            Tile1ID = "grassdark1";
-            SoundID = "ambient";
+            // WARNING: Setting string values here can really hurt performance
+            Tile1Size = 100;
+            Tile2Size = 100;
+            Tile3Size = 100;
         }
 
-        public string GetExits()
+        public Tile Clone()
         {
-            string exits = String.Empty;
-
-            if (North > 0)
-                exits += ", North";
-            if (South > 0)
-                exits += ", South";
-            if (East > 0)
-                exits += ", East";
-            if (West > 0)
-                exits += ", West";
-            if (Up != null)
-                exits += ", Up";
-            if (Down != null)
-                exits += ", Down";
-
-            if (String.IsNullOrEmpty(exits))
-            {
-                exits = "There are no apparent exits.";
-            }
-            else
-            {
-                exits = "You see these exits: " + exits.TrimStart(',').TrimEnd(',');
-            }
-
-            return exits;
+            return (Tile)this.MemberwiseClone();
         }
     }
 }

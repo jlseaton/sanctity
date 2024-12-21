@@ -34,12 +34,12 @@ namespace Game.World
         public void Initialize(bool startListening = true)
         {
             Config = new Config().LoadConfig("config_world.xml");
-            Realm = new RealmManager(Config.WorldID, Config.WorldName);
+            Realm = new RealmManager(Config.WorldID, Config.WorldName, Config.AI);
             Realm.GameEvents += HandleGameEvent;
             Logging = true;
 
             var version = 
-                System.Diagnostics.Process.GetCurrentProcess().MainModule.FileVersionInfo.ProductVersion;
+                System.Diagnostics.Process.GetCurrentProcess().MainModule.FileVersionInfo.FileVersion;
 
             if (!String.IsNullOrEmpty(version))
             {
@@ -155,7 +155,7 @@ namespace Game.World
                             Realm.BroadcastMessage(player.FullName + " has joined the realm.");
 
                             var hex =
-                                Realm.Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1];
+                                Realm.Areas[player.Loc.AreaID].Hexes[player.Loc.Y, player.Loc.X];
 
                             Realm.SendPlayerStatusToHex(player.Loc);
 
@@ -298,6 +298,7 @@ namespace Game.World
                 Realm.Stop();
                 Listener.Stop();
                 SavePCs();
+                SaveAreas();
                 //Config.SaveConfig("realmconfig.xml", Config);
                 Running = false;
                 LogEntry("Game Server Stopped");
@@ -345,6 +346,14 @@ namespace Game.World
         public void SavePC(PC p)
         {
 
+        }
+
+        public void SaveAreas()
+        {
+            foreach (Area a in Realm.Areas)
+            {
+                
+            }
         }
 
         public void SerializePC(string file, PC p)

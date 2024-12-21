@@ -31,11 +31,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             buttonStart = new Button();
             textBoxEvents = new TextBox();
-            buttonNorth = new Button();
-            buttonSouth = new Button();
-            buttonWest = new Button();
-            buttonEast = new Button();
-            panelStats = new Panel();
+            panelTarget = new Panel();
+            pictureBoxTarget = new PictureBox();
             pictureBoxStatus = new PictureBox();
             labelPCName = new Label();
             buttonRevive = new Button();
@@ -45,8 +42,6 @@
             labelLevel = new Label();
             labelMPs = new Label();
             labelHPs = new Label();
-            buttonDown = new Button();
-            buttonUp = new Button();
             pictureBoxPC = new PictureBox();
             buttonAttack = new Button();
             buttonLook = new Button();
@@ -84,12 +79,15 @@
             listBoxEntities = new ListBox();
             listBoxItems = new ListBox();
             panelObjects = new Panel();
+            button1 = new Button();
             buttonInspect = new Button();
             panelAccount = new Panel();
             labelPCSelection = new Label();
             listBoxPCs = new ListBox();
-            panelMovement = new Panel();
-            panelStats.SuspendLayout();
+            panelPC = new Panel();
+            labelPCRaceClass = new Label();
+            panelTarget.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBoxTarget).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxStatus).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxPC).BeginInit();
             panelChat.SuspendLayout();
@@ -120,7 +118,7 @@
             ((System.ComponentModel.ISupportInitialize)pictureBoxPC6).BeginInit();
             panelObjects.SuspendLayout();
             panelAccount.SuspendLayout();
-            panelMovement.SuspendLayout();
+            panelPC.SuspendLayout();
             SuspendLayout();
             // 
             // buttonStart
@@ -147,78 +145,36 @@
             textBoxEvents.Size = new Size(390, 229);
             textBoxEvents.TabIndex = 1;
             // 
-            // buttonNorth
+            // panelTarget
             // 
-            buttonNorth.Location = new Point(48, 5);
-            buttonNorth.Margin = new Padding(4);
-            buttonNorth.Name = "buttonNorth";
-            buttonNorth.Size = new Size(60, 30);
-            buttonNorth.TabIndex = 4;
-            buttonNorth.Text = "&North";
-            buttonNorth.UseVisualStyleBackColor = true;
-            buttonNorth.Click += buttonNorth_Click;
+            panelTarget.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            panelTarget.BorderStyle = BorderStyle.Fixed3D;
+            panelTarget.Controls.Add(pictureBoxTarget);
+            panelTarget.Location = new Point(607, 597);
+            panelTarget.Margin = new Padding(4);
+            panelTarget.Name = "panelTarget";
+            panelTarget.Size = new Size(149, 128);
+            panelTarget.TabIndex = 8;
+            panelTarget.Visible = false;
             // 
-            // buttonSouth
+            // pictureBoxTarget
             // 
-            buttonSouth.Location = new Point(48, 72);
-            buttonSouth.Margin = new Padding(4);
-            buttonSouth.Name = "buttonSouth";
-            buttonSouth.Size = new Size(60, 26);
-            buttonSouth.TabIndex = 5;
-            buttonSouth.Text = "&South";
-            buttonSouth.UseVisualStyleBackColor = true;
-            buttonSouth.Click += buttonSouth_Click;
-            // 
-            // buttonWest
-            // 
-            buttonWest.Location = new Point(12, 40);
-            buttonWest.Margin = new Padding(4);
-            buttonWest.Name = "buttonWest";
-            buttonWest.Size = new Size(60, 26);
-            buttonWest.TabIndex = 6;
-            buttonWest.Text = "&West";
-            buttonWest.UseVisualStyleBackColor = true;
-            buttonWest.Click += buttonWest_Click;
-            // 
-            // buttonEast
-            // 
-            buttonEast.Location = new Point(79, 40);
-            buttonEast.Margin = new Padding(4);
-            buttonEast.Name = "buttonEast";
-            buttonEast.Size = new Size(60, 26);
-            buttonEast.TabIndex = 7;
-            buttonEast.Text = "&East";
-            buttonEast.UseVisualStyleBackColor = true;
-            buttonEast.Click += buttonEast_Click;
-            // 
-            // panelStats
-            // 
-            panelStats.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            panelStats.BorderStyle = BorderStyle.Fixed3D;
-            panelStats.Controls.Add(pictureBoxStatus);
-            panelStats.Controls.Add(labelPCName);
-            panelStats.Controls.Add(buttonRevive);
-            panelStats.Controls.Add(labelAge);
-            panelStats.Controls.Add(labelGold);
-            panelStats.Controls.Add(labelExperience);
-            panelStats.Controls.Add(labelLevel);
-            panelStats.Controls.Add(labelMPs);
-            panelStats.Controls.Add(labelHPs);
-            panelStats.Location = new Point(607, 609);
-            panelStats.Margin = new Padding(4);
-            panelStats.Name = "panelStats";
-            panelStats.Size = new Size(149, 114);
-            panelStats.TabIndex = 8;
-            panelStats.Visible = false;
+            pictureBoxTarget.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            pictureBoxTarget.Location = new Point(3, 2);
+            pictureBoxTarget.Name = "pictureBoxTarget";
+            pictureBoxTarget.Size = new Size(139, 118);
+            pictureBoxTarget.SizeMode = PictureBoxSizeMode.StretchImage;
+            pictureBoxTarget.TabIndex = 0;
+            pictureBoxTarget.TabStop = false;
             // 
             // pictureBoxStatus
             // 
             pictureBoxStatus.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             pictureBoxStatus.BackgroundImageLayout = ImageLayout.Stretch;
-            pictureBoxStatus.Location = new Point(92, 33);
+            pictureBoxStatus.Location = new Point(86, 47);
             pictureBoxStatus.Margin = new Padding(3, 2, 3, 2);
             pictureBoxStatus.Name = "pictureBoxStatus";
-            pictureBoxStatus.Size = new Size(41, 49);
+            pictureBoxStatus.Size = new Size(56, 64);
             pictureBoxStatus.SizeMode = PictureBoxSizeMode.CenterImage;
             pictureBoxStatus.TabIndex = 21;
             pictureBoxStatus.TabStop = false;
@@ -227,7 +183,7 @@
             // 
             labelPCName.AutoSize = true;
             labelPCName.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            labelPCName.Location = new Point(4, 2);
+            labelPCName.Location = new Point(3, 3);
             labelPCName.Margin = new Padding(4, 0, 4, 0);
             labelPCName.Name = "labelPCName";
             labelPCName.Size = new Size(57, 15);
@@ -237,7 +193,7 @@
             // buttonRevive
             // 
             buttonRevive.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            buttonRevive.Location = new Point(82, 83);
+            buttonRevive.Location = new Point(4, 145);
             buttonRevive.Margin = new Padding(4);
             buttonRevive.Name = "buttonRevive";
             buttonRevive.Size = new Size(60, 26);
@@ -249,8 +205,8 @@
             // labelAge
             // 
             labelAge.AutoSize = true;
-            labelAge.Font = new Font("Segoe UI", 7.8F, FontStyle.Regular, GraphicsUnit.Point);
-            labelAge.Location = new Point(6, 48);
+            labelAge.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            labelAge.Location = new Point(4, 79);
             labelAge.Margin = new Padding(4, 0, 4, 0);
             labelAge.Name = "labelAge";
             labelAge.Size = new Size(33, 13);
@@ -260,9 +216,9 @@
             // labelGold
             // 
             labelGold.AutoSize = true;
-            labelGold.Font = new Font("Segoe UI", 7.8F, FontStyle.Regular, GraphicsUnit.Point);
+            labelGold.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
             labelGold.ForeColor = Color.FromArgb(192, 192, 0);
-            labelGold.Location = new Point(1, 94);
+            labelGold.Location = new Point(0, 105);
             labelGold.Margin = new Padding(4, 0, 4, 0);
             labelGold.Name = "labelGold";
             labelGold.Size = new Size(38, 13);
@@ -272,8 +228,8 @@
             // labelExperience
             // 
             labelExperience.AutoSize = true;
-            labelExperience.Font = new Font("Segoe UI", 7.8F, FontStyle.Regular, GraphicsUnit.Point);
-            labelExperience.Location = new Point(7, 78);
+            labelExperience.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            labelExperience.Location = new Point(6, 92);
             labelExperience.Margin = new Padding(4, 0, 4, 0);
             labelExperience.Name = "labelExperience";
             labelExperience.Size = new Size(34, 13);
@@ -283,8 +239,8 @@
             // labelLevel
             // 
             labelLevel.AutoSize = true;
-            labelLevel.Font = new Font("Segoe UI", 7.8F, FontStyle.Regular, GraphicsUnit.Point);
-            labelLevel.Location = new Point(1, 63);
+            labelLevel.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
+            labelLevel.Location = new Point(3, 33);
             labelLevel.Margin = new Padding(4, 0, 4, 0);
             labelLevel.Name = "labelLevel";
             labelLevel.Size = new Size(38, 13);
@@ -294,46 +250,26 @@
             // labelMPs
             // 
             labelMPs.AutoSize = true;
+            labelMPs.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
             labelMPs.ForeColor = Color.Blue;
-            labelMPs.Location = new Point(3, 32);
+            labelMPs.Location = new Point(3, 64);
             labelMPs.Margin = new Padding(4, 0, 4, 0);
             labelMPs.Name = "labelMPs";
-            labelMPs.Size = new Size(33, 15);
+            labelMPs.Size = new Size(31, 13);
             labelMPs.TabIndex = 11;
             labelMPs.Text = "MPs:";
             // 
             // labelHPs
             // 
             labelHPs.AutoSize = true;
+            labelHPs.Font = new Font("Segoe UI", 8F, FontStyle.Regular, GraphicsUnit.Point);
             labelHPs.ForeColor = Color.FromArgb(192, 0, 0);
-            labelHPs.Location = new Point(5, 17);
+            labelHPs.Location = new Point(5, 47);
             labelHPs.Margin = new Padding(4, 0, 4, 0);
             labelHPs.Name = "labelHPs";
-            labelHPs.Size = new Size(34, 15);
+            labelHPs.Size = new Size(32, 13);
             labelHPs.TabIndex = 10;
             labelHPs.Text = "HPs: ";
-            // 
-            // buttonDown
-            // 
-            buttonDown.Location = new Point(79, 111);
-            buttonDown.Margin = new Padding(4);
-            buttonDown.Name = "buttonDown";
-            buttonDown.Size = new Size(60, 26);
-            buttonDown.TabIndex = 9;
-            buttonDown.Text = "&Down";
-            buttonDown.UseVisualStyleBackColor = true;
-            buttonDown.Click += buttonDown_Click;
-            // 
-            // buttonUp
-            // 
-            buttonUp.Location = new Point(11, 111);
-            buttonUp.Margin = new Padding(4);
-            buttonUp.Name = "buttonUp";
-            buttonUp.Size = new Size(60, 26);
-            buttonUp.TabIndex = 8;
-            buttonUp.Text = "&Up";
-            buttonUp.UseVisualStyleBackColor = true;
-            buttonUp.Click += buttonUp_Click;
             // 
             // pictureBoxPC
             // 
@@ -404,7 +340,7 @@
             buttonSettings.Name = "buttonSettings";
             buttonSettings.Size = new Size(66, 26);
             buttonSettings.TabIndex = 12;
-            buttonSettings.Text = "Se&ttings";
+            buttonSettings.Text = "Settings";
             buttonSettings.UseVisualStyleBackColor = true;
             buttonSettings.Click += buttonSettings_Click;
             // 
@@ -452,10 +388,10 @@
             // 
             panelTiles.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             panelTiles.Controls.Add(pictureBoxTilesMain);
-            panelTiles.Location = new Point(218, 0);
+            panelTiles.Location = new Point(201, 0);
             panelTiles.Margin = new Padding(3, 2, 3, 2);
             panelTiles.Name = "panelTiles";
-            panelTiles.Size = new Size(540, 454);
+            panelTiles.Size = new Size(570, 454);
             panelTiles.TabIndex = 10;
             // 
             // pictureBoxTilesMain
@@ -464,10 +400,12 @@
             pictureBoxTilesMain.Location = new Point(0, 2);
             pictureBoxTilesMain.Margin = new Padding(3, 2, 3, 2);
             pictureBoxTilesMain.Name = "pictureBoxTilesMain";
-            pictureBoxTilesMain.Size = new Size(540, 452);
+            pictureBoxTilesMain.Size = new Size(570, 452);
             pictureBoxTilesMain.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxTilesMain.TabIndex = 0;
             pictureBoxTilesMain.TabStop = false;
+            pictureBoxTilesMain.Click += pictureBoxTilesMain_Click;
+            pictureBoxTilesMain.Paint += pictureBoxTilesMain_Paint;
             // 
             // panelNPCs
             // 
@@ -484,17 +422,17 @@
             panelNPCs.Controls.Add(pictureBoxNPC7);
             panelNPCs.Controls.Add(pictureBoxNPC2);
             panelNPCs.Controls.Add(pictureBoxNPC6);
-            panelNPCs.Location = new Point(757, 2);
+            panelNPCs.Location = new Point(772, 2);
             panelNPCs.Margin = new Padding(3, 2, 3, 2);
             panelNPCs.Name = "panelNPCs";
-            panelNPCs.Size = new Size(215, 453);
+            panelNPCs.Size = new Size(200, 453);
             panelNPCs.TabIndex = 9;
             // 
             // pictureBoxNPC10
             // 
             pictureBoxNPC10.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pictureBoxNPC10.BackColor = Color.Transparent;
-            pictureBoxNPC10.Location = new Point(110, 354);
+            pictureBoxNPC10.Location = new Point(100, 353);
             pictureBoxNPC10.Margin = new Padding(4);
             pictureBoxNPC10.Name = "pictureBoxNPC10";
             pictureBoxNPC10.Size = new Size(90, 80);
@@ -505,7 +443,7 @@
             // pictureBoxNPC9
             // 
             pictureBoxNPC9.BackColor = Color.Transparent;
-            pictureBoxNPC9.Location = new Point(14, 354);
+            pictureBoxNPC9.Location = new Point(4, 353);
             pictureBoxNPC9.Margin = new Padding(4);
             pictureBoxNPC9.Name = "pictureBoxNPC9";
             pictureBoxNPC9.Size = new Size(90, 80);
@@ -517,7 +455,7 @@
             // 
             pictureBoxNPC8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pictureBoxNPC8.BackColor = Color.Transparent;
-            pictureBoxNPC8.Location = new Point(109, 265);
+            pictureBoxNPC8.Location = new Point(100, 265);
             pictureBoxNPC8.Margin = new Padding(4);
             pictureBoxNPC8.Name = "pictureBoxNPC8";
             pictureBoxNPC8.Size = new Size(90, 80);
@@ -528,7 +466,7 @@
             // pictureBoxNPC4
             // 
             pictureBoxNPC4.BackColor = Color.Transparent;
-            pictureBoxNPC4.Location = new Point(109, 90);
+            pictureBoxNPC4.Location = new Point(100, 90);
             pictureBoxNPC4.Margin = new Padding(4);
             pictureBoxNPC4.Name = "pictureBoxNPC4";
             pictureBoxNPC4.Size = new Size(90, 80);
@@ -539,7 +477,7 @@
             // pictureBoxNPC1
             // 
             pictureBoxNPC1.BackColor = Color.Transparent;
-            pictureBoxNPC1.Location = new Point(14, 4);
+            pictureBoxNPC1.Location = new Point(4, 4);
             pictureBoxNPC1.Margin = new Padding(4);
             pictureBoxNPC1.Name = "pictureBoxNPC1";
             pictureBoxNPC1.Size = new Size(90, 80);
@@ -550,7 +488,7 @@
             // pictureBoxNPC3
             // 
             pictureBoxNPC3.BackColor = Color.Transparent;
-            pictureBoxNPC3.Location = new Point(14, 90);
+            pictureBoxNPC3.Location = new Point(4, 90);
             pictureBoxNPC3.Margin = new Padding(4);
             pictureBoxNPC3.Name = "pictureBoxNPC3";
             pictureBoxNPC3.Size = new Size(90, 80);
@@ -562,7 +500,7 @@
             // 
             pictureBoxNPC5.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pictureBoxNPC5.BackColor = Color.Transparent;
-            pictureBoxNPC5.Location = new Point(14, 177);
+            pictureBoxNPC5.Location = new Point(4, 178);
             pictureBoxNPC5.Margin = new Padding(4);
             pictureBoxNPC5.Name = "pictureBoxNPC5";
             pictureBoxNPC5.Size = new Size(90, 80);
@@ -574,7 +512,7 @@
             // 
             pictureBoxNPC7.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pictureBoxNPC7.BackColor = Color.Transparent;
-            pictureBoxNPC7.Location = new Point(14, 265);
+            pictureBoxNPC7.Location = new Point(4, 265);
             pictureBoxNPC7.Margin = new Padding(4);
             pictureBoxNPC7.Name = "pictureBoxNPC7";
             pictureBoxNPC7.Size = new Size(90, 80);
@@ -585,7 +523,7 @@
             // pictureBoxNPC2
             // 
             pictureBoxNPC2.BackColor = Color.Transparent;
-            pictureBoxNPC2.Location = new Point(109, 4);
+            pictureBoxNPC2.Location = new Point(100, 4);
             pictureBoxNPC2.Margin = new Padding(4);
             pictureBoxNPC2.Name = "pictureBoxNPC2";
             pictureBoxNPC2.Size = new Size(90, 80);
@@ -597,7 +535,7 @@
             // 
             pictureBoxNPC6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pictureBoxNPC6.BackColor = Color.Transparent;
-            pictureBoxNPC6.Location = new Point(109, 177);
+            pictureBoxNPC6.Location = new Point(100, 178);
             pictureBoxNPC6.Margin = new Padding(4);
             pictureBoxNPC6.Name = "pictureBoxNPC6";
             pictureBoxNPC6.Size = new Size(90, 80);
@@ -623,14 +561,14 @@
             panelPCs.Location = new Point(1, 2);
             panelPCs.Margin = new Padding(3, 2, 3, 2);
             panelPCs.Name = "panelPCs";
-            panelPCs.Size = new Size(215, 453);
+            panelPCs.Size = new Size(200, 453);
             panelPCs.TabIndex = 7;
             // 
             // pictureBoxPC10
             // 
             pictureBoxPC10.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pictureBoxPC10.BackColor = Color.Transparent;
-            pictureBoxPC10.Location = new Point(110, 354);
+            pictureBoxPC10.Location = new Point(99, 354);
             pictureBoxPC10.Margin = new Padding(4);
             pictureBoxPC10.Name = "pictureBoxPC10";
             pictureBoxPC10.Size = new Size(90, 80);
@@ -641,7 +579,7 @@
             // pictureBoxPC9
             // 
             pictureBoxPC9.BackColor = Color.Transparent;
-            pictureBoxPC9.Location = new Point(12, 354);
+            pictureBoxPC9.Location = new Point(4, 354);
             pictureBoxPC9.Margin = new Padding(4);
             pictureBoxPC9.Name = "pictureBoxPC9";
             pictureBoxPC9.Size = new Size(90, 80);
@@ -653,7 +591,7 @@
             // 
             pictureBoxPC8.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pictureBoxPC8.BackColor = Color.Transparent;
-            pictureBoxPC8.Location = new Point(111, 265);
+            pictureBoxPC8.Location = new Point(99, 265);
             pictureBoxPC8.Margin = new Padding(4);
             pictureBoxPC8.Name = "pictureBoxPC8";
             pictureBoxPC8.Size = new Size(90, 80);
@@ -664,7 +602,7 @@
             // pictureBoxPC4
             // 
             pictureBoxPC4.BackColor = Color.Transparent;
-            pictureBoxPC4.Location = new Point(111, 90);
+            pictureBoxPC4.Location = new Point(98, 90);
             pictureBoxPC4.Margin = new Padding(4);
             pictureBoxPC4.Name = "pictureBoxPC4";
             pictureBoxPC4.Size = new Size(90, 80);
@@ -675,7 +613,7 @@
             // pictureBoxPC1
             // 
             pictureBoxPC1.BackColor = Color.Transparent;
-            pictureBoxPC1.Location = new Point(12, 4);
+            pictureBoxPC1.Location = new Point(4, 4);
             pictureBoxPC1.Margin = new Padding(4);
             pictureBoxPC1.Name = "pictureBoxPC1";
             pictureBoxPC1.Size = new Size(90, 80);
@@ -686,7 +624,7 @@
             // pictureBoxPC3
             // 
             pictureBoxPC3.BackColor = Color.Transparent;
-            pictureBoxPC3.Location = new Point(12, 90);
+            pictureBoxPC3.Location = new Point(4, 90);
             pictureBoxPC3.Margin = new Padding(4);
             pictureBoxPC3.Name = "pictureBoxPC3";
             pictureBoxPC3.Size = new Size(90, 80);
@@ -697,7 +635,7 @@
             // pictureBoxPC5
             // 
             pictureBoxPC5.BackColor = Color.Transparent;
-            pictureBoxPC5.Location = new Point(12, 178);
+            pictureBoxPC5.Location = new Point(4, 178);
             pictureBoxPC5.Margin = new Padding(4);
             pictureBoxPC5.Name = "pictureBoxPC5";
             pictureBoxPC5.Size = new Size(90, 80);
@@ -708,7 +646,7 @@
             // pictureBoxPC7
             // 
             pictureBoxPC7.BackColor = Color.Transparent;
-            pictureBoxPC7.Location = new Point(12, 265);
+            pictureBoxPC7.Location = new Point(4, 265);
             pictureBoxPC7.Margin = new Padding(4);
             pictureBoxPC7.Name = "pictureBoxPC7";
             pictureBoxPC7.Size = new Size(90, 80);
@@ -719,7 +657,7 @@
             // pictureBoxPC2
             // 
             pictureBoxPC2.BackColor = Color.Transparent;
-            pictureBoxPC2.Location = new Point(111, 4);
+            pictureBoxPC2.Location = new Point(98, 4);
             pictureBoxPC2.Margin = new Padding(4);
             pictureBoxPC2.Name = "pictureBoxPC2";
             pictureBoxPC2.Size = new Size(90, 80);
@@ -731,7 +669,7 @@
             // 
             pictureBoxPC6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             pictureBoxPC6.BackColor = Color.Transparent;
-            pictureBoxPC6.Location = new Point(111, 178);
+            pictureBoxPC6.Location = new Point(98, 178);
             pictureBoxPC6.Margin = new Padding(4);
             pictureBoxPC6.Name = "pictureBoxPC6";
             pictureBoxPC6.Size = new Size(90, 80);
@@ -742,7 +680,7 @@
             // buttonGet
             // 
             buttonGet.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            buttonGet.Location = new Point(3, 145);
+            buttonGet.Location = new Point(138, 114);
             buttonGet.Margin = new Padding(4);
             buttonGet.Name = "buttonGet";
             buttonGet.Size = new Size(60, 26);
@@ -777,9 +715,11 @@
             // 
             panelObjects.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
             panelObjects.BorderStyle = BorderStyle.Fixed3D;
+            panelObjects.Controls.Add(button1);
             panelObjects.Controls.Add(buttonInspect);
             panelObjects.Controls.Add(listBoxEntities);
             panelObjects.Controls.Add(listBoxItems);
+            panelObjects.Controls.Add(buttonRevive);
             panelObjects.Controls.Add(buttonAttack);
             panelObjects.Controls.Add(buttonGet);
             panelObjects.Controls.Add(buttonHide);
@@ -790,6 +730,17 @@
             panelObjects.Size = new Size(204, 259);
             panelObjects.TabIndex = 20;
             panelObjects.Visible = false;
+            // 
+            // button1
+            // 
+            button1.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            button1.Location = new Point(70, 114);
+            button1.Margin = new Padding(4);
+            button1.Name = "button1";
+            button1.Size = new Size(60, 26);
+            button1.TabIndex = 20;
+            button1.Text = "&Inspect";
+            button1.UseVisualStyleBackColor = true;
             // 
             // buttonInspect
             // 
@@ -837,22 +788,36 @@
             listBoxPCs.TabIndex = 15;
             listBoxPCs.SelectedIndexChanged += listBoxPCs_SelectedIndexChanged;
             // 
-            // panelMovement
+            // panelPC
             // 
-            panelMovement.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            panelMovement.BorderStyle = BorderStyle.Fixed3D;
-            panelMovement.Controls.Add(buttonNorth);
-            panelMovement.Controls.Add(buttonWest);
-            panelMovement.Controls.Add(buttonEast);
-            panelMovement.Controls.Add(buttonSouth);
-            panelMovement.Controls.Add(buttonUp);
-            panelMovement.Controls.Add(buttonDown);
-            panelMovement.Location = new Point(607, 466);
-            panelMovement.Margin = new Padding(4);
-            panelMovement.Name = "panelMovement";
-            panelMovement.Size = new Size(149, 142);
-            panelMovement.TabIndex = 15;
-            panelMovement.Visible = false;
+            panelPC.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            panelPC.BorderStyle = BorderStyle.Fixed3D;
+            panelPC.Controls.Add(labelPCRaceClass);
+            panelPC.Controls.Add(pictureBoxStatus);
+            panelPC.Controls.Add(labelMPs);
+            panelPC.Controls.Add(labelPCName);
+            panelPC.Controls.Add(labelHPs);
+            panelPC.Controls.Add(labelLevel);
+            panelPC.Controls.Add(labelAge);
+            panelPC.Controls.Add(labelExperience);
+            panelPC.Controls.Add(labelGold);
+            panelPC.Location = new Point(607, 466);
+            panelPC.Margin = new Padding(4);
+            panelPC.Name = "panelPC";
+            panelPC.Size = new Size(149, 128);
+            panelPC.TabIndex = 15;
+            panelPC.Visible = false;
+            // 
+            // labelPCRaceClass
+            // 
+            labelPCRaceClass.AutoSize = true;
+            labelPCRaceClass.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            labelPCRaceClass.Location = new Point(3, 18);
+            labelPCRaceClass.Margin = new Padding(4, 0, 4, 0);
+            labelPCRaceClass.Name = "labelPCRaceClass";
+            labelPCRaceClass.Size = new Size(80, 15);
+            labelPCRaceClass.TabIndex = 22;
+            labelPCRaceClass.Text = "PC Race Class";
             // 
             // MainForm
             // 
@@ -861,9 +826,9 @@
             ClientSize = new Size(974, 731);
             Controls.Add(pictureBoxPC);
             Controls.Add(buttonSettings);
-            Controls.Add(panelMovement);
+            Controls.Add(panelPC);
             Controls.Add(buttonStart);
-            Controls.Add(panelStats);
+            Controls.Add(panelTarget);
             Controls.Add(panelObjects);
             Controls.Add(panelView);
             Controls.Add(panelChat);
@@ -876,8 +841,9 @@
             Load += MainForm_Load;
             Shown += MainForm_Shown;
             SizeChanged += MainForm_SizeChanged;
-            panelStats.ResumeLayout(false);
-            panelStats.PerformLayout();
+            Resize += MainForm_Resize;
+            panelTarget.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBoxTarget).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxStatus).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxPC).EndInit();
             panelChat.ResumeLayout(false);
@@ -910,7 +876,8 @@
             panelObjects.ResumeLayout(false);
             panelAccount.ResumeLayout(false);
             panelAccount.PerformLayout();
-            panelMovement.ResumeLayout(false);
+            panelPC.ResumeLayout(false);
+            panelPC.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -918,17 +885,11 @@
 
         private Button buttonStart;
         private TextBox textBoxEvents;
-        private Button buttonNorth;
-        private Button buttonSouth;
-        private Button buttonWest;
-        private Button buttonEast;
-        private Panel panelStats;
+        private Panel panelTarget;
         private Button buttonSend;
         private TextBox textBoxSend;
         private Button buttonSettings;
         private Panel panelChat;
-        private Button buttonDown;
-        private Button buttonUp;
         private Button buttonLook;
         private Button buttonAttack;
         private Label labelMPs;
@@ -964,7 +925,7 @@
         private PictureBox pictureBoxNPC7;
         private PictureBox pictureBoxNPC2;
         private PictureBox pictureBoxNPC6;
-        private Panel panelMovement;
+        private Panel panelPC;
         private PictureBox pictureBoxPC10;
         private PictureBox pictureBoxPC9;
         private PictureBox pictureBoxNPC10;
@@ -975,8 +936,11 @@
         private Label labelPCName;
         private PictureBox pictureBoxStatus;
         private Panel panelTiles;
-        private PictureBox pictureBoxTilesMain;
         private Label labelPCSelection;
+        private PictureBox pictureBoxTilesMain;
+        private Button button1;
+        private PictureBox pictureBoxTarget;
+        private Label labelPCRaceClass;
     }
 }
 

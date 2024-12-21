@@ -2,14 +2,13 @@ Lords of Chaos: Sanctity’s Edge
 -------------------------------
 Game client and server engine using the .NET Framework design notes and goals:
 
-- 2D rpg in the tradition of Wizardry, Eye of the Beholder, Kingdom of Drakkar
+- 2D rpg in the tradition of D&D, Wizardry, Eye of the Beholder, Kingdom of Drakkar
 
 - Emphasis on story, with user choices impacting different results
 - Firm delineations and consequences between good and evil
 - Fun and accurate combat rolls, in the spirit of D&D
 - D&D style character progression, with towns/merchants, quests, DM events
  
-- Touchable objects in 2d field view that can progress/trigger storyline events
 - Dim/Bright lighting and effects
 - Background music, ambient and action sound effects
 - Long and short term Weather and events
@@ -20,5 +19,6 @@ Game client and server engine using the .NET Framework design notes and goals:
 - Elemental magic emphasis and rewarding of correct identification of when to use which
 - Types of attacks based on opponents and rewarding of using more effective methods
 - Tactile / timing needed for traps and chests
-
 - Touch or mouse input, multiple platform support - desktop/mobile (deprecated)
+
+- Integration of LLMs for story and quest narratives

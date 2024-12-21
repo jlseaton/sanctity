@@ -9,11 +9,7 @@ namespace Game.Client
     public class Config
     {
         public string Version { get; set; }
-        public int WindowLocationX { get; set; }
-        public int WindowLocationY { get; set; }
-        public int WindowHeight { get; set; }
-        public int WindowWidth { get; set; }
-        public int WindowState { get; set; }
+        public string Skin { get; set; }
         public int PlayerID { get; set; }
 
         public bool Images { get; set; }
@@ -27,15 +23,21 @@ namespace Game.Client
         public int ServerPort { get; set; }
         public int NetworkReadDelay { get; set; }
         public int NetworkWriteDelay { get; set; }
+        public int WindowLocationX { get; set; }
+        public int WindowLocationY { get; set; }
+        public int WindowHeight { get; set; }
+        public int WindowWidth { get; set; }
+        public int WindowState { get; set; }
+        public int EditLocationX { get; set; }
+        public int EditLocationY { get; set; }
+        public int EditHeight { get; set; }
+        public int EditWidth { get; set; }
+        public int EditState { get; set; }
 
         public Config()
         {
-            Version = "1.0.0.0";
-            WindowLocationX = 495;
-            WindowLocationY = 75;
-            WindowHeight = 686;
-            WindowWidth = 930;
-            WindowState = 0;
+            Version = "1.0.3.0";
+            Skin = "skin1";
             PlayerID = 1;
             Images = true;
             Sounds = true;
@@ -48,6 +50,16 @@ namespace Game.Client
             ServerPort = 1412;
             NetworkReadDelay = 100;
             NetworkWriteDelay = 100;
+            WindowLocationX = 495;
+            WindowLocationY = 75;
+            WindowHeight = 686;
+            WindowWidth = 930;
+            WindowState = 0;
+            EditLocationX = 800;
+            EditLocationY = 10;
+            EditHeight = 600;
+            EditWidth = 800;
+            EditState = 0;
         }
 
         public Config LoadConfig(string version, string fileName = "config.xml")

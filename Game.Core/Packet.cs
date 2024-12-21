@@ -15,20 +15,21 @@ namespace Game.Core
 
         public ActionType ActionType { get; set; }
 
-        public int ID { get; set; }
-        public int TargetID { get; set; }
+        public string ID { get; set; }
+        public string TargetID { get; set; }
 
         public string Text { get; set; }
 
         public Stats Health { get; set; }
-
-        public Tile Tile { get; set; }
 
         public MoveDirection MoveDirection { get; set; }
 
         public Dictionary<string, Stats> NPCs { get; set; }
         public Dictionary<string, Stats> PCs { get; set; }
         public Dictionary<string, Stats> Items { get; set; }
+
+        public Tile[,] Tiles = new Tile[Constants.VisibleTilesHeight, 
+            Constants.VisibleTilesWidth];
 
         public Packet()
         {

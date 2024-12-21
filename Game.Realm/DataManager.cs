@@ -1,4 +1,6 @@
 ﻿using Game.Core;
+using Newtonsoft.Json;
+using System.Text.Json.Nodes;
 
 namespace Game.Realm
 {
@@ -54,227 +56,342 @@ namespace Game.Realm
 
             try
             {
-                Hexes.Add(new Hex()
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 1,
+                //    Tile = new Tile()
+                //    {
+
+                //        Name = "Entrance",
+                //        Text = "You are standing at the entrance to the Dungeon Lab.",
+                //        SoundID = "silence",
+                //        Tile2ID = "stairsup",
+                //        East = 2,
+                //        Up = new Loc() { AreaID = 0, HexID = 1 }, // Leads back to tavern
+                //    },
+                //    PermanentNPCs = new List<int>() { 1, 2 },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 2,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Birch Tree",
+                //        Tile2ID = "redmushrooms",
+                //        East = 3,
+                //        West = 1,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.Animal },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 3,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Cemetary Gate",
+                //        Tile2ID = "metalgate",
+                //        South = 7,
+                //        East = 4,
+                //        West = 2,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.Undead },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 4,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Undead Tomb",
+                //        Text = "You are standing in a dank tomb. Before you lies a mysterious gate.",
+                //        Tile2ID = "stoneportal",
+                //        West = 3,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.RareUndead },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 5,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Dragon Lair",
+                //        Text = "You smell smoke and a foul odor in the air. This is folly.",
+                //        Tile2ID = "goldchest",
+                //        East = 6,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.DragonKind },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 6,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Gray Stone",
+                //        Tile2ID = "stonebridge",
+                //        South = 10,
+                //        East = 7,
+                //        West = 5,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.Common },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 7,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Gazebo",
+                //        Tile2ID = "gazebo",
+                //        SoundID = "toads1",
+                //        North = 3,
+                //        South = 11,
+                //        East = 8,
+                //        West = 6,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.VeryRare },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 8,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Animal Kingdom",
+                //        Tile2ID = "birchtree",
+                //        SoundID = "birds1",
+                //        South = 12,
+                //        West = 7,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.Animal },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 9,
+                //    QuestID = 1,
+                //    LockID = 1,
+                //    LockLevel = 50,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Demogorgon's Lair",
+                //        Text = "You are standing in the presence of pure evil itself.",
+                //        Tile2ID = "knightstatue",
+                //        East = 10,
+                //    },
+                //    PermanentNPCs = new List<int>() { 3 },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 10,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Ocean",
+                //        Tile1ID = "water7",
+                //        Tile2ID = "floatingpyramid",
+                //        North = 6,
+                //        East = 11,
+                //        West = 9,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.Aquatic },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 11,
+                //    Tile = new Tile()
+                //    {
+                //        Name = "Stables",
+                //        Tile1ID = "grassmud1",
+                //        Tile2ID = "brownhorse",
+                //        North = 7,
+                //        East = 12,
+                //        West = 10,
+                //    },
+                //    RandomNPCsMax = 5,
+                //    RandomNPCs = new List<EncounterType>() { EncounterType.VeryRare },
+                //});
+
+                //Hexes.Add(new Hex()
+                //{
+                //    ID = 12,
+                //    Name = "Stairway to the Unknown",
+                //    Tile = new Tile()
+                //    {
+                //        Text = "You are standing at the top of a winding staircase which leads down into utter darkness. You cannot make this descent.. yet.",
+                //        Tile2ID = "stairsup",
+                //        North = 8,
+                //        West = 11,
+                //        //Down = new Loc() { AreaID = 1, HexID = 12 }, // Leads back to same spot
+                //    },
+                //    PermanentNPCs = new List<int>() { 10 },
+                //});
+
+                //var TavernHexes = new List<Hex>();
+                //TavernHexes.Add(new Hex()
+                //{
+                //    ID = 1,
+                //    Name = "Umbra Tavern",
+                //    NoCombat = true,
+                //    Tile = new Tile()
+                //    {
+                //        Tile2ID = "woodentable2",
+                //        SoundID = "tavernnoise1",
+                //        Text = "You are in a dimly lit tavern, where adventurers meet before venturting forth. A dark stairwell lead to the Dungeon below.",
+                //        Down = new Loc() { AreaID = 1, HexID = 1 }, // Leads to the dungeon
+                //    },
+                //});
+
+                //Areas.Add(new Area()
+                //{
+                //    ID = 0,
+                //    Title = "Umbra Tavern",
+                //    Height = 7,
+                //    Width = 7,
+                //    Depth = 1,
+                //    StartX = 24,
+                //    StartY = 24,
+                //    Hexes = TavernHexes,
+                //});
+
+                var town = new Area();
+
+                town.ID = "town";
+                town.Title = "Town";
+                town.Height = 10;
+                town.Width = 10;
+                town.Depth = 1;
+                town.StartX = 0;
+                town.StartY = 0;
+                town.Hexes = new Hex[town.Height, town.Width];
+
+                for (int o = 0; o < town.Height; o++)
                 {
-                    ID = 1,
-                    Tile = new Tile()
+                    for (int i = 0; i < town.Width; i++)
                     {
+                        var hex = new Hex()
+                        {
+                            ID = town.ID,
+                        };
 
-                        Name = "Entrance",
-                        Text = "You are standing at the entrance to the Dungeon Lab.",
-                        SoundID = "silence",
-                        Tile2ID = "stairsup",
-                        East = 2,
-                        Up = new Loc() { AreaID = 0, HexID = 1 }, // Leads back to tavern
-                    },
-                    PermanentNPCs = new List<int>() { 1, 2 },
-                });
+                        town.Hexes[o, i] = hex;
+                    }
+                }
 
-                Hexes.Add(new Hex()
+                town.Hexes[0, 0].Tile.Tile1ID = "grass4";
+                town.Hexes[0, 0].Tile.Tile2ID = "goldchest";
+                town.Hexes[0, 0].Tile.Tile3ID = "grasstuft";
+                town.Hexes[0, 3].Tile.Tile1ID = "mud2";
+                town.Hexes[1, 5].Tile.Tile2ID = "woodenfence1";
+                town.Hexes[1, 5].Solid = true;
+                town.Hexes[2, 2].Tile.Tile1ID = "castlestones1";
+                town.Hexes[2, 2].Tile.Tile2ID = "knightstatue";
+                town.Hexes[4, 2].Tile.Tile1ID = "mud1";
+                town.Hexes[4, 2].Tile.Tile2ID = "stoneportal";
+                town.Hexes[4, 2].Teleport = new Loc() { AreaID = 2, X = 1, Y = 1 };
+                town.Hexes[5, 5].Tile.Tile1ID = "stairs2";
+                town.Hexes[5, 5].Teleport = new Loc() { AreaID = 1, X = 0, Y = 0 };
+                town.Hexes[6, 0].Tile.Tile1ID = "castlestones1";
+                town.Hexes[6, 0].Title = "Demogorgon's Lair";
+                town.Hexes[6, 0].Description = "You are standing in the presence of pure evil itself.";
+                town.Hexes[6, 6].Tile.Tile2ID = "water8";
+                
+                town.Name = "Town";
+                Areas.Add(town);
+
+                var dungeon = new Area();
+
+                dungeon.ID = "dungeon";
+                dungeon.Title = "Dungeon";
+                dungeon.Height = 10;
+                dungeon.Width = 10;
+                dungeon.Depth = 1;
+                dungeon.StartX = 0;
+                dungeon.StartY = 0;
+                dungeon.Hexes = new Hex[dungeon.Height, dungeon.Width];
+
+                for (int o = 0; o < dungeon.Height; o++)
                 {
-                    ID = 2,
-                    Tile = new Tile()
+                    for (int i = 0; i < dungeon.Width; i++)
                     {
-                        Name = "Birch Tree",
-                        Tile2ID = "redmushrooms",
-                        East = 3,
-                        West = 1,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.Animal },
-                });
+                        var hex = new Hex()
+                        {
+                            ID = dungeon.ID,
+                            Tile = new Tile()
+                            {
+                                Tile1ID = "mud1",
+                            },
+                        };
 
-                Hexes.Add(new Hex()
+                        dungeon.Hexes[o, i] = hex;
+                    }
+                }
+
+                dungeon.Hexes[0, 0].Tile.Tile1ID = "stairs1";
+                dungeon.Hexes[0, 0].Teleport = new Loc() { AreaID = 0, X = 5, Y = 5 };
+                dungeon.Hexes[0, 3].Tile.Tile1ID = "mud2";
+                dungeon.Hexes[2, 2].Tile.Tile1ID = "castlestones1";
+                dungeon.Hexes[2, 2].Tile.Tile2ID = "knightstatue";
+                dungeon.Hexes[4, 2].Tile.Tile1ID = "mud1";
+                dungeon.Hexes[4, 2].Tile.Tile2ID = "stoneportal";
+                dungeon.Hexes[4, 2].Teleport = new Loc() { AreaID = 0, X = 0, Y = 6 };
+                dungeon.Hexes[5, 5].Tile.Tile1ID = "stairs2";
+                dungeon.Hexes[5, 5].Teleport = new Loc() { AreaID = 2, X = 0, Y = 0 };
+                dungeon.Hexes[6, 0].Tile.Tile1ID = "castlestones1";
+                dungeon.Hexes[6, 0].Title = "Demogorgon's Lair";
+                dungeon.Hexes[6, 0].Description = "You are standing in the presence of pure evil itself.";
+                dungeon.Hexes[6, 6].Tile.Tile2ID = "water8";
+
+                dungeon.Name = "Dungeon";
+                Areas.Add(dungeon);
+
+                var lair = new Area();
+
+                lair.ID = "demogorgonlair";
+                lair.Title = "Demogorgon Lair";
+                lair.Height = 3;
+                lair.Width = 3;
+                lair.Depth = 1;
+                lair.StartX = 1;
+                lair.StartY = 1;
+                lair.Hexes = new Hex[lair.Height, lair.Width];
+                for (int o = 0; o < lair.Height; o++)
                 {
-                    ID = 3,
-                    Tile = new Tile()
+                    for (int i = 0; i < lair.Width; i++)
                     {
-                        Name = "Cemetary Gate",
-                        Tile2ID = "metalgate",
-                        South = 7,
-                        East = 4,
-                        West = 2,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.Undead },
-                });
+                        var hex = new Hex()
+                        {
+                            ID = lair.ID,
+                            Tile = new Tile()
+                            {
+                                Tile1ID = "stars1",
+                            },
+                        };
 
-                Hexes.Add(new Hex()
-                {
-                    ID = 4,
-                    Tile = new Tile()
-                    {
-                        Name = "Undead Tomb",
-                        Text = "You are standing in a dank tomb. Before you lies a mysterious gate.",
-                        Tile2ID = "stoneportal",
-                        West = 3,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.RareUndead },
-                });
+                        lair.Hexes[o, i] = hex;
+                    }
+                }
 
-                Hexes.Add(new Hex()
-                {
-                    ID = 5,
-                    Tile = new Tile()
-                    {
-                        Name = "Dragon Lair",
-                        Text = "You smell smoke and a foul odor in the air. This is folly.",
-                        Tile2ID = "goldchest",
-                        East = 6,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.DragonKind },
-                });
+                lair.Hexes[0, 0].Tile.Tile1ID = "stairs1";
+                lair.Hexes[0, 0].Teleport = new Loc() { AreaID = 1, X = 5, Y = 5 };
+                lair.Hexes[1, 1].Title = "Demogorgon's Lair";
+                lair.Hexes[1, 1].Description = "You are standing in the presence of pure evil itself.";
+                lair.Hexes[2, 2].Tile.Tile2ID = "goldchest";
 
-                Hexes.Add(new Hex()
-                {
-                    ID = 6,
-                    Tile = new Tile()
-                    {
-                        Name = "Gray Stone",
-                        Tile2ID = "stonebridge",
-                        South = 10,
-                        East = 7,
-                        West = 5,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.Common },
-                });
-
-                Hexes.Add(new Hex()
-                {
-                    ID = 7,
-                    Tile = new Tile()
-                    {
-                        Name = "Gazebo",
-                        Tile2ID = "gazebo",
-                        SoundID = "toads1",
-                        North = 3,
-                        South = 11,
-                        East = 8,
-                        West = 6,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.VeryRare },
-                });
-
-                Hexes.Add(new Hex()
-                {
-                    ID = 8,
-                    Tile = new Tile()
-                    {
-                        Name = "Animal Kingdom",
-                        Tile2ID = "birchtree",
-                        SoundID = "birds1",
-                        South = 12,
-                        West = 7,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.Animal },
-                });
-
-                Hexes.Add(new Hex()
-                {
-                    ID = 9,
-                    QuestID = 1,
-                    LockID = 1,
-                    LockLevel = 50,
-                    Tile = new Tile()
-                    {
-                        Name = "Demogorgon's Lair",
-                        Text = "You are standing in the presence of pure evil itself.",
-                        Tile2ID = "knightstatue",
-                        East = 10,
-                    },
-                    PermanentNPCs = new List<int>() { 3 },
-                });
-
-                Hexes.Add(new Hex()
-                {
-                    ID = 10,
-                    Tile = new Tile()
-                    {
-                        Name = "Ocean",
-                        Tile1ID = "water7",
-                        Tile2ID = "floatingpyramid",
-                        North = 6,
-                        East = 11,
-                        West = 9,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.Aquatic },
-                });
-
-                Hexes.Add(new Hex()
-                {
-                    ID = 11,
-                    Tile = new Tile()
-                    {
-                        Name = "Stables",
-                        Tile1ID = "grassmud1",
-                        Tile2ID = "brownhorse",
-                        North = 7,
-                        East = 12,
-                        West = 10,
-                    },
-                    RandomNPCsMax = 5,
-                    RandomNPCs = new List<EncounterType>() { EncounterType.VeryRare },
-                });
-
-                Hexes.Add(new Hex()
-                {
-                    ID = 12,
-                    Name = "Stairway to the Unknown",
-                    Tile = new Tile()
-                    {
-                        Text = "You are standing at the top of a winding staircase which leads down into utter darkness. You cannot make this descent.. yet.",
-                        Tile2ID = "stairsup",
-                        North = 8,
-                        West = 11,
-                        //Down = new Loc() { AreaID = 1, HexID = 12 }, // Leads back to same spot
-                    },
-                    PermanentNPCs = new List<int>() { 10 },
-                });
-
-                var TavernHexes = new List<Hex>();
-                TavernHexes.Add(new Hex()
-                {
-                    ID = 1,
-                    Name = "Umbra Tavern",
-                    NoCombat = true,
-                    Tile = new Tile()
-                    {
-                        Tile2ID = "woodentable2",
-                        SoundID = "tavernnoise1",
-                        Text = "You are in a dimly lit tavern, where adventurers meet before venturting forth. A dark stairwell lead to the Dungeon below.",
-                        Down = new Loc() { AreaID = 1, HexID = 1 }, // Leads to the dungeon
-                    },
-                });
-
-                Areas.Add(new Area()
-                {
-                    ID = 0,
-                    Title = "Umbra Tavern",
-                    Height = 1,
-                    Width = 1,
-                    Depth = 1,
-                    StartX = 0,
-                    StartY = 0,
-                    Hexes = TavernHexes,
-                });
-
-                Areas.Add(new Area()
-                {
-                    ID = 1,
-                    Title = "Dungeon",
-                    Height = 3,
-                    Width = 4,
-                    Depth = 1,
-                    StartX = 0,
-                    StartY = 0,
-                    Hexes = Hexes,
-                });
+                lair.Name = "Demogorgon Lair";
+                Areas.Add(lair);
 
                 //XmlReader reader = XmlReader.Create(@"data\areas.xml");
                 //while (reader.Read())
@@ -295,10 +412,8 @@ namespace Game.Realm
         {
             List<PC> Players = new List<PC>();
 
-            int id = 1;
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Dunatis",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.Hero,
@@ -325,14 +440,14 @@ namespace Game.Realm
                 Stealth = 25,
                 ArmorClass = 10,
                 LootClass = LootType.None,
-                MainHandID = 1,
+                MainHandID = "vorpal sword",
                 ImageName = "malehumanbarbarianhero",
                 Bio = "An extremely powerful character primarily used for testing dungeons.",
+                Loc = new Loc() { AreaID = 0, HexID = 0, X = 3, Y = 3 },
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Lexanna",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
@@ -358,14 +473,13 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 25,
                 LootClass = LootType.None,
-                MainHandID = 4,
+                MainHandID = "lute",
                 ImageName = "femaleelfredhead",
                 Bio = "Lexanna has a strangely other wordly look about her.",
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Caitlanna",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
@@ -391,14 +505,13 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 40,
                 LootClass = LootType.None,
-                MainHandID = 2,
+                MainHandID = "staff",
                 ImageName = "femalehumandruid",
                 Bio = "Caitlanna fights for the weak and loves her Bella.",
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Owlshonor",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
@@ -421,14 +534,13 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 15,
                 LootClass = LootType.None,
-                MainHandID = 5,
+                MainHandID = "battleaxe",
                 ImageName = "maledwarffighter",
                 Bio = "A stout and commanding figure, you want him on your side in a fight.",
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Gnorm",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
@@ -453,14 +565,13 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 33,
                 LootClass = LootType.None,
-                MainHandID = 2,
+                MainHandID = "staff",
                 ImageName = "malehumandruid",
                 Bio = "Josh the Wasp.",
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Wuppah",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
@@ -485,14 +596,13 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 25,
                 LootClass = LootType.None,
-                MainHandID = 3,
+                MainHandID = "dagger",
                 ImageName = "femalehumanblond",
                 Bio = "She can defeat you with just a look.",
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Faerune",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
@@ -517,14 +627,13 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 20,
                 LootClass = LootType.None,
-                MainHandID = 2,
+                MainHandID = "staff",
                 ImageName = "malehumanwizard",
                 Bio = "He has crispy furious fingers.",
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Tractive",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
@@ -550,14 +659,13 @@ namespace Game.Realm
                 Gold = 25,
                 Stealth = 33,
                 LootClass = LootType.None,
-                MainHandID = 8,
+                MainHandID = "longbow",
                 ImageName = "malehumanranger",
                 Bio = "Hunting in the woods is what he does best.",
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Lukazz",
                 AccountType = AccountType.DungeonMaster,
                 Type = EntityType.PC,
@@ -583,6 +691,7 @@ namespace Game.Realm
                 Gold = 25,
                 Stealth = 33,
                 LootClass = LootType.None,
+                MainHandID = "greatsword",
                 MinDamage = 3,
                 MaxDamage = 6,
                 ImageName = "malehumansandyblond",
@@ -591,7 +700,6 @@ namespace Game.Realm
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Derwin",
                 AccountType = AccountType.Hero,
                 Type = EntityType.PC,
@@ -615,14 +723,14 @@ namespace Game.Realm
                 Gold = 50,
                 Stealth = 10,
                 LootClass = LootType.None,
-                MainHandID = 7,
+                MainHandID = "twohandedsword",
                 ImageName = "whiteknightpaladin",
                 Bio = "Always ready to fight with passion and test out dungeons.",
+                Loc = new Loc() { AreaID = 0, HexID = 25, X = 3, Y = 3 },
             });
 
             Players.Add(new PC()
             {
-                ID = id++,
                 AccountName = "Chella",
                 Type = EntityType.PC,
                 Gender = GenderType.Female,
@@ -669,16 +777,13 @@ namespace Game.Realm
         {
             List<NPC> NPCs = new List<NPC>();
 
-            var vorpal = LoadItems().Where(i => i.ID == 1).Single();
+            var vorpal = LoadItems()
+                .Where(i => i.Name == "vorpal sword").Single();
             var demoInven = new List<Item>();
             demoInven.Add(vorpal);
 
-            int id = 1000;
-
             NPCs.Add(new NPC()
             {
-                ID = id++,
-                QuestID = 0,
                 Origin = "Umbral Tavern",
                 CorpseDecayRate = 99,
                 Type = EntityType.NPC,
@@ -706,14 +811,12 @@ namespace Game.Realm
                 Attackable = false,
                 EncounterClass = EncounterType.Unique,
                 LootClass = LootType.Common,
-                Skills = new List<int>() { },
+                Skills = new List<string>() { },
                 Bio = "The barkeep looks at you indifferently.",
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
-                QuestID = 0,
                 Origin = "Umbral Tavern",
                 CorpseDecayRate = 99,
                 Type = EntityType.NPC,
@@ -739,14 +842,12 @@ namespace Game.Realm
                 Mood = MoodType.Pacifist,
                 EncounterClass = EncounterType.Unique,
                 LootClass = LootType.Common,
-                Skills = new List<int>() { },
+                Skills = new List<string>() { },
                 Bio = "The practice combat dummy looks like it needs a good thrashing.",
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
-                QuestID = 1,
                 Origin = "Gaping Maw",
                 CorpseDecayRate = 5,
                 Type = EntityType.NPC,
@@ -773,14 +874,12 @@ namespace Game.Realm
                 EncounterClass = EncounterType.Unique,
                 LootClass = LootType.Unique,
                 Inventory = demoInven,
-                Skills = new List<int>() { 1 },
+                Skills = new List<string>() { "behead" },
                 Bio = "A sense of utter fear strikes you as you gaze upon this horrible apparation.",
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
-                QuestID = 1,
                 Origin = "Valinor",
                 Attackable = false,
                 Type = EntityType.NPC,
@@ -805,14 +904,12 @@ namespace Game.Realm
                 Mood = MoodType.Normal,
                 EncounterClass = EncounterType.Unique,
                 LootClass = LootType.Unique,
-                Skills = new List<int>() { 1 },
+                Skills = new List<string>() { "behead" },
                 Bio = "A sense of overwhelming calm and peacefulness comes over you as gaze upon this being.",
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
-                QuestID = 1,
                 Origin = "Valinor",
                 Attackable = false,
                 Type = EntityType.NPC,
@@ -837,14 +934,12 @@ namespace Game.Realm
                 Mood = MoodType.Normal,
                 EncounterClass = EncounterType.Unique,
                 LootClass = LootType.Unique,
-                Skills = new List<int>() { 1 },
+                Skills = new List<string>() { "behead" },
                 Bio = "Although out of shape now, you can tell this king was once a formidable warrior.",
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
-                QuestID = 1,
                 Origin = "Valinor",
                 Attackable = false,
                 Type = EntityType.NPC,
@@ -868,13 +963,12 @@ namespace Game.Realm
                 Mood = MoodType.Normal,
                 EncounterClass = EncounterType.Unique,
                 LootClass = LootType.Unique,
-                Skills = new List<int>() { 1 },
+                Skills = new List<string>() { "behead" },
                 Bio = "This is the strangest person you have ever seen, princess or not.",
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Race = RaceType.Animal,
@@ -897,7 +991,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 5,
                 Race = RaceType.Insect,
@@ -920,7 +1013,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 3,
                 Race = RaceType.Insect,
@@ -937,14 +1029,13 @@ namespace Game.Realm
                 Gold = 0,
                 WanderRange = 1,
                 Follows = 10,
-                Skills = new List<int>() { 2, 3 },
+                Skills = new List<string>() { "poisoncloud" },
                 EncounterClass = EncounterType.Insect,
                 LootClass = LootType.Insect,
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 5,
                 Race = RaceType.Insect,
@@ -967,7 +1058,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 3,
                 Race = RaceType.Undead,
@@ -990,7 +1080,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 3,
                 Race = RaceType.Undead,
@@ -1013,7 +1102,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 3,
                 Race = RaceType.Undead,
@@ -1036,7 +1124,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 3,
                 Race = RaceType.Undead,
@@ -1059,7 +1146,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 1,
                 Race = RaceType.Animal,
@@ -1082,7 +1168,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 1,
                 Race = RaceType.Animal,
@@ -1109,7 +1194,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Dragon,
                 Level = 15,
@@ -1129,13 +1213,12 @@ namespace Game.Realm
                 Follows = 50,
                 EncounterClass = EncounterType.DragonKind,
                 LootClass = LootType.VeryRare,
-                Skills = new List<int>() { 2, 3 },
+                Skills = new List<string>() { "dragonfire", "dragonfear" },
                 Inventory = dragonInven,
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Dragon,
                 Level = 11,
@@ -1154,13 +1237,12 @@ namespace Game.Realm
                 Follows = 50,
                 EncounterClass = EncounterType.DragonKind,
                 LootClass = LootType.Exquisite,
-                Skills = new List<int>() { 1, 2, 3 },
+                Skills = new List<string>() { "behead", "dragonfire", "dragonfear" },
                 Inventory = dragonInven,
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 11,
                 Race = RaceType.Dragon,
@@ -1179,17 +1261,16 @@ namespace Game.Realm
                 Follows = 40,
                 EncounterClass = EncounterType.DragonKind,
                 LootClass = LootType.Exquisite,
-                Skills = new List<int>() { 2, 3, 4 },
+                Skills = new List<string>() { "dragonfire", "dragonfear", "poisoncloud" },
                 Inventory = dragonInven,
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 11,
                 Race = RaceType.Dragon,
-                Alignment = AlignmentType.LawfulEvil,
+                Alignment = AlignmentType.LawfulGood,
                 ArmorClass = 8,
                 Article = "a",
                 Name = "bronze dragon",
@@ -1204,13 +1285,12 @@ namespace Game.Realm
                 Follows = 40,
                 EncounterClass = EncounterType.DragonKind,
                 LootClass = LootType.Exquisite,
-                Skills = new List<int>() { 2, 3, 4 },
+                Skills = new List<string>() { "behead", "dragonfire", "dragonfear" },
                 Inventory = dragonInven,
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 11,
                 Race = RaceType.Dragon,
@@ -1229,13 +1309,12 @@ namespace Game.Realm
                 Follows = 40,
                 EncounterClass = EncounterType.DragonKind,
                 LootClass = LootType.Exquisite,
-                Skills = new List<int>() { 2, 3, 4 },
+                Skills = new List<string>() { "dragonfire", "dragonfear" },
                 Inventory = dragonInven,
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 CorpseDecayRate = 75,
                 Race = RaceType.Dragon,
@@ -1254,13 +1333,12 @@ namespace Game.Realm
                 WanderRange = 3,
                 EncounterClass = EncounterType.DragonKind,
                 LootClass = LootType.Exquisite,
-                Skills = new List<int>() { 2, 3 },
+                Skills = new List<string>() { "dragonfire", "dragonfear" },
                 Inventory = dragonInven,
             });
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 7,
                 Race = RaceType.Human,
@@ -1283,7 +1361,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 6,
                 Race = RaceType.Human,
@@ -1306,7 +1383,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 2,
                 Race = RaceType.Planar,
@@ -1329,7 +1405,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Animal,
                 Level = 5,
@@ -1352,7 +1427,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 6,
                 Race = RaceType.Undead,
@@ -1375,7 +1449,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Level = 10,
                 Race = RaceType.Undead,
@@ -1398,7 +1471,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.HalfOrc,
                 Level = 7,
@@ -1421,7 +1493,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.HalfOrc,
                 Level = 5,
@@ -1444,7 +1515,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.HalfOrc,
                 Level = 8,
@@ -1467,7 +1537,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Goblin,
                 Level = 3,
@@ -1490,7 +1559,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Goblin,
                 Level = 3,
@@ -1513,7 +1581,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Goblin,
                 Level = 4,
@@ -1536,7 +1603,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Planar,
                 Level = 8,
@@ -1559,7 +1625,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Aquatic,
                 Level = 1,
@@ -1582,7 +1647,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Aquatic,
                 Level = 2,
@@ -1605,7 +1669,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Aquatic,
                 Level = 3,
@@ -1628,7 +1691,6 @@ namespace Game.Realm
 
             NPCs.Add(new NPC()
             {
-                ID = id++,
                 Type = EntityType.NPC,
                 Race = RaceType.Aquatic,
                 Level = 4,
@@ -1656,29 +1718,25 @@ namespace Game.Realm
         {
             List<Item> Items = new List<Item>();
 
-            var id = 1;
-
             Items.Add(new Item()
             {
-                ID = id++,
-                QuestID = 1,
+                Name = "vorpal sword",
+                QuestID = "demogorgon",
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "vorpal sword",
                 Value = 5000,
                 ToHitBonus = 3,
                 DamageBonus = 2,
                 MinDamage = 12,
                 MaxDamage = 48,
-                Effects = new List<int>() { 1 },
+                Effects = new List<string>() { "behead" },
             });
 
             Items.Add(new Item()
             {
-                ID = id++,
+                Name = "staff",
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "staff",
                 Value = 10,
                 MinDamage = 1,
                 MaxDamage = 4,
@@ -1686,7 +1744,6 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
                 Name = "dagger",
@@ -1697,10 +1754,9 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
+                Name = "mace",
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "mace",
                 Value = 7,
                 MinDamage = 2,
                 MaxDamage = 6,
@@ -1708,10 +1764,9 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
+                Name = "longsword",
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "longsword",
                 Value = 10,
                 MinDamage = 1,
                 MaxDamage = 8,
@@ -1719,10 +1774,9 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
+                Name = "two-handed sword",
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "two-handed sword",
                 Value = 15,
                 MinDamage = 3,
                 MaxDamage = 18,
@@ -1730,19 +1784,17 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
+                Name = "flaming two-handed sword",
                 Type = ItemType.Weapon,
                 Article = "a",
-                Name = "flaming two-handed sword",
                 Value = 15,
                 MinDamage = 8,
                 MaxDamage = 32,
-                Effects = new List<int>() { 5 },
+                Effects = new List<string>() { "flamelick" },
             });
 
             Items.Add(new Item()
             {
-                ID = id++,
                 Type = ItemType.Weapon,
                 Article = "a",
                 Name = "longbow",
@@ -1754,7 +1806,6 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
                 Type = ItemType.Armor,
                 Article = "a",
                 Name = "leather armor",
@@ -1764,7 +1815,6 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
                 Type = ItemType.Armor,
                 Article = "a",
                 Name = "chainmail",
@@ -1774,7 +1824,6 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
                 Type = ItemType.Armor,
                 Article = "a",
                 Name = "buckler shield",
@@ -1784,7 +1833,6 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
                 Type = ItemType.Treasure,
                 Article = "a",
                 Name = "goldchest",
@@ -1793,7 +1841,6 @@ namespace Game.Realm
 
             Items.Add(new Item()
             {
-                ID = id++,
                 Type = ItemType.Armor,
                 Article = "a",
                 Name = "glittering shield",
@@ -1808,11 +1855,8 @@ namespace Game.Realm
         {
             List<Effect> Effects = new List<Effect>();
 
-            var id = 1;
-
             Effects.Add(new Effect()
             {
-                ID = id++,
                 Name = "behead",
                 Type = EffectType.Death,
                 Damage = DamageType.Acid,
@@ -1825,7 +1869,6 @@ namespace Game.Realm
 
             Effects.Add(new Effect()
             {
-                ID = id++,
                 Name = "dragonfire",
                 Type = EffectType.Damage,
                 Damage = DamageType.Fire,
@@ -1838,7 +1881,6 @@ namespace Game.Realm
 
             Effects.Add(new Effect()
             {
-                ID = id++,
                 Name = "dragonfear",
                 Type = EffectType.Stun,
                 Damage = DamageType.Mental,
@@ -1851,7 +1893,6 @@ namespace Game.Realm
 
             Effects.Add(new Effect()
             {
-                ID = id++,
                 Name = "poisoncloud",
                 Type = EffectType.Poison,
                 Damage = DamageType.Poison,
@@ -1864,7 +1905,6 @@ namespace Game.Realm
 
             Effects.Add(new Effect()
             {
-                ID = id++,
                 Name = "flamelick",
                 Type = EffectType.Damage,
                 Damage = DamageType.Fire,
@@ -1886,7 +1926,6 @@ namespace Game.Realm
 
             Quests.Add(new Quest()
             {
-                ID = id++,
                 Name = "Sanctity's Edge",
                 Description = "A new beginning.",
                 RewardText = "You have completed your first quest.",
@@ -1899,10 +1938,22 @@ namespace Game.Realm
             return Quests;
         }
 
-        //TODO: Finish load/save PCs to files/db
-        public void SavePCs()
+        public void SavePCs(List<PC> players)
         {
+            foreach (PC p in players)
+            {
+                var json = JsonArray.Parse(JsonConvert.SerializeObject(p));
+                File.WriteAllText("PCs/" + p.Name + ".json", json.ToString());
+            }
+        }
 
+        public void SaveAreas(RealmManager rm)
+        {
+            foreach (Area a in rm.Areas)
+            {
+                var json = JsonArray.Parse(JsonConvert.SerializeObject(a));
+                File.WriteAllText("Areas/" + a.Name + ".json", json.ToString());
+            }
         }
     }
 }

@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 	<Version>1.0.3.0</Version>
-	<WindowLocationX>656</WindowLocationX>
-	<WindowLocationY>185</WindowLocationY>
-	<WindowHeight>686</WindowHeight>
-	<WindowWidth>930</WindowWidth>
-	<WindowState>0</WindowState>
+	<Version>skin1</Version>
 	<PlayerID>10</PlayerID>
 	<Images>true</Images>
 	<Sounds>false</Sounds>
@@ -16,4 +12,14 @@
 	<ServerMode>true</ServerMode>
 	<ServerHost>sol</ServerHost>
 	<ServerPort>1412</ServerPort>
+	<WindowLocationX>656</WindowLocationX>
+	<WindowLocationY>185</WindowLocationY>
+	<WindowHeight>686</WindowHeight>
+	<WindowWidth>930</WindowWidth>
+	<WindowState>0</WindowState>
+	<EditLocationX>800</EditLocationX>
+	<EditLocationY>10</EditLocationY>
+	<EditHeight>600</EditHeight>
+	<EditWidth>800</EditWidth>
+	<EditState>0</EditState>
 </Config>

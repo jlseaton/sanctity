@@ -42,11 +42,11 @@ namespace Game.Realm
             {
                 attacker.State = StateType.Normal;
                 result = Environment.NewLine + attacker.FullName + " recovers from being stunned.";
-                Realm.SayMessage(result, target.Loc.AreaID, target.Loc.HexID);
+                Realm.SayMessage(result, target.Loc.AreaID, target.Loc.X, target.Loc.Y);
                 return result;
             }
 
-            var hex = Realm.Areas[target.Loc.AreaID].Hexes[target.Loc.HexID - 1];
+            var hex = Realm.Areas[target.Loc.AreaID].Hexes[target.Loc.Y, target.Loc.X];
 
             // NPC skill procs first
             if (attacker.Type == EntityType.NPC
@@ -119,25 +119,28 @@ namespace Game.Realm
                         attacker.MainHand.Effects != null &&
                         attacker.MainHand.Effects.Any())
                     {
-                        foreach (int id in attacker.MainHand.Effects)
+                        foreach (var id in attacker.MainHand.Effects)
                         {
-                            var eff = Realm.Effects[id - 1];
-
-                            int chance = Randomizer.Next(100);
-
-                            if (chance > eff.FizzleChance)
+                            if (Realm.Effects.Any(e => e.ID == id))
                             {
-                                int procDamage = Randomizer.Next(eff.MaxDamage)
-                                    + eff.MinDamage;
+                                var eff = Realm.Effects.Single(e => e.ID == id);
 
-                                damage += procDamage;
+                                int chance = Randomizer.Next(100);
 
-                                string verb = eff.Verb == String.Empty
-                                    ? " attacks and hits " : eff.Verb;
+                                if (chance > eff.FizzleChance)
+                                {
+                                    int procDamage = Randomizer.Next(eff.MaxDamage)
+                                        + eff.MinDamage;
 
-                                result += Environment.NewLine + attacker.FullName + verb +
-                                    target.FullName + weaponName + " for " + procDamage.ToString() +
-                                    " " + eff.Damage.ToString() + " damage.";
+                                    damage += procDamage;
+
+                                    string verb = eff.Verb == String.Empty
+                                        ? " attacks and hits " : eff.Verb;
+
+                                    result += Environment.NewLine + attacker.FullName + verb +
+                                        target.FullName + weaponName + " for " + procDamage.ToString() +
+                                        " " + eff.Damage.ToString() + " damage.";
+                                }
                             }
                         }
                     }
@@ -162,7 +165,7 @@ namespace Game.Realm
             {
                 target.Die();
 
-                attacker.LastAttackerID = 0;
+                attacker.LastAttackerID = "";
                 attacker.State = StateType.Normal;
 
                 StringBuilder rewards = new StringBuilder();

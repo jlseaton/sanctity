@@ -16,7 +16,9 @@ SET version=%version:"=%
 
 dotnet publish -c Release --self-contained -r win-x64 -o publish
 
-vpk pack -u loc --packTitle "Lords of Chaos" -v %version% -p .\publish -e Game.Client.exe
+vpk pack -u LordsOfChaos --packTitle "Lords of Chaos" --splashImage .\Images\loctitle.png -v %version% -p .\publish -e Game.Client.exe
+
+rem vpk upload 
 
 goto :eof
 

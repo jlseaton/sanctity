@@ -15,15 +15,15 @@ namespace Game.Realm
         public string Bio { get; set; }
         public string Diety { get; set; }
         public bool Attackable { get; set; }
-        public int LastAttackerID { get; set; }
-        public int LastTargetID { get; set; }
+        public string? LastAttackerID { get; set; }
+        public string? LastTargetID { get; set; }
         public long LastActionRound { get; set; }
 
-        public int SoundID { get; set; }
-        public int VoiceID { get; set; }
-        public int ThreatenSoundID { get; set; }
-        public int AttackSoundID { get; set; }
-        public int DeathSoundID { get; set; }
+        public string? SoundID { get; set; }
+        public string? VoiceID { get; set; }
+        public string? ThreatenSoundID { get; set; }
+        public string? AttackSoundID { get; set; }
+        public string? DeathSoundID { get; set; }
 
         public DateTime DeathTime { get; set; }
 
@@ -38,6 +38,7 @@ namespace Game.Realm
         public StateType State { get; set; }
         public MoodType Mood { get; set; }
         public GenderType Gender { get; set; }
+        public int Scale { get; set; }
         public SizeType Size { get; set; }
         public RaceType Race { get; set; }
         public ClassType Class { get; set; }
@@ -75,17 +76,17 @@ namespace Game.Realm
         public int MinDamage { get; set; }
         public int MaxDamage { get; set; }
 
-        public int MainHandID { get; set; }
+        public string MainHandID { get; set; }
         public Item MainHand { get; set; }
-        public int OffHandID { get; set; }
+        public string OffHandID { get; set; }
         public Item OffHand { get; set; }
 
         public LootType LootClass { get; set; }
         public List<string> SpecificLoot { get; set; }
 
-        public List<int> Skills { get; set; }
-        public List<int> Spells { get; set; }
-        public List<int> Languages { get; set; }
+        public List<string> Skills { get; set; }
+        public List<string> Spells { get; set; }
+        public List<string> Languages { get; set; }
 
         public List<Resist> Resists { get; set; }
         public List<Item> Inventory { get; set; }
@@ -110,9 +111,10 @@ namespace Game.Realm
 
         //Entity LastTarget = null;
 
-        public Entity(int areaId = 0, int hexId = 1)
+        public Entity(int areaId = 0, int hexId = 0)
         {
             Attackable = true;
+            Scale = 100;
 
             // Base damage and regeneration for all entities
             MinDamage = 1;
@@ -124,13 +126,13 @@ namespace Game.Realm
             Loc = new Loc() { AreaID = areaId, HexID = hexId };
             Stats = new Stats() { Name = Name };
 
-            Languages = new List<int> { 0 }; // Everyone sentient knows the common language
+            Languages = new List<string> { "Common" }; // Everyone sentient knows the common language
         }
 
         public string GetDescription(bool includeBio = true, 
             bool includeLoc = false, bool includeState = false)
         {
-            StringBuilder sb = new StringBuilder(this.FullName);
+            StringBuilder sb = new StringBuilder(this.Name);
             if (!String.IsNullOrEmpty(Surname))
                 sb.Append(" " + Surname);
             sb.Append(", level " + Level.ToString());
@@ -138,17 +140,6 @@ namespace Game.Realm
                 sb.Append(" " + Race);
             if (!String.IsNullOrEmpty(Class.ToString()))
                 sb.Append(" " + Class);
-#if DEBUG
-            if (includeState)
-            {
-                sb.Append("\r\nSTATE: " + State.ToString());
-            }
-            if (includeLoc)
-            {
-                sb.Append("\r\nLOC: Area:" + Loc.AreaID.ToString() +
-                    "-Hex:" + Loc.HexID.ToString());
-            }
-#endif
             if (this is PC && MainHand != null)
             {
                 sb.Append(" wielding " + MainHand.FullName);
@@ -160,6 +151,18 @@ namespace Game.Realm
                 if (!String.IsNullOrEmpty(Bio))
                     sb.Append("\r\n" + Bio);
             }
+#if DEBUG
+            if (includeState)
+            {
+                sb.Append("\r\nSTATE: " + State.ToString());
+            }
+            if (includeLoc)
+            {
+                sb.Append("\r\nLOC: Area:" + Loc.AreaID.ToString() +
+                    ", X: " + Loc.X.ToString() + 
+                    ", Y: " + Loc.Y.ToString());
+            }
+#endif
             return sb.ToString();
         }
 
@@ -170,6 +173,7 @@ namespace Game.Realm
             {
                 HPs = 0;
             }
+            TileID = "remains1";
             DeathTime = DateTime.Now;
         }
 
@@ -243,19 +247,22 @@ namespace Game.Realm
 
             return false;
         }
+
         public Stats GetStats()
         {
             return new Stats()
             {
                 ID = base.ID,
                 Name = Name,
+                Race = Race.ToString(),
+                Class = Class.ToString(),
+                Level = Level,
                 ImageName = ImageName,
                 HPs = HPs,
                 MaxHPs = MaxHPs,
                 MPs = MPs,
                 MaxMPs = MaxMPs,
                 Age = Age,
-                Level = Level,
                 Experience = Experience,
                 Gold = Gold,
                 AttackDelay = AttackDelay,

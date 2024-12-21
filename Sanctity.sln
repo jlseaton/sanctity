@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		backup.bat = backup.bat
+		Web\index.html = Web\index.html
 		Overview.txt = Overview.txt
 		ReadMe.txt = ReadMe.txt
 	EndProjectSection
@@ -21,9 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Server", "Game.Server\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.World", "Game.World\Game.World.csproj", "{50E2BDD8-CB69-470F-BC60-E29D24EDA8D4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Game.Test", "Game.Test\Game.Test.csproj", "{74D87612-AC09-4E90-B4DC-F5C3DF356CF6}"
-EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Game.Setup", "Game.Setup\Game.Setup.vdproj", "{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Game.Test\Test.csproj", "{74D87612-AC09-4E90-B4DC-F5C3DF356CF6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -341,30 +340,6 @@ Global
 		{74D87612-AC09-4E90-B4DC-F5C3DF356CF6}.Release|x64.Build.0 = Release|Any CPU
 		{74D87612-AC09-4E90-B4DC-F5C3DF356CF6}.Release|x86.ActiveCfg = Release|Any CPU
 		{74D87612-AC09-4E90-B4DC-F5C3DF356CF6}.Release|x86.Build.0 = Release|Any CPU
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Ad-Hoc|Any CPU.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Ad-Hoc|ARM.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Ad-Hoc|iPhone.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Ad-Hoc|x64.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Ad-Hoc|x86.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.AppStore|Any CPU.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.AppStore|ARM.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.AppStore|iPhone.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.AppStore|iPhoneSimulator.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.AppStore|x64.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.AppStore|x86.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Debug|Any CPU.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Debug|ARM.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Debug|iPhone.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Debug|iPhoneSimulator.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Debug|x64.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Debug|x86.ActiveCfg = Debug
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Release|Any CPU.ActiveCfg = Release
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Release|ARM.ActiveCfg = Release
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Release|iPhone.ActiveCfg = Release
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Release|iPhoneSimulator.ActiveCfg = Release
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Release|x64.ActiveCfg = Release
-		{CE457C9E-FC28-4BE3-A48E-DBF5817608C3}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

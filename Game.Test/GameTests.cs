@@ -11,7 +11,7 @@ namespace Game.Test
     {
         public TestContext? TestContext { get; set; }
 
-        private RealmManager Realm = new RealmManager(0, "Test Realm", 0, 0);
+        private RealmManager Realm = new RealmManager(0, "Test Realm", false, 0, 0);
 
         private Packet? lastPacket = null;
 
@@ -32,7 +32,7 @@ namespace Game.Test
         public void TestProtocol()
         {
             Realm.Start();
-            Realm.AddPlayer(1);
+            Realm.AddPlayer("Hoxore");
             Realm.GameEvents += Realm_GameEvents;
             lastPacket = null;
 
@@ -42,7 +42,7 @@ namespace Game.Test
                 Text = "Testing broadcast message.",
             };
 
-            Realm.HandlePacket(packet, 1);
+            Realm.HandlePacket(packet, "Hoxore");
 
             Assert.IsTrue((lastPacket != null) && 
                 lastPacket.ActionType == ActionType.Broadcast);
@@ -60,7 +60,7 @@ namespace Game.Test
 
             for (int i = 0; i < 10; i++)
             {
-                PC player = Realm.AddPlayer(1);
+                PC player = Realm.AddPlayer("Hoxore");
 
                 var npc = Realm.Data.LoadNPCs().Where(n => n.Name == "reddragon").Single();
                 Realm.AddEntity(npc);
@@ -68,16 +68,16 @@ namespace Game.Test
                 string result = Fight(player, npc);
                 Assert.IsTrue(!String.IsNullOrEmpty(result));
                 Realm.RemovePC(player.ID);
-                Realm.RemoveEntity(npc);
+                Realm.RemoveNPC(npc);
 
-                player = Realm.AddPlayer(2);
+                player = Realm.AddPlayer("Derwin");
                 npc = Realm.Data.LoadNPCs().Where(n => n.Name.ToLower() == "demogorgon").Single();
                 Realm.AddEntity(npc);
 
                 result = Fight(player, npc);
                 Assert.IsTrue(!String.IsNullOrEmpty(result));
                 Realm.RemovePC(player.ID);
-                Realm.RemoveEntity(npc);
+                Realm.RemoveNPC(npc);
             }
 
             Realm.Stop();

@@ -6,6 +6,7 @@ namespace Game.World
 {
     public class Config
     {
+        public bool AI { get; set; }
         public bool AutoStart { get; set; }
         public int WorldID { get; set; }
         public string? WorldName { get; set; }
@@ -15,6 +16,7 @@ namespace Game.World
 
         public Config()
         {
+            AI = false;
             AutoStart = true;
             WorldID = 1;
             WorldName = "Myrnn";

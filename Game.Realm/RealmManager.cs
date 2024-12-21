@@ -1,5 +1,6 @@
 ﻿using Game.Core;
 using System.Text;
+using OpenAI_API;
 
 namespace Game.Realm
 {
@@ -40,11 +41,13 @@ namespace Game.Realm
         public List<NPC> NPCs = new List<NPC>();
         public List<PC> Players = new List<PC>();
 
+        protected OpenAIAPI api = new OpenAIAPI("sk-proj-clLZtNfqXD9Q0EL2XI5iT3BlbkFJxa6uCVJt2YoFfiifVWcu");
+
         #endregion
 
         #region Application
 
-        public RealmManager(int id = 1, string name = "Dungeon Lab", 
+        public RealmManager(int id = 1, string name = "Dungeon Lab", bool ai = false,
             int roundDuration = 2000, int pulseRate = 2000)
         {
             ID = id;
@@ -53,6 +56,33 @@ namespace Game.Realm
             PulseRate = pulseRate;
             Round = 0;
             Version = "v1.0.0";
+
+            if (ai)
+            {
+                InitializeAI();
+            }
+        }
+
+        private async Task<string> InitializeAI()
+        {
+            try
+            {
+                //var chat = api.Chat.CreateConversation();
+                //chat.AppendUserInput("How to make a hamburger?");
+
+                //await chat.StreamResponseFromChatbotAsync(res =>
+                //{
+                //    Console.Write(res);
+                //});
+
+                var result = await api.Chat.CreateChatCompletionAsync("Hello!");
+                Console.WriteLine(result);
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         private void ClearAllData()
@@ -94,14 +124,20 @@ namespace Game.Realm
             try
             {
                 //SavePCs();
-                RemovePC(0); // Remove all players
-                             //SaveNPCs();
+                RemovePC(""); // Remove all players
+                //SaveNPCs();
                 foreach (var npc in NPCs)
                 {
-                    RemoveEntity(npc);
+                    RemoveNPC(npc);
                 }
+
+                Data.SavePCs(this.Players);
+                Data.SaveAreas(this);
             }
-            catch { }
+            catch (Exception ex)
+            { 
+                BroadcastMessage(ex.Message);
+            }
 
             Running = false;
         }
@@ -111,80 +147,79 @@ namespace Game.Realm
             foreach (var e in GetEncounterNPCs(EncounterType.Insect, 4).ToList())
             {
                 e.Loc.HexID = 2;
-                Areas[1].Hexes[1].NPCs.Add(e);
+                //Areas[1].Hexes[1].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Undead, 4).ToList())
             {
                 e.Loc.HexID = 3;
-                Areas[1].Hexes[2].NPCs.Add(e);
+                //Areas[1].Hexes[2].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.RareUndead, 3).ToList())
             {
                 e.Loc.HexID = 4;
-                Areas[1].Hexes[3].NPCs.Add(e);
+                //Areas[1].Hexes[3].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Common, 10).ToList())
             {
                 e.Loc.HexID = 6;
-                Areas[1].Hexes[5].NPCs.Add(e);
+                //Areas[1].Hexes[5].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Animal, 8).ToList())
             {
                 e.Loc.HexID = 8;
-                Areas[1].Hexes[7].NPCs.Add(e);
+                //Areas[1].Hexes[7].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Aquatic, 5).ToList())
             {
                 e.Loc.HexID = 10;
-                Areas[1].Hexes[9].NPCs.Add(e);
+                //Areas[1].Hexes[9].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.Demonic, 5).ToList())
             {
                 e.Loc.HexID = 11;
-                Areas[1].Hexes[10].NPCs.Add(e);
+                //Areas[1].Hexes[10].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.VeryRare, 5).ToList())
             {
                 e.Loc.HexID = 11;
-                Areas[1].Hexes[10].NPCs.Add(e);
+                //Areas[1].Hexes[10].NPCs.Add(e);
             }
 
             foreach (var e in GetEncounterNPCs(EncounterType.DragonKind, 8).ToList())
             {
-                e.Loc.HexID = 5;
-                Areas[1].Hexes[4].NPCs.Add(e);
+                e.Loc.AreaID = 0; e.Loc.Y = 0; e.Loc.X = 3;
+                Areas[0].Hexes[0, 3].NPCs.Add(e);
+                //var e2 = e.Clone();
+                //e2.Loc.AreaID = 1; e2.Loc.Y = 0; e2.Loc.X = 3;
+                //Areas[1].Hexes[0, 3].NPCs.Add(e2);
             }
 
-            int id = 1000;
+            //var barkeep = GetEncounterNPCs(EncounterType.Unique, 1).Single();
+            //Areas[0].Hexes[0, 0].NPCs.Add(barkeep);
 
-            var barkeep = GetEncounterNPCs(EncounterType.Unique, 1, id++).Single();
-            barkeep.Loc.AreaID = 0;
-            barkeep.Loc.HexID = 1;
-            Areas[0].Hexes[0].NPCs.Add(barkeep);
+            var dummy = GetEncounterNPCs(EncounterType.Unique, 1).Single();
+            Areas[0].Hexes[0, 0].NPCs.Add(dummy);
 
-            var dummy = GetEncounterNPCs(EncounterType.Unique, 1, id++).Single();
-            dummy.Loc.AreaID = 0;
-            dummy.Loc.HexID = 1;
-            Areas[0].Hexes[0].NPCs.Add(dummy);
+            var demogorgon1 = 
+                GetEncounterNPCs(EncounterType.Unique, 1, "demogorgon").Single(e => e.Name == "demogorgon");
+            Areas[0].Hexes[6, 0].NPCs.Add(demogorgon1);
+            var demogorgon2 =
+                GetEncounterNPCs(EncounterType.Unique, 1, "demogorgon").Single(e => e.Name == "demogorgon");
+            demogorgon2.Loc.AreaID = 2; demogorgon2.Loc.X = 1; demogorgon2.Loc.Y = 1;
+            Areas[2].Hexes[1, 1].NPCs.Add(demogorgon2);
 
-            var demogorgon = GetEncounterNPCs(EncounterType.Unique, 1, id++).Single();
-            demogorgon.Loc.HexID = 9;
-            Areas[1].Hexes[8].NPCs.Add(demogorgon);
+            var queen = GetEncounterNPCs(EncounterType.Unique, 1, "Natillah Lesbun").Single();
+            Areas[0].Hexes[6, 6].NPCs.Add(queen);
 
-            var queen = GetEncounterNPCs(EncounterType.Unique, 1, id++).Single();
-            queen.Loc.HexID = 7;
-            Areas[1].Hexes[6].NPCs.Add(queen);
-
-            var king = GetEncounterNPCs(EncounterType.Unique, 1, id++).Single();
-            king.Loc.HexID = 7;
-            Areas[1].Hexes[6].NPCs.Add(king);
+            var king = GetEncounterNPCs(EncounterType.Unique, 1, "Gundarik Lesbun").Single();
+            Areas[0].Hexes[6, 6].NPCs.Add(king);
         }
 
         public void ProcessEvents()
@@ -195,99 +230,93 @@ namespace Game.Realm
                 {
                     foreach (Hex hex in area.Hexes)
                     {
-                        //lock (hex.NPCs)
+                        for (int i = 0; i < hex.NPCs.Count; i++)
                         {
-                            for (int i = 0; i < hex.NPCs.Count; i++)
+                            var npc = hex.NPCs[i];
+
+                            // NPCs that are dead and not pacifist will attack their last attacker
+                            if (npc.State != StateType.Dead && npc.Mood != MoodType.Pacifist)
                             {
-                                var npc = hex.NPCs[i];
-
-                                // NPCs that are dead and not pacifist will attack their last attacker
-                                if (npc.State != StateType.Dead && npc.Mood != MoodType.Pacifist)
+                                if (!String.IsNullOrEmpty(npc.LastAttackerID))
                                 {
-                                    if (npc.LastAttackerID > 0)
-                                    {
-                                        var target = FindPC(npc.LastAttackerID);
+                                    var target = FindPC(npc.LastAttackerID);
 
-                                        if (target != null && target.Loc.HexID ==
-                                            npc.Loc.HexID &&
-                                            target.State != StateType.Invisible &&
-                                            target.State != StateType.Ethereal)
-                                        {
-                                            Combat.Attack(npc, target);
-                                        }
-                                        else
-                                        {
-                                            if (npc.State != StateType.Dead)
-                                            {
-                                                npc.State = StateType.Normal;
-                                                npc.Mood = MoodType.Aggressive;
-                                            }
-                                        }
+                                    if (target != null && target.Loc.HexID ==
+                                        npc.Loc.HexID &&
+                                        target.State != StateType.Invisible &&
+                                        target.State != StateType.Ethereal)
+                                    {
+                                        Combat.Attack(npc, target);
                                     }
                                     else
                                     {
-                                        if (npc.Mood >= MoodType.Aggressive)
+                                        if (npc.State != StateType.Dead)
                                         {
-                                            var randomPC = GetPCs().OrderBy(p => Randomizer.Next()).FirstOrDefault();
-                                            if (randomPC != null && randomPC.Loc.HexID == npc.Loc.HexID)
-                                            {
-                                                var target = FindPC(randomPC.ID);
-                                                npc.LastAttackerID = randomPC.ID;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                // Respawn dead NPCs.
-                                if (npc.State == StateType.Dead)
-                                {
-                                    if (DateTime.Now.Subtract(npc.DeathTime).Seconds >=
-                                        Constants.NPCDefaultCorpseDecay)
-                                    {
-                                        // Revive npcs based on their decary rate
-                                        if (Randomizer.Next(100) >= npc.CorpseDecayRate)
-                                        {
-                                            npc.Revive();
-                                            npc.LastAttackerID = 0;
-                                            npc.Followed = 0;
-                                            SendPlayerStatusToHex(npc.Loc);
-                                        }
-                                        else
-                                        {
-                                            //TODO: Corpse cleanup / respawn periodically
-                                            //RemoveEntity(npc);
+                                            npc.State = StateType.Normal;
+                                            npc.Mood = MoodType.Aggressive;
                                         }
                                     }
                                 }
                                 else
                                 {
-                                    npc.Regen();
+                                    if (npc.Mood >= MoodType.Aggressive)
+                                    {
+                                        var randomPC = GetPCs().OrderBy(p => Randomizer.Next()).FirstOrDefault();
+                                        if (randomPC != null && randomPC.Loc.HexID == npc.Loc.HexID)
+                                        {
+                                            var target = FindPC(randomPC.ID);
+                                            npc.LastAttackerID = randomPC.ID;
+                                        }
+                                    }
                                 }
+                            }
+
+                            // Respawn dead NPCs.
+                            if (npc.State == StateType.Dead)
+                            {
+                                if (DateTime.Now.Subtract(npc.DeathTime).Seconds >=
+                                    Constants.NPCDefaultCorpseDecay)
+                                {
+                                    // Revive npcs based on their decary rate
+                                    if (Randomizer.Next(100) >= npc.CorpseDecayRate)
+                                    {
+                                        npc.Revive();
+                                        npc.LastAttackerID = "";
+                                        npc.Followed = 0;
+                                        SendPlayerStatusToHex(npc.Loc);
+                                    }
+                                    else
+                                    {
+                                        //TODO: Corpse cleanup / respawn periodically
+                                        //RemoveEntity(npc);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                npc.Regen();
                             }
                         }
 
-                        //lock(hex.PCs)
+                        for (int i = 0; i < hex.PCs.Count; i++)
                         {
-                            for (int i = 0; i < hex.PCs.Count; i++)
-                            {
-                                var pc = hex.PCs[i];
+                            var pc = hex.PCs[i];
                                 
-                                if (pc.Regen())
-                                {
-                                    SendPlayerStatus(pc.ID);
-                                }
+                            if (pc.Regen())
+                            {
+                                SendPlayerStatus(pc.ID);
+                            }
 
-                                if (Constants.PCInactivityTimeout > 0 && 
-                                    (DateTime.Now - pc.LastActivity).TotalSeconds > 
-                                    Constants.PCInactivityTimeout)
-                                {
-                                    //TODO: Debug a lock race condition
-                                    var exitMessage = pc.FullName + " has left the realm due to inactivity.";
-                                    SendPlayerCommand(pc.ID, ActionType.Exit, exitMessage);
-                                    //SendPlayerStatusToHex(pc.Loc, exitMessage, false, pc.ID);
-                                    //RemovePC(pc.ID);
-                                    //BroadcastMessage(exitMessage);
-                                }
+                            if (Constants.PCInactivityTimeout > 0 && 
+                                (DateTime.Now - pc.LastActivity).TotalSeconds > 
+                                Constants.PCInactivityTimeout)
+                            {
+                                //TODO: Debug a lock race condition
+                                var exitMessage = pc.FullName + " has left the realm due to inactivity.";
+                                SendPlayerCommand(pc.ID, ActionType.Exit, exitMessage);
+                                //SendPlayerStatusToHex(pc.Loc, exitMessage, false, pc.ID);
+                                //RemovePC(pc.ID);
+                                //BroadcastMessage(exitMessage);
                             }
                         }
                     }
@@ -303,7 +332,7 @@ namespace Game.Realm
 
         #region Communications
 
-        public string HandlePacket(Packet packet, int playerId)
+        public string HandlePacket(Packet packet, string playerId)
         {
             PC? player = null;
             Entity? target = null;
@@ -318,12 +347,15 @@ namespace Game.Realm
                 {
                     RemovePC(player.ID);
                 }
+
                 AddPlayer(playerId);
                 player = FindPC(playerId);
+
                 var joined = player.FullName + " has joined the realm.";
                 BroadcastMessage(joined);
-                SendPlayerStatusToHex(player.Loc, joined);
-                SendPlayerStatus(player.ID, Environment.NewLine + "Welcome to the Realm! Type /help for a list of commands.", true);
+                SendPlayerStatusToHex(player.Loc);
+                SendPlayerMessage(player.ID, "Welcome to the Realm of " + this.Name + 
+                    "! Type /help for a list of commands.");
             }
             else
             {
@@ -357,7 +389,7 @@ namespace Game.Realm
                 }
 
                 // Find a PC or NPC, if a target ID is provided
-                if (packet.TargetID > 0)
+                if (!String.IsNullOrEmpty(packet.TargetID))
                 {
                     target = FindPC(packet.TargetID);
 
@@ -396,7 +428,7 @@ namespace Game.Realm
 
                         if (packet.Text.ToLower() == "help")
                         {
-                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio, despawn, help, hide, hps, get, give, inspect, kill, levelup, list look, played, pvp, quit, reboot, revive, shutdown, spawn, stats, summon, tile, tp, who, yell");
+                            SendPlayerStatus(player.ID, "List of / commands:\r\nbio, despawn, help, hide, hps, get, give, inspect, kill, levelup, list, loc, look, played, pvp, quit, reboot, revive, shutdown, spawn, stats, summon, tile, tp, who, yell");
                         }
                         else if (packet.Text.StartsWith("bio"))
                         {
@@ -427,11 +459,11 @@ namespace Game.Realm
                                 var despawnTarget = packet.Text.Split(" ")[1].Trim();
                                 if (despawnTarget != null)
                                 {
-                                    Entity despawned = FindEntity(0, despawnTarget);
-                                    if (despawned != null)
+                                    var despawned = FindEntity("", despawnTarget);
+                                    if (despawned != null && despawned is NPC)
                                     {
                                         despawnResult = despawned.FullName + " has been despawned by " + player.Name + "!";
-                                        RemoveEntity(despawned);
+                                        RemoveNPC(despawned as NPC);
                                         SendPlayerStatusToHex(player.Loc);
                                         BroadcastMessage(despawnResult);
                                     }
@@ -506,14 +538,14 @@ namespace Game.Realm
 
                                 if (!String.IsNullOrEmpty(inspectedName))
                                 {
-                                    var pc = FindPC(-1, inspectedName);
+                                    var pc = FindPC("", inspectedName);
                                     if (pc != null)
                                     {
                                         desc = "You see " + pc.GetDescription();
                                     }
                                     else
                                     {
-                                        var npc = FindNPC(-1, inspectedName);
+                                        var npc = FindNPC("", inspectedName);
                                         if (npc != null)
                                         {
                                             desc = "You see " + npc.GetDescription();
@@ -542,7 +574,7 @@ namespace Game.Realm
                                 var giveTargetName = packet.Text.Split(" ")[1].Trim();
                                 if (giveTargetName != null)
                                 {
-                                    Entity giveTarget = FindEntity(0, giveTargetName);
+                                    Entity giveTarget = FindEntity("", giveTargetName);
                                     if (giveTarget != null)
                                     {
                                         var giveItemName =
@@ -576,7 +608,7 @@ namespace Game.Realm
                                 var killTarget = packet.Text.Split(" ")[1].Trim();
                                 if (killTarget != null)
                                 {
-                                    Entity killed = FindEntity(0, killTarget);
+                                    Entity killed = FindEntity("", killTarget);
                                     if (killed != null)
                                     {
                                         killed.Die();
@@ -603,7 +635,7 @@ namespace Game.Realm
                                 var levelupTarget = packet.Text.Split(" ")[1].Trim();
                                 if (levelupTarget != null)
                                 {
-                                    Entity leveled = FindEntity(0, levelupTarget);
+                                    Entity leveled = FindEntity("", levelupTarget);
                                     if (leveled != null)
                                     {
                                         if (leveled.Level < Data.LevelLookup.Count - 1)
@@ -682,7 +714,7 @@ namespace Game.Realm
 
                                 if (!String.IsNullOrEmpty(targetName))
                                 {
-                                    var pc = FindPC(-1, targetName);
+                                    var pc = FindPC("", targetName);
                                     if (pc != null)
                                     {
                                         pc.Revive();
@@ -691,7 +723,7 @@ namespace Game.Realm
                                     }
                                     else
                                     {
-                                        var npc = FindNPC(-1, targetName);
+                                        var npc = FindNPC("", targetName);
                                         if (npc != null)
                                         {
                                             npc.Revive();
@@ -735,7 +767,7 @@ namespace Game.Realm
                                     if (spawn != null)
                                     {
                                         spawn.Loc = player.Loc;
-                                        Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].NPCs.Add(spawn);
+                                        Areas[player.Loc.AreaID].Hexes[player.Loc.Y, player.Loc.X].NPCs.Add(spawn);
 
                                         spawnResult = spawn.FullName + " has been spawned by " + player.Name + "!";
                                         SendPlayerStatusToHex(player.Loc);
@@ -784,7 +816,7 @@ namespace Game.Realm
                                     if (spawn != null)
                                     {
                                         spawn.Loc = player.Loc;
-                                        Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].NPCs.Add(spawn);
+                                        Areas[player.Loc.AreaID].Hexes[player.Loc.Y, player.Loc.X].NPCs.Add(spawn);
 
                                         summonResult = spawn.FullName + " has been spawned by " + player.Name + "!";
                                         SendPlayerStatusToHex(player.Loc);
@@ -801,62 +833,166 @@ namespace Game.Realm
                                 SendPlayerStatus(player.ID, summonResult);
                             }
                         }
-                        else if (packet.Text.StartsWith("tile"))
+                        else if (packet.Text.StartsWith("hex"))
                         {
-                            string tileResult = "Unable to tile area. Usage: tile <tile number> <tile name>:\r\n";
+                            string tileResult = "Unable to set hex data. Usage: hex <row> <col> <tile> <description> <solid> <transparent> <combatallowed>.";
 
                             try
                             {
-                                var tileNumber = Int16.Parse(packet.Text.Split(" ")[1].Trim());
+                                int row = 3;
+                                int col = 3;
+                                string title = String.Empty;
+                                string description = String.Empty;
 
-                                string tileName = String.Empty;
                                 try
                                 {
-                                    if (!String.IsNullOrEmpty(packet.Text.Split(" ")[2].Trim()))
+                                    //HACK
+                                    row = Int16.Parse(packet.Text.Split(" ")[1].Trim());
+                                    col = Int16.Parse(packet.Text.Split(" ")[2].Trim());
+
+                                    if (!String.IsNullOrEmpty(packet.Text.Split(" ")[3].Trim()))
                                     {
-                                        tileName = packet.Text.Split(" ")[2].Trim();
+                                        title = packet.Text.Split(" ")[3].Trim();
+                                    }
+                                    if (!String.IsNullOrEmpty(packet.Text.Split(" ")[4].Trim()))
+                                    {
+                                        title = packet.Text.Split(" ")[4].Trim();
                                     }
                                 }
                                 catch { }
 
-                                if (tileNumber == 1)
-                                    Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].Tile.Tile1ID = tileName;
-                                else if (tileNumber == 2)
-                                    Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].Tile.Tile2ID = tileName;
-                                else if (tileNumber == 3)
-                                    Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].Tile.Tile3ID = tileName;
-                                else
+                                var loc = MapTileGridToLoc(player.Loc, row, col);
+                                if (loc != null)
                                 {
-                                    SendPlayerStatus(player.ID, tileResult);
-                                    return tileResult;
-                                }
+                                    var hex =
+                                        Areas[loc.AreaID].Hexes[loc.Y, loc.X];
 
-                                tileResult = player.FullName + " has changed tile " + tileNumber.ToString() + " to " + tileName;
-                                SendPlayerStatusToHex(player.Loc);
+                                    if (hex != null)
+                                    {
+                                        if (!String.IsNullOrEmpty(title))
+                                            hex.Title = title;
+                                        if (!String.IsNullOrEmpty(description))
+                                            hex.Description = description;
+                                    }
+
+                                    SendPlayerStatusToHex(player.Loc);
+                                }
                             }
                             catch
                             {
-                                SendPlayerStatus(player.ID, tileResult);
+
+                            }
+                        }
+                        else if (packet.Text.StartsWith("tile"))
+                        {
+                            string tileResult = "Unable to set area tiles. Usage: tile <row> <col> <tile number> <tile name> <tile size> <tile xoffset> <tile yoffset>.";
+
+                            try
+                            {
+                                var row = 3;
+                                var col = 3;
+                                var tileNumber = 1;
+                                string tileName = String.Empty;
+                                int tileSize = 100;
+                                int tileXOffset = 0;
+                                int tileYOffset = 0;
+                                try
+                                {
+                                    //HACK
+                                    row = Int16.Parse(packet.Text.Split(" ")[1].Trim());
+                                    col = Int16.Parse(packet.Text.Split(" ")[2].Trim());
+                                    tileNumber = Int16.Parse(packet.Text.Split(" ")[3].Trim());
+
+                                    if (!String.IsNullOrEmpty(packet.Text.Split(" ")[4].Trim()))
+                                    {
+                                        tileName = packet.Text.Split(" ")[4].Trim();
+                                    }
+                                    else
+                                    {
+                                        tileName = "";
+                                    }
+
+                                    //SLASH
+                                    try
+                                    {
+                                        tileSize = Int16.Parse(packet.Text.Split(" ")[5].Trim());
+                                    }
+                                    catch { }
+                                    try
+                                    {
+                                        tileXOffset = Int16.Parse(packet.Text.Split(" ")[6].Trim());
+                                    }
+                                    catch { }
+                                    try
+                                    {
+                                        tileYOffset = Int16.Parse(packet.Text.Split(" ")[7].Trim());
+                                    }
+                                    catch { }
+                                }
+                                catch { }
+
+                                var loc = MapTileGridToLoc(player.Loc, row, col);
+                                if (loc != null)
+                                {
+                                    var hex =
+                                        Areas[loc.AreaID].Hexes[loc.Y, loc.X];
+
+                                    if (tileNumber == 1)
+                                    {
+                                        hex.Tile.Tile1ID = tileName;
+                                        hex.Tile.Tile1Size = tileSize;
+                                        hex.Tile.Tile1XOffset = tileXOffset;
+                                        hex.Tile.Tile1YOffset = tileYOffset;
+                                    }
+                                    else if (tileNumber == 2)
+                                    {
+                                        hex.Tile.Tile2ID = tileName;
+                                        hex.Tile.Tile2Size = tileSize;
+                                        hex.Tile.Tile2XOffset = tileXOffset;
+                                        hex.Tile.Tile2YOffset = tileYOffset;
+                                    }
+                                    else if (tileNumber == 3)
+                                    {
+                                        hex.Tile.Tile3ID = tileName;
+                                        hex.Tile.Tile3Size = tileSize;
+                                        hex.Tile.Tile3XOffset = tileXOffset;
+                                        hex.Tile.Tile3YOffset = tileYOffset;
+                                    }
+                                    else
+                                    {
+                                        SendPlayerStatus(player.ID, tileResult);
+                                        return tileResult;
+                                    }
+
+                                    SendPlayerStatusToHex(player.Loc);
+
+                                    tileResult = player.FullName + " has changed tile " + tileNumber.ToString() + " to " + tileName;
+
+                                }
+                            }
+                            catch
+                            {
+                            
                             }
                         }
                         else if (packet.Text.StartsWith("tp"))
                         {
-                            string tpResult = "Unable to teleport target. Usage: tp <target name> <target2 name> or tp <target name> <area id> <hex id>";
+                            string tpResult = "Unable to teleport target. Usage: tp <target name> <target2 name> or tp <target name> <area id> <x> <y>";
 
                             try
                             {
                                 var targetName = packet.Text.Split(" ")[1].Trim();
-                                Entity tpTarget = FindEntity(0, targetName);
+                                Entity tpTarget = FindEntity("", targetName);
 
                                 if (tpTarget != null)
                                 {
                                     if (packet.Text.Split(" ").Length <= 3)
                                     {
                                         var target2Name = packet.Text.Split(" ")[2].Trim();
-                                        Entity tpTarget2 = FindEntity(0, target2Name);
+                                        Entity tpTarget2 = FindEntity("", target2Name);
                                         if (tpTarget2 != null)
                                         {
-                                            MovePC(tpTarget as PC, tpTarget2.Loc);
+                                            EntityTeleport(tpTarget, tpTarget2.Loc);
 
                                             tpResult = tpTarget.FullName + " has been teleported to " + 
                                                 tpTarget2.FullName + " by " + player.Name + "!";
@@ -873,20 +1009,25 @@ namespace Game.Realm
                                     else
                                     {
                                         var areaId = packet.Text.Split(" ")[2].Trim();
-                                        var hexId = packet.Text.Split(" ")[3].Trim();
+                                        var col = packet.Text.Split(" ")[3].Trim();
+                                        var row = packet.Text.Split(" ")[4].Trim();
                                         var newAreaId = Int16.Parse(areaId);
-                                        var newHexId = Int16.Parse(hexId);
+                                        var newCol = Int16.Parse(col);
+                                        var newRow = Int16.Parse(row);
 
                                         if (newAreaId >= 0 && newAreaId < Areas.Count &&
-                                            newHexId > 0 && newHexId <= Areas[newAreaId].Hexes.Count)
+                                            newRow >= 0 && newRow < Areas[newAreaId].Hexes.GetLength(0) &&
+                                            newCol >= 0 && newCol < Areas[newAreaId].Hexes.GetLength(1))
                                         {
                                             var fromLoc = player.Loc;
                                             var toLoc = new Loc()
                                             {
                                                 AreaID = newAreaId,
-                                                HexID = newHexId,
+                                                X = newCol,
+                                                Y = newRow,
                                             };
-                                            MovePC(tpTarget as PC, toLoc);
+
+                                            EntityTeleport(tpTarget, toLoc);
                                         
                                             tpResult = tpTarget.FullName + " has been teleported by " + player.Name + "!";
 
@@ -924,13 +1065,22 @@ namespace Game.Realm
                         else if (packet.Text == "who" || packet.Text == "list")
                         {
                             StringBuilder sb = new StringBuilder();
-                            sb.Append(Environment.NewLine + "List of players:");
+                            sb.Append("List of players:");
                             foreach (var p in GetAllPCs())
                             {
                                 sb.Append(Environment.NewLine);
                                 sb.Append(p.GetDescription(false, true));
                             }
                             SendPlayerStatus(player.ID, sb.ToString(), true);
+                        }
+                        else if (packet.Text == "loc")
+                        {
+                            player = FindPC(playerId);
+                            string loc = "Your Location: Area=" + 
+                                player.Loc.AreaID.ToString() + " X=" +
+                                player.Loc.X.ToString() + " Y=" +
+                                player.Loc.Y.ToString();
+                            SendPlayerStatus(player.ID, loc, true);
                         }
                         else
                         {
@@ -942,7 +1092,7 @@ namespace Game.Realm
                         if (player.State != StateType.Dead && 
                             player.State != StateType.Stunned)
                         {
-                            if (Move(player, packet.Text))
+                            if (EntityMove(player, packet.Text))
                             {
                                 SendPlayerStatus(player.ID, "", true);
                             }
@@ -951,7 +1101,7 @@ namespace Game.Realm
 
                     case ActionType.Say:
                         SayMessage(player.FullName + " says, \"" + packet.Text + "\"",
-                            player.Loc.AreaID, player.Loc.HexID);
+                            player.Loc.AreaID, player.Loc.X, player.Loc.Y);
                         break;
 
                     case ActionType.Yell:
@@ -973,7 +1123,7 @@ namespace Game.Realm
                         {
                             SendPlayerMessage(player.ID, "You cannot do that when you are dead.");
                         }
-                        else if(Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1].NoCombat &&
+                        else if(Areas[player.Loc.AreaID].Hexes[player.Loc.Y, player.Loc.X].NoCombat &&
                             player.AccountType != AccountType.DungeonMaster)
                         { 
                             SendPlayerMessage(player.ID, "Combat is not allowed in this area.");
@@ -986,13 +1136,13 @@ namespace Game.Realm
                                 if (packet.Text != null)
                                 {
                                     target = Areas[player.Loc.AreaID]
-                                        .Hexes[player.Loc.HexID - 1].NPCs.Find(n => n.Name == packet.Text);
+                                        .Hexes[player.Loc.Y, player.Loc.X].NPCs.Find(n => n.Name == packet.Text);
 
-                                    if (target == null)
-                                    {
-                                        target = Areas[player.Loc.AreaID]
-                                            .Hexes[player.Loc.HexID - 1].PCs.Find(n => n.Name == packet.Text);
-                                    }
+                                    //if (target != null)
+                                    //{
+                                    //    target = Areas[player.Loc.AreaID]
+                                    //        .Hexes[player.Loc.Y, player.Loc.X].PCs.Find(n => n.Name == packet.Text);
+                                    //}
                                 }
 
                                 if (player.State != StateType.Dead &&
@@ -1041,6 +1191,36 @@ namespace Game.Realm
             return result;
         }
 
+        public Loc MapTileGridToLoc(Loc loc, int row, int col, bool checkSolid = true)
+        {
+            var newLoc = loc.Clone();
+
+            if (row < 3)
+                newLoc.Y -= 3 - row;
+            if (col < 3)
+                newLoc.X -= 3 - col;
+            if (row > 3)
+                newLoc.Y += row - 3;
+            if (col > 3)
+                newLoc.X += col - 3;
+
+            if (newLoc.Y >= 0 && newLoc.X >= 0 &&
+                newLoc.Y < Areas[loc.AreaID].Hexes.GetLength(0) &&
+                newLoc.X < Areas[loc.AreaID].Hexes.GetLength(1))
+            {
+                if (checkSolid)
+                {
+                    if (Areas[newLoc.AreaID].Hexes[newLoc.Y, newLoc.X].Solid)
+                    {
+                        return null;
+                    }
+                }
+                return newLoc;
+            }
+
+            return null;
+        }
+
         private void WritePacket(Connection conn, Packet packet)
         {
             if (conn == null)
@@ -1063,10 +1243,10 @@ namespace Game.Realm
         {
             if (entity is PC)
             {
-                lock (Players)
+                lock(Players)
                 {
                     Areas[entity.Loc.AreaID]
-                        .Hexes[entity.Loc.HexID - 1]
+                    .Hexes[entity.Loc.Y, entity.Loc.X]
                         .PCs.Add((PC)entity);
                 }
                 TotalPCs++;
@@ -1074,23 +1254,23 @@ namespace Game.Realm
             }
             else if (entity is NPC)
             {
-                lock (NPCs)
+                lock(NPCs)
                 {
                     Areas[entity.Loc.AreaID]
-                        .Hexes[entity.Loc.HexID - 1]
+                        .Hexes[entity.Loc.Y, entity.Loc.X]
                         .NPCs.Add((NPC)entity);
                 }
                 TotalNPCs++;
             }
         }
 
-        public Entity FindEntity(int id, string name = "")
+        public Entity FindEntity(string id, string name = "")
         {
             foreach (Area area in Areas)
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    lock (hex.PCs)
+                    lock(hex.PCs)
                     {
                         foreach (PC p in hex.PCs)
                         {
@@ -1131,7 +1311,7 @@ namespace Game.Realm
             return list;
         }
 
-        public PC FindPC(int id, string name = "")
+        public PC FindPC(string id, string name = "")
         {
             foreach (Area area in Areas)
             {
@@ -1151,7 +1331,7 @@ namespace Game.Realm
             return null;
         }
 
-        public NPC FindNPC(int id, string name = "")
+        public NPC FindNPC(string id, string name = "")
         {
             foreach (Area area in Areas)
             {
@@ -1171,7 +1351,50 @@ namespace Game.Realm
             return null;
         }
 
-        public void SendPlayerCommand(int playerId, ActionType type, string text = "")
+        public Tile[,] GetVisibleTiles(Entity e)
+        {
+            Tile[,] tiles = 
+                new Tile[Constants.VisibleTilesHeight, Constants.VisibleTilesWidth];
+
+            int y = e.Loc.Y - Constants.VisibleTilesOffset;
+            int x = e.Loc.X - Constants.VisibleTilesOffset;
+
+            for (int row = 0; row < Constants.VisibleTilesHeight; row++)
+            {
+                for (int col = 0; col < Constants.VisibleTilesWidth; col++)
+                {
+                    try
+                    {
+                        // Only add tiles within the area hex bounds
+                        if (x >= 0 && y >= 0 &&
+                            x < Areas[e.Loc.AreaID].Width &&
+                            y < Areas[e.Loc.AreaID].Height)
+                        {
+                            tiles[row, col] = Areas[e.Loc.AreaID].Hexes[y, x].Tile;
+                        }
+                        else
+                        {
+                            // Return inaccessible blank tiles
+                            tiles[row, col] = new Tile()
+                            {
+                                
+                            };
+                        }
+                        x++;
+                    }
+                    catch
+                    {
+                    }
+                }
+
+                y++;
+                x = e.Loc.X - Constants.VisibleTilesOffset;
+            }
+
+            return tiles;
+        }
+
+        public void SendPlayerCommand(string playerId, ActionType type, string text = "")
         {
             var player = FindPC(playerId);
 
@@ -1187,7 +1410,7 @@ namespace Game.Realm
             }
         }
 
-        public void SendPlayerMessage(int playerId, string text = "", int fromId = 0)
+        public void SendPlayerMessage(string playerId, string text = "", string fromId = "")
         {
             //if (!String.IsNullOrEmpty(text))
             {
@@ -1208,9 +1431,9 @@ namespace Game.Realm
         }
 
         public void SendPlayerStatusToHex(Loc loc, 
-            string text = "", bool hexDescription = false, int skipId = 0)
+            string text = "", bool hexDescription = false, string skipId = "")
         {
-            var hex = Areas[loc.AreaID].Hexes[loc.HexID-1];
+            var hex = Areas[loc.AreaID].Hexes[loc.Y, loc.X];
 
             foreach (var pc in hex.PCs)
             {
@@ -1221,14 +1444,14 @@ namespace Game.Realm
             }
         }
 
-        public void SendPlayerStatus(int playerId, string text = "", 
+        public void SendPlayerStatus(string playerId, string text = "", 
             bool hexDescription = false)
         {
             var player = FindPC(playerId);
 
             if (player != null)
             {
-                var hex = Areas[player.Loc.AreaID].Hexes[player.Loc.HexID - 1];
+                var hex = Areas[player.Loc.AreaID].Hexes[player.Loc.Y, player.Loc.X];
 
                 var npcs = new Dictionary<string, Stats>();
                 foreach (var npc in hex.NPCs)
@@ -1272,16 +1495,15 @@ namespace Game.Realm
                 {
                     ActionType = ActionType.Status,
                     Health = player.GetStats(),
-                    Tile = hex.Tile,
                     NPCs = npcs,
                     PCs = players,
                     Items = items,
+                    Tiles = GetVisibleTiles(player),
                 };
 
                 if (hexDescription)
                 {
-                    packet.Text = Areas[player.Loc.AreaID].Title + " - "  + 
-                        hex.GetDescription(playerId) + text;
+                    packet.Text = hex.GetDescription(true) + text;
                 }
                 else
                 {
@@ -1300,7 +1522,7 @@ namespace Game.Realm
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    lock (hex.PCs)
+                    lock(hex.PCs)
                     {
                         foreach (PC player in hex.PCs)
                         {
@@ -1316,7 +1538,7 @@ namespace Game.Realm
             return players;
         }
 
-        public PC AddPlayer(int playerId = 0, int partyId = 1, string playerName = "",
+        public PC AddPlayer(string playerId = "", int partyId = 1, string playerName = "",
             Connection conn = null)
         {
             if (!Running)
@@ -1324,11 +1546,11 @@ namespace Game.Realm
                 return null;
             }
 
+            PC player = new PC();
+
             try
             {
-                PC player = new PC();
-
-                if (playerId != 0)
+                if (!String.IsNullOrEmpty(playerId))
                 {
                     player = Data.LoadPCs()
                         .Where(p => p.ID == playerId).Single();
@@ -1344,7 +1566,7 @@ namespace Game.Realm
                     player.Conn = conn;
                 }
 
-                if (player.MainHandID > 0)
+                if (!String.IsNullOrEmpty(player.MainHandID))
                 {
                     var weapon = Data.LoadItems()
                         .Where(i => i.ID == player.MainHandID).Single();
@@ -1354,20 +1576,21 @@ namespace Game.Realm
                 }
 
                 AddEntity(player);
-
                 return player;
             }
-            catch//(Exception ex) 
+            catch(Exception ex) 
             {
-                return null;
+                AddEntity(player);
+                return player;
             }
         }
 
-        public void RemoveEntity(Entity e)
+        public void RemoveNPC(NPC e)
         {
-            var hex = Areas[e.Loc.AreaID].Hexes[e.Loc.HexID - 1];
+            var hex = 
+                Areas[e.Loc.AreaID].Hexes[e.Loc.Y, e.Loc.X];
 
-            lock (hex.NPCs)
+            lock(hex.NPCs)
             {
                 for (int i = 0; i < hex.NPCs.Count; i++)
                 {
@@ -1379,17 +1602,17 @@ namespace Game.Realm
             }
         }
 
-        public void RemovePC(int playerId = 0)
+        public void RemovePC(string playerId = "")
         {
             foreach (Area area in Areas)
             {
                 foreach (Hex hex in area.Hexes)
                 {
-                    lock (hex.PCs)
+                    lock(hex.PCs)
                     {
                         for (int i = 0; i < hex.PCs.Count; i++)
                         {
-                            if (playerId == 0 || hex.PCs[i].ID == playerId)
+                            if (playerId == "" || hex.PCs[i].ID == playerId)
                             {
                                 var player = (PC)hex.PCs[i];
 
@@ -1405,158 +1628,121 @@ namespace Game.Realm
             }
         }
 
-        public void MovePC(PC entity, Loc loc)
-        {
-            var fromHex = Areas[entity.Loc.AreaID].Hexes[entity.Loc.HexID - 1];
-            var toHex = Areas[loc.AreaID].Hexes[loc.HexID - 1];
-            
-            lock (fromHex)
-            { 
-                fromHex.PCs.Remove(entity);
-                entity.Loc = loc;
-            }
-
-            lock (toHex)
-            {
-                toHex.PCs.Add(entity);
-            }
-        }
-
-        public bool Move(Entity entity, string direction, int areaId = -1, int hexId = -1)
+        public bool EntityTeleport(Entity entity, Loc loc)
         {
             bool moved = false;
 
-            if (entity.State == StateType.Stunned)
+            try
+            {
+                var fromHex =
+                    Areas[entity.Loc.AreaID]
+                        .Hexes[entity.Loc.Y, entity.Loc.X];
+
+                var toHex =
+                    Areas[loc.AreaID].Hexes[loc.Y, loc.X];
+
+                lock (fromHex)
+                {
+                    if (entity is PC)
+                    {
+                        fromHex.PCs.Remove(entity as PC);
+                    }
+                    else if (entity is NPC)
+                    {
+                        fromHex.NPCs.Remove(entity as NPC);
+                    }
+
+                    entity.Loc = loc;
+                }
+
+                lock (toHex)
+                {
+                    if (entity is PC)
+                    {
+                        toHex.PCs.Add(entity as PC);
+                    }
+                    else if (entity is NPC)
+                    {
+                        toHex.NPCs.Add(entity as NPC);
+                    }
+                }
+
+                moved = true;
+            }
+            catch { } 
+            
+            return moved;
+        }
+
+        public bool EntityMove(Entity entity, string direction)
+        {
+            bool moved = false;
+
+            Loc loc = null;
+
+            MoveDirection md = MoveDirection.South;
+
+            if (entity.State == StateType.Stunned ||
+                entity.State == StateType.Dead)
             {
                 return moved;
             }
 
-            var hex = Areas[entity.Loc.AreaID].Hexes[entity.Loc.HexID - 1];
+            var hex = Areas[entity.Loc.AreaID]
+                .Hexes[entity.Loc.Y, entity.Loc.X];
 
-            MoveDirection md = MoveDirection.North;
-
-            if (areaId != -1 && hexId != -1)
+            if (direction.StartsWith("move "))
             {
-                moved = true;
-            }
-            else
-            {
-                if (areaId == -1)
-                    areaId = entity.Loc.AreaID;
-
-                switch (direction.ToLower())
+                try
                 {
-                    case "north":
-                        if (hex.Tile.North > 0)
-                        {
-                            hexId = hex.Tile.North;
-                            md = MoveDirection.North;
-                            moved = true;
-                        }
-                        break;
-                    case "south":
-                        if (hex.Tile.South > 0)
-                        {
-                            hexId = hex.Tile.South;
-                            md = MoveDirection.South;
-                            moved = true;
-                        }
-                        break;
-                    case "east":
-                        if (hex.Tile.East > 0)
-                        {
-                            hexId = hex.Tile.East;
-                            md = MoveDirection.East;
-                            moved = true;
-                        }
-                        break;
-                    case "west":
-                        if (hex.Tile.West > 0)
-                        {
-                            hexId = hex.Tile.West;
-                            md = MoveDirection.West;
-                            moved = true;
-                        }
-                        break;
-                    case "up":
-                        if (hex.Tile.Up != null)
-                        {
-                            areaId = hex.Tile.Up.AreaID;
-                            hexId = hex.Tile.Up.HexID;
-                            md = MoveDirection.Up;
-                            moved = true;
-                        }
-                        break;
-                    case "down":
-                        if (hex.Tile.Down != null)
-                        {
-                            areaId = hex.Tile.Down.AreaID;
-                            hexId = hex.Tile.Down.HexID;
-                            md = MoveDirection.Down;
-                            moved = true;
-                        }
-                        break;
-                }
+                    // Check if move to location is valid
+                    string row = direction.Split(" ")[1];
+                    string col = direction.Split(" ")[2];
 
-                if (!moved)
-                {
-                    SendPlayerMessage(entity.ID, "That does not lead anywhere.");
+                    loc = MapTileGridToLoc(entity.Loc,
+                        Int16.Parse(row), Int16.Parse(col));
+
+                    try
+                    {
+                        if (loc != null)
+                        {
+                            // If new location has a teleport, move there
+                            var newHex = Areas[loc.AreaID]
+                                .Hexes[loc.Y, loc.X];
+
+                            if (newHex.Teleport != null)
+                            {
+                                loc = newHex.Teleport;
+                                moved = true;
+                            }
+                        }
+                    }
+                    catch { }
+
+                    moved = true;
                 }
+                catch { }
             }
 
-            if (moved)
+            // Update only if movement was successful
+            if (moved && loc != null)
             {
-                string leaving = entity.FullName + " moves " + 
-                    direction.ToString() + ".";
-
                 var packet =
                     new Packet()
                     {
                         ID = entity.ID,
                         ActionType = ActionType.Movement,
                         MoveDirection = md,
-                        Text = leaving,
                     };
 
-                if (entity != null && entity is PC)
+                moved = EntityTeleport(entity, loc);
+
+                if (entity is PC)
                 {
                     var player = entity as PC;
 
-                    if (player != null)
-                    {
-                        lock (hex.PCs)
-                        {
-                            var playerIndex =
-                                hex.PCs.FindIndex(p => p.ID == entity.ID);
-
-                            if (playerIndex >= 0)
-                            {
-                                hex.PCs.RemoveAt(playerIndex);
-                            }
-                        }
-
-                        if (player.State != StateType.Invisible)
-                        {
-                            SendPlayerStatusToHex(player.Loc, leaving, false, player.ID);
-                        }
-
-                        var newHex = Areas[areaId].Hexes[hexId - 1];
-
-                        lock (newHex.PCs)
-                        {
-                            newHex.PCs.Add(player);
-                            player.Loc.AreaID = areaId;
-                            player.Loc.HexID = newHex.ID;
-                        }
-
-                        if (player.State != StateType.Invisible)
-                        {
-                            string arriving = player.Name + " enters the area.";
-                            SendPlayerStatusToHex(player.Loc, arriving, false, player.ID);
-                        }
-
-                        SendPlayerStatus(player.ID);
-                    }
+                    SendPlayerStatusToHex(player.Loc, "", false, player.ID);
+                    SendPlayerStatus(player.ID);
 
                     // Notify npcs of pc movement
                     try
@@ -1572,53 +1758,37 @@ namespace Game.Realm
                 if (entity is NPC)
                 {
                     var npc = entity as NPC;
-                    var newHex = Areas[areaId].Hexes[hexId - 1];
 
-                    lock (hex.NPCs)
+                    var newHex = Areas[loc.AreaID].Hexes[loc.Y, loc.X];
+
+                    foreach (var p in newHex.PCs)
                     {
-                        var npcIndex =
-                            hex.NPCs.FindIndex(n => n.ID == entity.ID);
-
-                        hex.NPCs.RemoveAt(npcIndex);
-
-                        foreach (var p in hex.PCs)
-                        {
-                            WritePacket(p.Conn, packet);
-                        }
-
-                        newHex.NPCs.Add(npc);
-                        npc.Loc.HexID = newHex.ID;
-                    }
-
-                    string arriving = npc.Name + " enters the area.";
-
-                    lock (newHex.PCs)
-                    {
-                        foreach (var p in newHex.PCs)
-                        {
-                            WritePacket(p.Conn,
-                                new Packet()
-                                {
-                                    ID = npc.ID,
-                                    ActionType = ActionType.Movement,
-                                    MoveDirection = md,
-                                    Text = arriving
-                                });
-                        }
+                        WritePacket(p.Conn,
+                            new Packet()
+                            {
+                                ID = npc.ID,
+                                ActionType = ActionType.Movement,
+                                MoveDirection = md,
+                            });
                     }
                 }
+            }
+            else
+            {
+                //SendPlayerMessage(entity.ID, "The way is shut.");
             }
 
             return moved;
         }
 
-        public List<NPC> GetEncounterNPCs(EncounterType type, int maximum = 99, int npcId = 0)
+        public List<NPC> GetEncounterNPCs(EncounterType type, int maximum = 99, string npcId = "")
         {
             List<NPC> encounter = new List<NPC>();
 
-            if (npcId != 0)
+            if (!String.IsNullOrEmpty(npcId))
             {
-                encounter.Add(NPCs.Where(npc => npc.ID == npcId).Single().Clone());
+                encounter.Add(NPCs
+                    .Where(npc => npc.ID == npcId).Single().Clone());
             }
             else
             {
@@ -1627,7 +1797,7 @@ namespace Game.Realm
                 foreach (NPC npc in group.ToList())
                 {
                     //var guy = npc.Clone();
-                    //lock (EntityCount)
+                    //lock(EntityCount)
                     {
                         //guy.ID = EntityCount++;
                     }
@@ -1658,9 +1828,9 @@ namespace Game.Realm
                 new Packet() { ActionType = ActionType.Text, Text = message });
         }
 
-        public void SayMessage(string message, int areaId, int hexId)
+        public void SayMessage(string message, int areaId, int X, int Y)
         {
-            foreach (PC player in Areas[areaId].Hexes[hexId - 1].PCs)
+            foreach (PC player in Areas[areaId].Hexes[Y, X].PCs)
             {
                 WritePacket(player.Conn,
                     new Packet() { ActionType = ActionType.Text, Text = message });

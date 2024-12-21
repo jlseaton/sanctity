@@ -15,6 +15,6 @@ namespace Game.Realm
         public int StartY { get; set; }
         public int StartZ { get; set; }
 
-        public List<Hex> Hexes { get; set; }
+        public Hex[,]? Hexes;
     }
 }

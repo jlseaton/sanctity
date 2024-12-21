@@ -12,7 +12,9 @@
         public static readonly bool PacketCompression = true;
 
         public static readonly int RoundInterval = 2000;
-        public static readonly int VisibleTiles = 49; // Default visible grid is 7 X 7 tiles
+        public static readonly int VisibleTilesWidth = 7;
+        public static readonly int VisibleTilesHeight = 7;
+        public static readonly int VisibleTilesOffset = 3; // Views consist of +/- 3 tiles from current center tile
 
         public static readonly int MaxLevel = 20;
         public static readonly int MaxGroupSize = 6;
@@ -61,6 +63,7 @@
         Movement,
         Damage,
         Use,
+        Edit,
     };
 
     public enum ItemType

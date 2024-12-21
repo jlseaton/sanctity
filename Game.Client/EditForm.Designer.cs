@@ -63,6 +63,9 @@
             textBoxTitle = new TextBox();
             panelButtons = new Panel();
             panelSettings = new Panel();
+            buttonRotate1 = new Button();
+            buttonRotate2 = new Button();
+            buttonRotate3 = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBoxTile1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxTile2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBoxTile3).BeginInit();
@@ -157,7 +160,7 @@
             // 
             buttonRemove1.BackgroundImage = (Image)resources.GetObject("buttonRemove1.BackgroundImage");
             buttonRemove1.BackgroundImageLayout = ImageLayout.Stretch;
-            buttonRemove1.Location = new Point(95, 2);
+            buttonRemove1.Location = new Point(10, 1);
             buttonRemove1.Name = "buttonRemove1";
             buttonRemove1.Size = new Size(33, 31);
             buttonRemove1.TabIndex = 21;
@@ -169,7 +172,7 @@
             // 
             buttonRemove2.BackgroundImage = (Image)resources.GetObject("buttonRemove2.BackgroundImage");
             buttonRemove2.BackgroundImageLayout = ImageLayout.Stretch;
-            buttonRemove2.Location = new Point(249, 2);
+            buttonRemove2.Location = new Point(160, 1);
             buttonRemove2.Name = "buttonRemove2";
             buttonRemove2.Size = new Size(33, 31);
             buttonRemove2.TabIndex = 22;
@@ -181,7 +184,7 @@
             // 
             buttonRemove3.BackgroundImage = (Image)resources.GetObject("buttonRemove3.BackgroundImage");
             buttonRemove3.BackgroundImageLayout = ImageLayout.Stretch;
-            buttonRemove3.Location = new Point(412, 2);
+            buttonRemove3.Location = new Point(311, 1);
             buttonRemove3.Name = "buttonRemove3";
             buttonRemove3.Size = new Size(33, 31);
             buttonRemove3.TabIndex = 23;
@@ -205,6 +208,9 @@
             panelTiles.Anchor = AnchorStyles.Bottom;
             panelTiles.BackColor = Color.Transparent;
             panelTiles.BorderStyle = BorderStyle.Fixed3D;
+            panelTiles.Controls.Add(buttonRotate3);
+            panelTiles.Controls.Add(buttonRotate2);
+            panelTiles.Controls.Add(buttonRotate1);
             panelTiles.Controls.Add(checkBoxCombat);
             panelTiles.Controls.Add(vScrollBarSize1);
             panelTiles.Controls.Add(checkBoxTransparent);
@@ -363,7 +369,7 @@
             // 
             labelTile3.AutoSize = true;
             labelTile3.BackColor = Color.Transparent;
-            labelTile3.Location = new Point(373, 11);
+            labelTile3.Location = new Point(364, 12);
             labelTile3.Name = "labelTile3";
             labelTile3.Size = new Size(34, 15);
             labelTile3.TabIndex = 32;
@@ -373,7 +379,7 @@
             // 
             labelTile2.AutoSize = true;
             labelTile2.BackColor = Color.Transparent;
-            labelTile2.Location = new Point(211, 11);
+            labelTile2.Location = new Point(214, 12);
             labelTile2.Name = "labelTile2";
             labelTile2.Size = new Size(34, 15);
             labelTile2.TabIndex = 31;
@@ -383,7 +389,7 @@
             // 
             labelTile1.AutoSize = true;
             labelTile1.BackColor = Color.Transparent;
-            labelTile1.Location = new Point(54, 11);
+            labelTile1.Location = new Point(60, 12);
             labelTile1.Name = "labelTile1";
             labelTile1.Size = new Size(34, 15);
             labelTile1.TabIndex = 30;
@@ -451,6 +457,42 @@
             panelSettings.Size = new Size(760, 109);
             panelSettings.TabIndex = 35;
             // 
+            // buttonRotate1
+            // 
+            buttonRotate1.BackgroundImage = (Image)resources.GetObject("buttonRotate1.BackgroundImage");
+            buttonRotate1.BackgroundImageLayout = ImageLayout.Stretch;
+            buttonRotate1.Location = new Point(97, 1);
+            buttonRotate1.Name = "buttonRotate1";
+            buttonRotate1.Size = new Size(33, 31);
+            buttonRotate1.TabIndex = 45;
+            buttonRotate1.Tag = "Remove this tile";
+            buttonRotate1.UseVisualStyleBackColor = true;
+            buttonRotate1.Click += buttonRotate1_Click;
+            // 
+            // buttonRotate2
+            // 
+            buttonRotate2.BackgroundImage = (Image)resources.GetObject("buttonRotate2.BackgroundImage");
+            buttonRotate2.BackgroundImageLayout = ImageLayout.Stretch;
+            buttonRotate2.Location = new Point(247, 1);
+            buttonRotate2.Name = "buttonRotate2";
+            buttonRotate2.Size = new Size(33, 31);
+            buttonRotate2.TabIndex = 46;
+            buttonRotate2.Tag = "Remove this tile";
+            buttonRotate2.UseVisualStyleBackColor = true;
+            buttonRotate2.Click += buttonRotate2_Click;
+            // 
+            // buttonRotate3
+            // 
+            buttonRotate3.BackgroundImage = (Image)resources.GetObject("buttonRotate3.BackgroundImage");
+            buttonRotate3.BackgroundImageLayout = ImageLayout.Stretch;
+            buttonRotate3.Location = new Point(397, 1);
+            buttonRotate3.Name = "buttonRotate3";
+            buttonRotate3.Size = new Size(33, 31);
+            buttonRotate3.TabIndex = 47;
+            buttonRotate3.Tag = "Remove this tile";
+            buttonRotate3.UseVisualStyleBackColor = true;
+            buttonRotate3.Click += buttonRotate3_Click;
+            // 
             // EditForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -515,5 +557,8 @@
         private VScrollBar vScrollBarSize1;
         private VScrollBar vScrollBarSize2;
         private VScrollBar vScrollBarSize3;
+        private Button buttonRotate3;
+        private Button buttonRotate2;
+        private Button buttonRotate1;
     }
 }

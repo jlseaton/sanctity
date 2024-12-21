@@ -2,8 +2,10 @@
 {
     public class Stats
     {
-        public int ID { get; set; }
+        public string? ID { get; set; }
         public string? Name { get; set; }
+        public string? Race { get; set; }
+        public string? Class { get; set; }
         public string? ImageName { get; set; }
 
         public int HPs { get; set; }

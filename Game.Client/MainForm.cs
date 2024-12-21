@@ -1,16 +1,14 @@
 ﻿using Game.Core;
 using Game.Realm;
 using NAudio.Wave;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Numerics;
-using System.Windows.Forms;
 
 namespace Game.Client
 {
     public partial class MainForm : Form
     {
         #region Fields
+
+        private EditForm editForm;
 
         private WaveOut Music = new WaveOut();
         private WaveOut Sounds = new WaveOut();
@@ -25,13 +23,21 @@ namespace Game.Client
         private List<Stats> NPCStats = new List<Stats>();
         private List<Stats> ItemStats = new List<Stats>();
 
-        private Tile[] Tiles { get; set; }
+        private Tile[,] Tiles { get; set; }
+        private Tile[,] LastTiles { get; set; }
+
+        private bool CacheImages = true;
+        private Dictionary<string, Image> ImageCache = new Dictionary<string, Image>();
 
         private int CommandDelayInterval = 1000;
         private string LastSentCommand = String.Empty;
 
         private string[]
             MusicFilenames, SoundFilenames, ImageFilenames;
+
+        public string ImagesPath = "Images";
+        public string SoundsPath = "Sounds";
+        public string MusicPath = "Music";
 
         #endregion
 
@@ -57,16 +63,21 @@ namespace Game.Client
 
             try
             {
-                Config = Config.LoadConfig(version);
-                Tiles = new Tile[Constants.VisibleTiles];
                 this.Text = Constants.ClientTitle;
+
+                Config = Config.LoadConfig(version);
+
+                // Index all music, sound, and images file names
+                MusicFilenames = Directory.GetFiles(MusicPath, "*.*", SearchOption.AllDirectories);
+                SoundFilenames = Directory.GetFiles(SoundsPath, "*.*", SearchOption.AllDirectories);
+                ImageFilenames = Directory.GetFiles(ImagesPath, "*.*", SearchOption.AllDirectories);
             }
             catch (Exception ex)
             {
                 LogMessage(ex.Message);
             }
 
-            Realm = new RealmManager();
+            Realm = new RealmManager(1, "Dungeon Lab", false); //TODO: Load this from config_world.json
             Realm.Version = version;
 
 #pragma warning disable CS8622 // Nullability of reference types in type of parameter doesn't match the target delegate (possibly because of nullability attributes).
@@ -79,18 +90,13 @@ namespace Game.Client
                     " Level " + pc.Level.ToString() + ", " + pc.Race + " " + pc.Class);
             }
 
-            // Index all music, sound, and images file names
-            MusicFilenames = Directory.GetFiles("Music\\", "*.*", SearchOption.AllDirectories);
-            SoundFilenames = Directory.GetFiles("Sounds\\", "*.*", SearchOption.AllDirectories);
-            ImageFilenames = Directory.GetFiles("Images\\", "*.*", SearchOption.AllDirectories);
-
             this.listBoxPCs.SelectedIndex = 0;
 
-            this.BackgroundImage = GetIndexedImage("skin");
+            this.BackgroundImage = GetIndexedImage("skin3");
             this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
-            this.panelPCs.BackgroundImage = GetIndexedImage("burntbackground3");
-            this.panelNPCs.BackgroundImage = GetIndexedImage("burntbackground3");
-            this.pictureBoxPC.BackgroundImage = GetIndexedImage("burntbackground3");
+            this.panelPCs.BackgroundImage = GetIndexedImage(Config.Skin);
+            this.panelNPCs.BackgroundImage = GetIndexedImage(Config.Skin);
+            this.pictureBoxPC.BackgroundImage = GetIndexedImage(Config.Skin);
             this.pictureBoxStatus.BackgroundImage = GetIndexedImage("hourglass");
 
             var path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) +
@@ -139,16 +145,33 @@ namespace Game.Client
             }
 
             // Save app location, size, and other settings
+            Config.PlayerID = (int)this.listBoxPCs.SelectedIndex + 1;
             Config.WindowLocationX = this.Location.X;
             Config.WindowLocationY = this.Location.Y;
             Config.WindowHeight = this.Size.Height;
             Config.WindowWidth = this.Size.Width;
             Config.WindowState = (int)this.WindowState;
-            Config.PlayerID = (int)this.listBoxPCs.SelectedIndex + 1;
+            Config.WindowLocationX = this.Location.X;
+            Config.WindowLocationY = this.Location.Y;
+
+            if (editForm != null)
+            {
+                Config.EditHeight = editForm.Size.Height;
+                Config.EditWidth = editForm.Size.Width;
+                Config.EditState = (int)editForm.WindowState;
+                Config.EditLocationX = editForm.Location.X;
+                Config.EditLocationY = editForm.Location.Y;
+            }
+
             Config.SaveConfig();
 
             Sounds.Stop();
             Music.Stop(); //TODO: This is not working
+
+            if (editForm != null)
+            {
+                editForm.Close();
+            }
         }
 
         private void MainForm_SizeChanged(object sender, EventArgs e)
@@ -267,6 +290,11 @@ namespace Game.Client
                     {
                         Realm.Stop();
                     }
+
+                    if (editForm != null)
+                    {
+                        editForm.Close();
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -282,7 +310,7 @@ namespace Game.Client
             {
                 try
                 {
-                    this.pictureBoxTilesMain.Image = GetIndexedImage("smoke");
+                    this.pictureBoxTilesMain.Image = GetIndexedImage("smoke1");
                     this.Refresh();
 
                     Conn = new Connection(!Config.ServerMode,
@@ -317,11 +345,13 @@ namespace Game.Client
 
                     Sounds.Stop();
                     Music.Stop();
+                    this.pictureBoxTilesMain.Image = null;
 
                     SendPacket(new Packet()
                     {
                         ActionType = ActionType.Join,
-                        ID = this.listBoxPCs.SelectedIndex + 1,
+                        ID = this.listBoxPCs.SelectedItem
+                            .ToString().Split()[0].Trim(),
                     });
                 }
                 catch (Exception ex)
@@ -359,7 +389,9 @@ namespace Game.Client
                     }
                     else
                     {
-                        Realm.HandlePacket(packet, this.listBoxPCs.SelectedIndex + 1);
+                        Realm.HandlePacket(packet,
+                            listBoxPCs.SelectedItem
+                                .ToString().Split()[0]).Trim();
                     }
 
                     result = true;
@@ -415,8 +447,9 @@ namespace Game.Client
                     }
                     else if (packet.ActionType == ActionType.Status)
                     {
-                        UpdateTiles(packet);
+                        UpdatePanels(packet);
                         UpdateStatus(packet);
+                        this.Tiles = packet.Tiles;
                     }
                 }
             }
@@ -438,6 +471,7 @@ namespace Game.Client
                 MyStats = packet.Health;
 
                 this.labelPCName.Text = MyStats.Name;
+                this.labelPCRaceClass.Text = MyStats.Race + " " + MyStats.Class;
                 this.labelAge.Text = "Age: " + MyStats.Age.ToString();
                 this.labelLevel.Text = "Level: " + MyStats.Level.ToString();
                 this.labelExperience.Text = "Exp: " + MyStats.Experience.ToString();
@@ -534,39 +568,8 @@ namespace Game.Client
             UpdateConnectionStatus();
         }
 
-        private void UpdateTiles(Packet packet)
+        private void UpdatePanels(Packet packet)
         {
-            var tileFileName = String.Empty;
-            var tileFiles = new List<string>();
-
-            if (packet.Tile != null && packet.Tile.Tile1ID != null)
-            {
-                tileFileName = GetIndexedFileName(this.ImageFilenames, packet.Tile.Tile1ID);
-                if (!String.IsNullOrEmpty(tileFileName))
-                {
-                    tileFiles.Add(tileFileName);
-                }
-            }
-
-            if (packet.Tile != null && packet.Tile.Tile2ID != null)
-            {
-                tileFileName = GetIndexedFileName(this.ImageFilenames, packet.Tile.Tile2ID);
-                if (!String.IsNullOrEmpty(tileFileName))
-                {
-                    tileFiles.Add(tileFileName);
-                }
-            }
-
-            if (packet.Tile != null && packet.Tile.SoundID != null)
-            {
-                PlaySound(packet.Tile.SoundID);
-            }
-
-            if (packet.Tile != null && packet.Tile.MusicID != null)
-            {
-                PlayMusic(packet.Tile.MusicID);
-            }
-
             // Clear out all existing PC and NPC images
             for (int i = 1; i <= 11; i++)
             {
@@ -599,7 +602,7 @@ namespace Game.Client
                 int npcCount = 1;
                 foreach (var pc in packet.PCs)
                 {
-                    tileFileName =
+                    var tileFileName =
                         this.GetIndexedFileName(this.ImageFilenames, pc.Value.ImageName);
 
                     if (!String.IsNullOrEmpty(tileFileName))
@@ -630,7 +633,7 @@ namespace Game.Client
                 int npcCount = 1;
                 foreach (var npc in packet.NPCs)
                 {
-                    tileFileName =
+                    var tileFileName =
                         this.GetIndexedFileName(this.ImageFilenames, npc.Value.ImageName);
 
                     if (!String.IsNullOrEmpty(tileFileName))
@@ -655,40 +658,7 @@ namespace Game.Client
                 }
             }
 
-            // Update current Hex images
-            if (Config.Images && tileFiles.Any())
-            {
-                if (!String.IsNullOrEmpty(packet.Tile.Tile1ID))
-                {
-                    this.pictureBoxTilesMain.Image = GetIndexedImage(packet.Tile.Tile1ID);
-                }
-
-                if (!String.IsNullOrEmpty(packet.Tile.Tile2ID))
-                {
-                    using (Graphics g = Graphics.FromImage(this.pictureBoxTilesMain.Image))
-                    {
-                        //g.CompositingMode = CompositingMode.SourceCopy;
-                        g.CompositingQuality = CompositingQuality.HighQuality;
-
-                        using (var wrapMode = new ImageAttributes())
-                        {
-                            wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                            var img2 = GetIndexedImage(packet.Tile.Tile2ID);
-                            var destinationRect = new Rectangle(0, 0, 260, 260);
-                            //    this.pictureBoxTilesMain.Width, this.pictureBoxTilesMain.Height);
-                            g.DrawImage(img2, destinationRect, 0, 0, img2.Width, img2.Height, GraphicsUnit.Pixel, wrapMode);
-
-                            if (!String.IsNullOrEmpty(packet.Tile.Tile3ID))
-                            {
-                                var img3 = GetIndexedImage(packet.Tile.Tile3ID);
-                                var destinationRect3 = new Rectangle(90, 90, 90, 90);
-                                //    this.pictureBoxTilesMain.Width, this.pictureBoxTilesMain.Height);
-                                g.DrawImage(img3, destinationRect3, 0, 0, img2.Width, img2.Height, GraphicsUnit.Pixel, wrapMode);
-                            }
-                        }
-                    }
-                }
-            }
+            this.pictureBoxTilesMain.Invalidate();
         }
 
         private void UpdateConnectionStatus()
@@ -704,17 +674,20 @@ namespace Game.Client
                     if (Conn != null && Conn.Connected)
                     {
                         this.buttonStart.Text = "&Quit";
-                        this.panelAccount.Visible = false;
-                        this.panelAccount.BringToFront();
+
                         this.panelChat.Enabled = true;
                         this.panelChat.Visible = true;
-                        this.panelMovement.Visible = true;
-                        this.panelStats.Visible = true;
+                        this.panelPC.Visible = true;
+                        this.panelTarget.Visible = true;
                         this.panelObjects.Visible = true;
                         this.panelPCs.Visible = true;
                         this.panelNPCs.Visible = true;
-
                         this.listBoxPCs.Enabled = false;
+
+                        this.panelAccount.Visible = false;
+                        this.panelAccount.SendToBack();
+                        this.pictureBoxTilesMain.SendToBack();
+                        this.panelTiles.BringToFront();
 
                         if (MyStats != null && MyStats.HPs <= 0)
                         {
@@ -727,20 +700,24 @@ namespace Game.Client
                     }
                     else
                     {
-                        this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
                         this.buttonStart.Text = "&Join";
+
                         this.panelAccount.Visible = true;
                         this.panelAccount.BringToFront();
                         this.panelChat.Enabled = false;
                         this.panelChat.Visible = false;
-                        this.panelMovement.Visible = false;
-                        this.panelStats.Visible = false;
+                        this.panelPC.Visible = false;
+                        this.panelTarget.Visible = false;
                         this.panelObjects.Visible = false;
                         this.panelPCs.Visible = false;
                         this.panelNPCs.Visible = false;
+                        this.panelTiles.SendToBack();
 
                         this.listBoxPCs.Enabled = true;
 
+                        this.pictureBoxTilesMain.Image = GetIndexedImage("loctitle");
+                        this.pictureBoxTilesMain.BringToFront();
+                        this.pictureBoxTarget.Image = GetIndexedImage("flames1");
                         this.pictureBoxPC.Image =
                             GetIndexedImage(PCs[this.listBoxPCs.SelectedIndex].ImageName);
                     }
@@ -754,35 +731,55 @@ namespace Game.Client
 
         private string GetIndexedFileName(string[] list, string name)
         {
-            foreach (string s in list)
+            for(int i= 0; i < list.Length; i++)
             {
-                if (name ==
-                    Path.GetFileNameWithoutExtension(s).ToLower())
+                var n = Path.GetFileNameWithoutExtension(list[i]);
+                if (n == name)
                 {
-                    return s.ToLower();
+                    return list[i];
                 }
             }
 
             return String.Empty;
         }
 
-        private Image GetIndexedImage(string imageName)
+        public Image GetIndexedImage(string imageName)
         {
-            if (!Config.Images)
+            Image? img = null;
+
+            try
             {
-                return null;
+                imageName = imageName.ToLower().Trim();
+
+                if (CacheImages)
+                {
+                    // If the image is in the cache, return it
+                    if (ImageCache.ContainsKey(imageName))
+                    {
+                        img = ImageCache.Single(i => i.Key == imageName).Value;
+                        return img;
+                    }
+                }
+            }
+            catch
+            {
             }
 
-            var img = GetIndexedFileName(this.ImageFilenames, imageName);
+            try
+            {
+                // If the image is not in the cache, load it from the file system and add it to the cache
+                img = Image.FromFile(GetIndexedFileName(this.ImageFilenames, imageName));
 
-            if (!String.IsNullOrEmpty(img))
-            {
-                return Image.FromFile(img);
+                if (CacheImages)
+                {
+                    ImageCache.Add(imageName, img);
+                }
             }
-            else
+            catch
             {
-                return null;
             }
+
+            return img;
         }
 
         #endregion
@@ -794,30 +791,6 @@ namespace Game.Client
             if (keyData == Keys.Enter && !this.textBoxSend.Focused)
             {
                 this.textBoxSend.Focus();
-                return true;
-            }
-            else if (keyData == Keys.Up && !this.textBoxSend.Focused)
-            {
-                buttonNorth_Click(this, null);
-                this.buttonNorth.Focus();
-                return true;
-            }
-            else if (keyData == Keys.Down && !this.textBoxSend.Focused)
-            {
-                buttonSouth_Click(this, null);
-                this.buttonSouth.Focus();
-                return true;
-            }
-            else if (keyData == Keys.Right && !this.textBoxSend.Focused)
-            {
-                buttonEast_Click(this, null);
-                this.buttonEast.Focus();
-                return true;
-            }
-            else if (keyData == Keys.Left && !this.textBoxSend.Focused)
-            {
-                buttonWest_Click(this, null);
-                this.buttonWest.Focus();
                 return true;
             }
             else if (keyData == Keys.OemQuestion && !this.textBoxSend.Focused)
@@ -851,6 +824,7 @@ namespace Game.Client
             }
 
             SettingsForm form = new SettingsForm(Config, Sounds, Music, allowNetworkChanges);
+            form.BackgroundImage = GetIndexedImage(Config.Skin);
 
             if (form.ShowDialog() == DialogResult.OK)
             {
@@ -869,19 +843,125 @@ namespace Game.Client
             }
         }
 
+        private void ToggleEdit(int row, int col)
+        {
+            if (Conn == null || !Conn.Connected)
+            {
+                return;
+            }
+
+            if (editForm == null || editForm.IsDisposed)
+            {
+                editForm = new EditForm(this);
+            }
+
+            editForm.BackgroundImage = GetIndexedImage(Config.Skin);
+            editForm.Size = new Size(Config.EditWidth, Config.EditHeight);
+            editForm.SetDesktopLocation(Config.EditLocationX, Config.EditLocationY);
+
+            if (!editForm.Visible)
+            {
+                editForm.Show(this);
+            }
+
+            editForm.UpdateTiles(new Hex(), Tiles[row, col].Clone(),
+                row, col);
+        }
+
+        public void UpdateEdit()
+        {
+            Config.EditWidth = editForm.Size.Width;
+            Config.EditHeight = editForm.Size.Height;
+            Config.EditLocationX = editForm.DesktopLocation.X;
+            Config.EditLocationY = editForm.DesktopLocation.Y;
+        }
+
+        public void UpdateFromEdit(Hex newHex, Tile newTile, int row, int col)
+        {
+            if (newHex != null)
+            {
+                // Save hex changes to the server
+                SendPacket(new Packet()
+                {
+                    ActionType = ActionType.Command,
+                    Text = "hex " +
+                    row.ToString() + " " +
+                    col.ToString() + " " +
+                    "'" + newHex.Title + "'" +
+                    "'" + newHex.Description + "'"
+                });
+            }
+
+            if (newTile != null)
+            {
+                // Save tile changes to the server
+                SendPacket(new Packet()
+                {
+                    ActionType = ActionType.Command,
+                    Text = "tile " +
+                    row.ToString() + " " +
+                    col.ToString() + " " +
+                    "1 " + newTile.Tile1ID + " " +
+                    newTile.Tile1Size.ToString() + " " +
+                    newTile.Tile1XOffset.ToString() + " " +
+                    newTile.Tile1YOffset.ToString(),
+                });
+
+                SendPacket(new Packet()
+                {
+                    ActionType = ActionType.Command,
+                    Text = "tile " +
+                    row.ToString() + " " +
+                    col.ToString() + " " +
+                    "2 " + newTile.Tile2ID + " " +
+                    newTile.Tile2Size.ToString() + " " +
+                    newTile.Tile2XOffset.ToString() + " " +
+                    newTile.Tile2YOffset.ToString(),
+                });
+
+                SendPacket(new Packet()
+                {
+                    ActionType = ActionType.Command,
+                    Text = "tile " +
+                    row.ToString() + " " +
+                    col.ToString() + " " +
+                    "3 " + newTile.Tile3ID + " " +
+                    newTile.Tile3Size.ToString() + " " +
+                    newTile.Tile3XOffset.ToString() + " " +
+                    newTile.Tile3YOffset.ToString(),
+                });
+            }
+        }
+
+        DateTime lastCommand;
+        private bool AllowCommand()
+        {
+            if (DateTime.Now.Subtract(lastCommand).TotalMilliseconds <
+                CommandDelayInterval)
+            {
+                return false;
+            }
+            else
+            {
+                lastCommand = DateTime.Now;
+                return true;
+            }
+        }
+
         private void buttonSend_Click(object sender, EventArgs e)
         {
+            // Check command throttling speed
+            if (!AllowCommand())
+                return;
+
             if (!String.IsNullOrEmpty(this.textBoxSend.Text))
             {
-                this.buttonSend.Enabled = false;
                 SendPacket(new Packet()
                 {
                     ActionType = ActionType.Say,
                     Text = this.textBoxSend.Text
                 });
                 this.textBoxSend.Text = "";
-                Thread.Sleep(CommandDelayInterval / 2);
-                this.buttonSend.Enabled = true;
             }
         }
 
@@ -897,6 +977,12 @@ namespace Game.Client
         {
             if (e.KeyCode == Keys.Enter)
             {
+                if (!AllowCommand())
+                {
+                    e.Handled = false;
+                    return;
+                }
+
                 e.SuppressKeyPress = true;
 
                 if (!String.IsNullOrEmpty(this.textBoxSend.Text))
@@ -925,55 +1011,27 @@ namespace Game.Client
             }
         }
 
-        private void buttonNorth_Click(object sender, EventArgs e)
-        {
-            SendPacket(new Packet() { ActionType = ActionType.Movement, Text = "north" });
-        }
-
-        private void buttonSouth_Click(object sender, EventArgs e)
-        {
-            SendPacket(new Packet() { ActionType = ActionType.Movement, Text = "south" });
-        }
-
-        private void buttonEast_Click(object sender, EventArgs e)
-        {
-            SendPacket(new Packet() { ActionType = ActionType.Movement, Text = "east" });
-        }
-
-        private void buttonWest_Click(object sender, EventArgs e)
-        {
-            SendPacket(new Packet() { ActionType = ActionType.Movement, Text = "west" });
-        }
-
-        private void buttonUp_Click(object sender, EventArgs e)
-        {
-            SendPacket(new Packet() { ActionType = ActionType.Movement, Text = "up" });
-        }
-
-        private void buttonDown_Click(object sender, EventArgs e)
-        {
-            SendPacket(new Packet() { ActionType = ActionType.Movement, Text = "down" });
-        }
-
         private void buttonLook_Click(object sender, EventArgs e)
         {
-            this.buttonLook.Enabled = false;
+            if (!AllowCommand())
+                return;
+
             SendPacket(new Packet() { ActionType = ActionType.Command, Text = "look" });
-            Thread.Sleep(CommandDelayInterval);
-            this.buttonLook.Enabled = true;
         }
 
         private void buttonHide_Click(object sender, EventArgs e)
         {
-            this.buttonHide.Enabled = false;
+            if (!AllowCommand())
+                return;
+
             SendPacket(new Packet() { ActionType = ActionType.Command, Text = "hide" });
-            Thread.Sleep(CommandDelayInterval);
-            this.buttonHide.Enabled = true;
         }
 
         private void buttonInspect_Click(object sender, EventArgs e)
         {
-            this.buttonInspect.Enabled = false;
+            if (!AllowCommand())
+                return;
+
             if (this.listBoxEntities.SelectedItem != null)
             {
                 var inspected = this.listBoxEntities.SelectedItem.ToString();
@@ -994,13 +1052,13 @@ namespace Game.Client
             {
                 SendPacket(new Packet() { ActionType = ActionType.Command, Text = "inspect" });
             }
-            Thread.Sleep(CommandDelayInterval);
-            this.buttonInspect.Enabled = true;
         }
 
         private void buttonGet_Click(object sender, EventArgs e)
         {
-            this.buttonGet.Enabled = false;
+            if (!AllowCommand())
+                return;
+
             if (this.listBoxItems.SelectedItem != null)
             {
                 SendPacket(new Packet()
@@ -1013,14 +1071,12 @@ namespace Game.Client
             {
                 SendPacket(new Packet() { ActionType = ActionType.Command, Text = "get" });
             }
-            Thread.Sleep(CommandDelayInterval);
-            this.buttonGet.Enabled = true;
         }
-
 
         private void buttonRevive_Click(object sender, EventArgs e)
         {
-            this.buttonRevive.Enabled = false;
+            if (!AllowCommand())
+                return;
             if (this.listBoxEntities.SelectedItem != null)
             {
                 SendPacket(new Packet()
@@ -1034,50 +1090,51 @@ namespace Game.Client
             {
                 SendPacket(new Packet() { ActionType = ActionType.Command, Text = "revive" });
             }
-            Thread.Sleep(CommandDelayInterval);
-            this.buttonRevive.Enabled = true;
         }
 
         private void buttonAttack_Click(object sender, EventArgs e)
         {
-            this.buttonAttack.Enabled = false;
+            if (!AllowCommand())
+                return;
 
-            if (this.listBoxEntities.SelectedItem != null)
+            try
             {
-                PlayMusic("combat1", true, true);
+                if (this.listBoxEntities.SelectedItem != null)
+                {
+                    PlayMusic("combat1", true, true);
 
-                var sound = Randomizer.Next(4);
-                if (sound == 0)
-                {
-                    PlaySound("attack1");
-                }
-                else if (sound == 1)
-                {
-                    PlaySound("attack2");
-                }
-                else if (sound == 2)
-                {
-                    PlaySound("arrow1");
-                }
-                else
-                {
-                    PlaySound("swordmiss1");
-                }
+                    var sound = Randomizer.Next(4);
+                    if (sound == 0)
+                    {
+                        PlaySound("attack1");
+                    }
+                    else if (sound == 1)
+                    {
+                        PlaySound("attack2");
+                    }
+                    else if (sound == 2)
+                    {
+                        PlaySound("arrow1");
+                    }
+                    else
+                    {
+                        PlaySound("swordmiss1");
+                    }
 
-                string npcName = this.listBoxEntities.SelectedItem.ToString();
-                int found = npcName.IndexOf("(");
-                npcName = npcName.Substring(0, found).Trim();
+                    string npcName = this.listBoxEntities.SelectedItem.ToString();
+                    int found = npcName.IndexOf("(");
+                    npcName = npcName.Substring(0, found).Trim();
 
-                SendPacket(new Packet()
-                {
-                    ActionType = ActionType.Damage,
-                    Text = npcName,
-                });
-
-                Thread.Sleep(CommandDelayInterval); // Simulate a delay in attacking, TODO: Use player attack speed
+                    SendPacket(new Packet()
+                    {
+                        ActionType = ActionType.Damage,
+                        Text = npcName,
+                    });
+                }
             }
-
-            this.buttonAttack.Enabled = true;
+            catch (Exception ex)
+            {
+            }
         }
 
         private void pictureBoxPC_Click(object sender, EventArgs e)
@@ -1148,6 +1205,11 @@ namespace Game.Client
                     this.listBoxEntities.SelectedItem = selected;
                 }
             }
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            this.pictureBoxTilesMain.Invalidate();
         }
 
         #endregion
@@ -1246,5 +1308,180 @@ namespace Game.Client
         }
 
         #endregion
+
+        private void pictureBoxTilesMain_Paint(object sender, PaintEventArgs e)
+        {
+            // Update tiles only if displaying images is on, there are tiles, and we are connected
+            if (!Config.Images || Tiles == null ||
+                (this.Conn != null && !this.Conn.Connected))
+            {
+                return;
+            }
+
+            try
+            {
+                // Determine width of tiles based on current window size
+                int cellWidth = this.pictureBoxTilesMain.Width /
+                    Constants.VisibleTilesWidth;
+                int cellHeight = this.pictureBoxTilesMain.Height /
+                    Constants.VisibleTilesHeight;
+
+                // Ensure even number for width and height of cells to avoid black lines being drawn
+                cellWidth = this.pictureBoxTilesMain.Size.Width %
+                    Constants.VisibleTilesWidth == 0
+                    ? cellWidth : cellWidth + 1;
+                cellHeight = this.pictureBoxTilesMain.Size.Height %
+                    Constants.VisibleTilesHeight == 0
+                    ? cellHeight : cellHeight + 1;
+
+                for (int row = 0; row < Constants.VisibleTilesHeight; row++)
+                {
+                    for (int col = 0; col < Constants.VisibleTilesWidth; col++)
+                    {
+                        // Render tiles based on the col row and cell size
+                        var x = col * this.pictureBoxTilesMain.Width /
+                            Constants.VisibleTilesWidth;
+                        var y = row * this.pictureBoxTilesMain.Height /
+                            Constants.VisibleTilesHeight;
+
+                        var destRect = new Rectangle(x, y, cellWidth, cellHeight);
+
+                        // Draw the base tile
+                        if (Tiles[row, col] != null && Tiles[row, col].Tile1ID != null)
+                        {
+                            Image img1 = null;
+                            if ((img1 = GetIndexedImage(Tiles[row, col].Tile1ID)) != null)
+                            {
+                                var t1w = cellWidth * ((decimal)Tiles[row, col].Tile1Size / 100);
+                                int width = (int)t1w;
+                                var t1h = cellHeight * ((decimal)Tiles[row, col].Tile1Size / 100);
+                                int height = (int)t1h;
+
+                                var destRect1 = new Rectangle(
+                                    x + Tiles[row, col].Tile1XOffset,
+                                    y + Tiles[row, col].Tile1YOffset,
+                                    width, height);
+
+                                e.Graphics.DrawImage(img1, destRect1,
+                                    0, 0,
+                                    img1.Width, img1.Height, GraphicsUnit.Pixel);
+                            }
+                            else
+                            {
+                                // Draw black for base tile if it was not found
+                                e.Graphics.FillRectangle(new SolidBrush(Color.Black),
+                                    x, y, cellWidth, cellHeight);
+                            }
+                        }
+
+                        // Draw the second tile
+                        if (Tiles[row, col] != null && Tiles[row, col].Tile2ID != null)
+                        {
+                            Image img2 = null;
+                            if ((img2 = GetIndexedImage(Tiles[row, col].Tile2ID)) != null)
+                            {
+                                var t2w = cellWidth * ((decimal)Tiles[row, col].Tile2Size / 100);
+                                int width = (int)t2w;
+                                var t2h = cellHeight * ((decimal)Tiles[row, col].Tile2Size / 100);
+                                int height = (int)t2h;
+
+                                var destRect2 = new Rectangle(
+                                    x + Tiles[row, col].Tile2XOffset,
+                                    y + Tiles[row, col].Tile2YOffset,
+                                    width, height);
+
+                                e.Graphics.DrawImage(img2, destRect2,
+                                    0, 0,
+                                    img2.Width, img2.Height, GraphicsUnit.Pixel);
+                            }
+                        }
+
+                        // Draw the third tile
+                        if (Tiles[row, col] != null && Tiles[row, col].Tile3ID != null)
+                        {
+                            Image img3 = null;
+                            if ((img3 = GetIndexedImage(Tiles[row, col].Tile3ID)) != null)
+                            {
+                                var t3w = cellWidth * ((decimal)Tiles[row, col].Tile3Size / 100);
+                                int width = (int)t3w;
+                                var t3h = cellHeight * ((decimal)Tiles[row, col].Tile3Size / 100);
+                                int height = (int)t3h;
+
+                                var destRect3 = new Rectangle(
+                                    x + Tiles[row, col].Tile3XOffset,
+                                    y + Tiles[row, col].Tile3YOffset,
+                                    width, height);
+
+                                e.Graphics.DrawImage(img3, destRect3,
+                                    0, 0,
+                                    img3.Width, img3.Height, GraphicsUnit.Pixel);
+                            }
+                        }
+
+                        // Draw PC on top if this is the center most tile
+                        if (row == Constants.VisibleTilesOffset && col == Constants.VisibleTilesOffset)
+                        {
+                            e.Graphics.DrawImage(this.pictureBoxPC.Image, destRect, 0, 0,
+                                this.pictureBoxPC.Image.Width, this.pictureBoxPC.Image.Height, GraphicsUnit.Pixel);
+                        }
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void pictureBoxTilesMain_Click(object sender, EventArgs e)
+        {
+            // Determine width of tiles based on current window size
+            int cellWidth = this.pictureBoxTilesMain.Width /
+                Constants.VisibleTilesWidth;
+            int cellHeight = this.pictureBoxTilesMain.Height /
+                Constants.VisibleTilesHeight;
+
+            // Ensure even number for width and height of cells to avoid black lines being drawn
+            cellWidth = this.pictureBoxTilesMain.Size.Width %
+                Constants.VisibleTilesWidth == 0
+                ? cellWidth : cellWidth + 1;
+            cellHeight = this.pictureBoxTilesMain.Size.Height %
+                Constants.VisibleTilesHeight == 0
+                ? cellHeight : cellHeight + 1;
+
+            var me = (MouseEventArgs)e;
+            var clickedRow = -1;
+            var clickedCol = -1;
+
+            for (int row = 0; row < Constants.VisibleTilesHeight; row++)
+            {
+                for (int col = 0; col < Constants.VisibleTilesWidth; col++)
+                {
+                    // Find which tile based on row and col was clicked
+                    var x = col * this.pictureBoxTilesMain.Width / Constants.VisibleTilesWidth;
+                    var y = row * this.pictureBoxTilesMain.Height / Constants.VisibleTilesHeight;
+
+                    var destRect = new Rectangle(x, y, cellWidth, cellHeight);
+                    if (destRect.Contains(me.Location))
+                    {
+                        clickedRow = row;
+                        clickedCol = col;
+                        break;
+                    }
+                }
+            }
+
+            if (me.Button == MouseButtons.Right)
+            {
+                ToggleEdit(clickedRow, clickedCol);
+            }
+            else
+            {
+                SendPacket(new Packet()
+                {
+                    ActionType = ActionType.Movement,
+                    Text = "move " + clickedRow.ToString() + " " + clickedCol.ToString()
+                });
+            }
+        }
     }
 }

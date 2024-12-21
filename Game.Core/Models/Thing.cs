@@ -2,13 +2,29 @@
 {
     public class Thing
     {
-        public int ID { get; set; }
+        public string ID { get; set; }
 
-        public int TileID { get; set; }
-        public int QuestID { get; set; }
+        public string? TileID { get; set; }
+        public string? QuestID { get; set; }
 
         public string? Article { get; set; }
-        public string? Name { get; set; }
+        private string? _name;
+        public string? Name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    _name = value.Trim();
+                    ID = value.Trim();
+                }
+            }
+        }
+
         public string FullName
         {
             get

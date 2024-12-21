@@ -4,7 +4,7 @@ namespace Game.Realm
 {
     public class Item : Thing
     {
-        public int BaseID { get; set; }
+        public string? BaseID { get; set; }
 
         public ItemType Type { get; set; }
 
@@ -33,7 +33,7 @@ namespace Game.Realm
 
         public int Durability { get; set; }
 
-        public List<int> Effects { get; set; }
+        public List<string> Effects { get; set; }
 
         public Item Clone()
         {
